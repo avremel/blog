@@ -1,0 +1,86 @@
+import PaginatorWrapper from '../../components/paginate-bar/wrapper.js'
+import StackblitzEmbed from '../../components/stackblitz-embed.jsx'
+
+
+Picture yourself going back in time, lurking about in a den of DOM mutations and jQuery. State is `hidden` in innocuous looking `input` fields. `event`'s are left loose to propogate. How would we take the hardened lessons of modern web frameworks and apply them to a codebase which eschews any sense of order?
+
+Of the first order is clarifying the utility which modern frameworks provide:
+
+- **Components** which **encapsulate** fragments of HTML for reuse. Those fragments can include behavior (JS), as well as [styles](https://github.com/css-modules/css-modules) (CSS) scoped at the component level.
+- These components are **stateful**. State is _not_ declared in the ether, but safely ensconced within a component. A checkbox is self aware enough to answer the question, "Am I `checked`?", without excavating the DOM.
+- State is **transparent**. `console.log` your state and know your DOM. A convenience brought to you by [**One Way Data Binding**](https://stackoverflow.com/questions/34519889/can-anyone-explain-the-difference-between-reacts-one-way-data-binding-and-angula). The DOM can bubble up `events` but is powerless over mutating `state`. That privilege is granted exclusively to your component.
+- Components can be **customized** by ingesting variables or callbacks.
+
+## PaginateBar Component
+
+Let's build a `PaginateBar` (shown below) to illustrate how we can retrofit these ideas to JS/jQuery.
+
+
+<PaginatorWrapper />
+
+
+```js
+class PaginateBarComponent {
+  #selector;
+  #onChange;
+  #children;
+  #pageNum;
+  #perPage;
+  #totalRecords;
+  #totalPages;
+
+  constructor({ selector, onChange, children }) {
+    // constructor props
+    this.#selector = selector;
+    this.#onChange = onChange;
+    this.#children = children;
+
+    // setValues() props
+    this.#pageNum = null;
+    this.#perPage = null;
+    this.#totalRecords = null;
+    this.#totalPages = null;
+
+    Object.preventExtensions(this);
+
+    this.#setInitialDOM();
+  }
+
+  setValues({ pageNum, perPage, totalRecords, totalPages }) { ... }
+
+  isLoading(value) { ... }
+
+  #setInitialDOM() { ... }
+
+  #updateDOM() { ... }
+}
+```
+
+## Architecture choices
+
+[Classes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes) are the obvious tool for **encapsulation**.
+  -  [Private fields and methods](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Private_class_fields) control which methods and fields are availabe to consumers of the component.
+  - After [Object.preventExtensions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/preventExtensions) gets called, new fields can't be added to the class. Yet another layer of safety.
+
+[Template litererals] are the closest you will get to JSX.
+
+CSS can be scoped to the component with namespacing ([BEM](http://getbem.com/naming/) is a popular convention). JS could load the CSS file, but that might come with a [performance cost](https://web.dev/defer-non-critical-css/#optimize).
+
+### _Like React_
+- `constructor` _and_ `setValues` ingest [`props`](https://reactjs.org/docs/components-and-props.html).
+- Consumers can choose to provide an `onChange` callback.
+- Arbitrary HTML can be forwaded via `children`, [faithfully mimicking React](https://reactjs.org/docs/composition-vs-inheritance.html#containment).
+
+### _Unlike React_
+- Ideally, class fields would to quack like `props` and be immutable from within the component. We have no safety checks to enforce that.
+- Whereas React effectively tracks `prop` changes and triggers rerenders, we must
+  1. explicitly notify the component of `prop` changes,
+  2. and call `setValues` to update the DOM.
+- With jQuery, you typically render some HTML upfront and mutate the DOM as needed. React's [Virtual DOM](https://reactjs.org/docs/faq-internals.html) allows you to declare your UI, and handles DOM updates on `prop/state` change.
+  - Although we could emulate this approach by tearing down the DOM on each `prop` change, [why would we?](https://svelte.dev/blog/virtual-dom-is-pure-overhead)
+
+## In Conclusion
+
+If you have some tolerance for pain, jQuery + modern JS are a fine choice for building components. You will lose the shiny benefits, like a better DX (Developer Experience) and helpful guardrails, but you only have yourself to blame 😉.
+
+<StackblitzEmbed path="https://stackblitz.com/edit/jquery-2mfqsw?embed=1&file=paginate_bar/index.js&theme=dark" />
