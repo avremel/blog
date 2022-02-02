@@ -6,24 +6,62 @@ export const meta = {
 
 # React Flavored JavaScript
 
-<Aside text={'Hello Aside'} />
+<Aside pTags={
+  [
+    `My goal is to demonstrate how to create stateful + reusable components with JS/jQuery. I'm picking on React because that's what I'm most comfortable with.`,
+  ]} />
 
-Picture yourself going back in time, lurking about in a den of DOM mutations and jQuery. State is `hidden` in innocuous looking `input` fields. `event`'s are left loose to propogate. How would we take the hardened lessons of modern web frameworks and apply them to a codebase which eschews any sense of order?
+Picture yourself in prehistoric times, lurking in a den of DOM mutations and jQuery. State is `hidden` in innocuous looking `input` fields. `event`'s are left loose to propogate. How can we take the hardened lessons of modern web frameworks and apply them to a codebase which eschews any sense of order?
 
-Of the first order is clarifying the utility which modern frameworks provide:
+**Of the first order is clarifying the utility of modern frameworks**
 
-- **Components** which **encapsulate** fragments of HTML for reuse. Those fragments can include behavior (JS), as well as [styles](https://github.com/css-modules/css-modules) (CSS) scoped at the component level.
-- These components are **stateful**. State is _not_ declared in the ether, but safely ensconced within a component. A checkbox is self aware enough to answer the question, "Am I `checked`?", without excavating the DOM.
-- State is **transparent**. `console.log` your state and know your DOM. A convenience brought to you by [One Way Data Binding](https://stackoverflow.com/questions/34519889/can-anyone-explain-the-difference-between-reacts-one-way-data-binding-and-angula). The DOM can bubble up `events` but is powerless over mutating `state`. That privilege is granted exclusively to your component.
-- Components can be **customized** by ingesting variables or callbacks.
+- **Components** which **encapsulate** fragments of HTML for reuse. Those fragments can include behavior, as well as [styles](https://github.com/css-modules/css-modules) scoped to a component.
+- These components are **stateful**. State is _not_ declared in the ether, but safely ensconced within a component. A checkbox has enough self awareness to answer the question, "Am I `checked`?", without excavating the DOM.
+- State is **transparent**. `console.log` your state and know your DOM. A convenience brought to you by [One Way Data Binding](https://stackoverflow.com/questions/34519889/can-anyone-explain-the-difference-between-reacts-one-way-data-binding-and-angula). The DOM can bubble up `events` but is powerless over mutating `state`. That privilege belongs to your component.
+- Components can be **customized** by ingesting variables. Parent components can **react** to children by passing in callbacks.
 
-## PaginateBar Component
+## Retrofitting these ideas in JavaScript...
 
-Let's build a `PaginateBar` (shown below) to illustrate how we can retrofit these ideas to JS/jQuery.
-
+...by way of example.
 
 <PaginatorWrapper />
 
+☝️ is a component built with modern JS.
+
+### Compenent interface
+
+[Stackblitz](https://stackblitz.com/edit/jquery-2mfqsw?file=index.js)
+
+```js
+PaginateBar = new PaginateBarComponent({
+  selector: '#paginate-bar',
+  onChange: (newPageNum) => {
+    // API call or whatever
+  },
+  children: `
+    <div style="color: Tomato; font-style: italic;">
+      MY DASHBOARD
+    </div>
+  `,
+});
+
+PaginateBar.setValues({
+  pageNum: 3,
+  perPage: 50,
+  totalRecords: 377,
+  totalPages: 8,
+});
+```
+
+**Notice how we are micking React**
+- The component [attaches itself to a selector](https://reactjs.org/docs/rendering-elements.html#rendering-an-element-into-the-dom).
+- `constructor` _and_ `setValues` ingest [`props`](https://reactjs.org/docs/components-and-props.html).
+- Consumers can provide an `onChange` callback.
+- Arbitrary HTML can be included via [`children`](https://reactjs.org/docs/composition-vs-inheritance.html#containment).
+
+### Component definition
+
+[Stackblitz](https://stackblitz.com/edit/jquery-2mfqsw?file=paginate_bar/index.js)
 
 ```js
 class PaginateBarComponent {
@@ -61,34 +99,23 @@ class PaginateBarComponent {
   #updateDOM() { ... }
 }
 ```
+**We are leveraging modern-ish JS**
+- [Classes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes) for **encapsulation**.
+-  [Private fields and methods](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Private_class_fields) provide a measure of **safety**.
+- [Object.preventExtensions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/preventExtensions) prevents the creation of unwanted fields.
+- [Template tags](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) for defining chunks of HTML. It's the closest you'll get to [JSX](https://reactjs.org/docs/introducing-jsx.html).
 
-## Architecture choices
-
-[Classes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes) are the obvious tool for **encapsulation**.
-  -  [Private fields and methods](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Private_class_fields) control which methods and fields are availabe to consumers of the component.
-  - After [Object.preventExtensions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/preventExtensions) gets called, new fields can't be added to the class. Yet another layer of safety.
-
-[Template litererals] are the closest you will get to JSX.
-
-CSS can be scoped to the component with namespacing ([BEM](http://getbem.com/naming/) is a popular convention). JS could load the CSS file, but that might come with a [performance cost](https://web.dev/defer-non-critical-css/#optimize).
-
-### _Like React_
-- `constructor` _and_ `setValues` ingest [`props`](https://reactjs.org/docs/components-and-props.html).
-- Consumers can choose to provide an `onChange` callback.
-- Arbitrary HTML can be forwaded via `children`, [faithfully mimicking React](https://reactjs.org/docs/composition-vs-inheritance.html#containment).
-
-### _Unlike React_
-- Ideally, class fields would to quack like `props` and be immutable from within the component. We have no safety checks to enforce that.
-- Whereas React effectively tracks `prop` changes and triggers rerenders, we must
+## Tell me about the tradeoffs
+Whereas React effectively tracks `prop` changes and triggers rerenders, we must
   1. explicitly notify the component of `prop` changes,
   2. and call `setValues` to update the DOM.
-- With jQuery, you typically render some HTML upfront and mutate the DOM as needed. React's [Virtual DOM](https://reactjs.org/docs/faq-internals.html) allows you to declare your UI, and handles DOM updates on `prop/state` change.
+
+With jQuery, you typically render some HTML upfront and mutate the DOM as needed. React's [Virtual DOM](https://reactjs.org/docs/faq-internals.html) allows you to declare your UI, and handles DOM updates on `prop/state` change.
   - Although we could emulate this approach by tearing down the DOM on each `prop` change, [why would we?](https://svelte.dev/blog/virtual-dom-is-pure-overhead)
+  - CSS can be scoped to the component with namespacing ([BEM](http://getbem.com/naming/) is a popular convention). JS could load the CSS file, but that might come with a [performance cost](https://web.dev/defer-non-critical-css/#optimize).
 
 ## In Conclusion
 
 If you have some tolerance for pain, jQuery + modern JS are a fine choice for building components. You will lose the shiny benefits, like a better DX (Developer Experience) and helpful guardrails, but you only have yourself to blame 😉.
-
-<CodeEmbed path="https://stackblitz.com/edit/jquery-2mfqsw?embed=1&file=index.js" linkText={'Stackblitz demo of the component'} />
 
 export default ({ children }) => <BlogMarkdown meta={meta}>{children}</BlogMarkdown>

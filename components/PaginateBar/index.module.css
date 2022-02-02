@@ -1,4 +1,6 @@
 .paginate-bar {
+  margin-top: 10px;
+  margin-bottom: 10px;
   border: 1px solid gray;
   padding: 5px;
   font-family: arial;
