@@ -1,17 +1,14 @@
 import React from 'react'
+import { Layout } from '..'
 import css from './index.module.css'
 
-const BlogLayout = ({children}) => {
+const BlogLayout = ({meta, children}) => {
   return (
-    <div className='DocsPage'>
-      <main className='DocsBody'>
-        <div className='DocsContent' page-type='document'>
-          <article className='DocsMarkdown'>
-            {children}
-          </article>
-        </div>
-      </main>
-    </div>
+    <Layout title={meta.title}>
+      <article className='DocsMarkdown'>
+        {children}
+      </article>
+    </Layout>
   )
 }
 
