@@ -1,3 +1,4 @@
+import 'highlight.js/styles/github.css'
 import '../styles/index.css'
 
 function MyApp({ Component, pageProps }) {
