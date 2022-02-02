@@ -1,4 +1,5 @@
 import $ from 'jquery'
+import cn from 'classnames'
 import css from './index.module.css'
 
 class PaginateBarComponent {
@@ -47,8 +48,8 @@ class PaginateBarComponent {
         <div id='num-results' class=${css['num-results']}></div>
         <div id='children' class=${css['children']}>${this.#children}</div>
         <div id='paginator' class=${css['paginator']}>
-          <button class=${css['button'] + ' ' + css['paginate-button']} id='prev-page'>PREV PAGE</button>
-          <button class=${css['button'] + ' ' + css['paginate-button']} id='next-page'>NEXT PAGE</button>
+          <button class=${cn(css['button'], css['paginate-button'])} id='prev-page'>PREV PAGE</button>
+          <button class=${cn(css['button'], css['paginate-button'])} id='next-page'>NEXT PAGE</button>
         </div>
       </div>
     `;

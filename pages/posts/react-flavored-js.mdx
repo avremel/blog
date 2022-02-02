@@ -12,7 +12,7 @@ Of the first order is clarifying the utility which modern frameworks provide:
 
 - **Components** which **encapsulate** fragments of HTML for reuse. Those fragments can include behavior (JS), as well as [styles](https://github.com/css-modules/css-modules) (CSS) scoped at the component level.
 - These components are **stateful**. State is _not_ declared in the ether, but safely ensconced within a component. A checkbox is self aware enough to answer the question, "Am I `checked`?", without excavating the DOM.
-- State is **transparent**. `console.log` your state and know your DOM. A convenience brought to you by [**One Way Data Binding**](https://stackoverflow.com/questions/34519889/can-anyone-explain-the-difference-between-reacts-one-way-data-binding-and-angula). The DOM can bubble up `events` but is powerless over mutating `state`. That privilege is granted exclusively to your component.
+- State is **transparent**. `console.log` your state and know your DOM. A convenience brought to you by [One Way Data Binding](https://stackoverflow.com/questions/34519889/can-anyone-explain-the-difference-between-reacts-one-way-data-binding-and-angula). The DOM can bubble up `events` but is powerless over mutating `state`. That privilege is granted exclusively to your component.
 - Components can be **customized** by ingesting variables or callbacks.
 
 ## PaginateBar Component
@@ -89,6 +89,6 @@ If you have some tolerance for pain, jQuery + modern JS are a fine choice for bu
 
 Interactive demo of the paginate component:
 
-<CodeEmbed path="https://stackblitz.com/edit/jquery-2mfqsw?embed=1&file=paginate_bar/index.js&theme=dark" />
+<CodeEmbed path="https://stackblitz.com/edit/jquery-2mfqsw?embed=1&file=index.js" />
 
 export default ({ children }) => <Post meta={meta}>{children}</Post>

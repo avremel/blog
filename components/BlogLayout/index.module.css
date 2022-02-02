@@ -1,5 +1,11 @@
 .wrapper {
-  font-family: arial;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  word-wrap: break-word;
+  
   width: 900px;
   margin: 20px auto;
+}
+
+.wrapper > :first-child {
+  margin-top: 0;
 }
