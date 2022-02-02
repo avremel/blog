@@ -1,4 +1,4 @@
-import { CodeEmbed, PaginatorWrapper, BlogMarkdown } from '../../components'
+import { Aside, BlogMarkdown, CodeEmbed, PaginatorWrapper } from '../../components'
 
 export const meta = {
   title: 'React Flavored JavaScript'
@@ -6,13 +6,7 @@ export const meta = {
 
 # React Flavored JavaScript
 
-<aside>
-
-  <div class="DocsMarkdown--aside-header">Beware</div>
-
-  Hello Aside
-
-</aside>
+<Aside text={'Hello Aside'} />
 
 Picture yourself going back in time, lurking about in a den of DOM mutations and jQuery. State is `hidden` in innocuous looking `input` fields. `event`'s are left loose to propogate. How would we take the hardened lessons of modern web frameworks and apply them to a codebase which eschews any sense of order?
 

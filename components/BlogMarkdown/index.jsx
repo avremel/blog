@@ -1,8 +1,10 @@
 import { MDXProvider } from '@mdx-js/react'
+import cn from 'classnames'
 import { BlogLayout } from '..'
 import hljs from 'highlight.js/lib/core';
 import javascript from 'highlight.js/lib/languages/javascript';
 hljs.registerLanguage('javascript', javascript);
+import css from './index.module.css'
 
 const Link = ({href, children}) => {
   return (
@@ -20,23 +22,14 @@ const InlineCode = (props) => {
 
 const CodeBlock = ({children}) => {
   return (
-    <pre className="CodeBlock CodeBlock-scrolls-horizontally CodeBlock-is-light-in-light-theme">
+    <pre className={cn(css['code-block-wrapper'], "CodeBlock CodeBlock-scrolls-horizontally CodeBlock-is-light-in-light-theme")}>
       <code dangerouslySetInnerHTML={{__html: hljs.highlightAuto(children).value}} />
     </pre>
   )
 }
 
-const Aside = ({children}) => {
-  return (
-    <aside class="DocsMarkdown--aside" role="note" data-type="note">
-      <p>{children}</p>
-    </aside>
-  )
-}
-
 const components = {
   a: Link,
-  aside: Aside,
   inlineCode: InlineCode,
   code: CodeBlock,
 }

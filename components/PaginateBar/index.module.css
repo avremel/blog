@@ -1,22 +1,24 @@
 .paginate-bar {
   border: 1px solid gray;
-  margin: 5px;
   padding: 5px;
   font-family: arial;
   color: gray;
   font-weight: 600;
   display: flex;
-  align-items: baseline;
-}
-
-.num-results {
-  margin-right: auto;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
 }
 
 .paginator {
-  margin-left: auto;
   display: flex;
   gap: 5px;
+  justify-content: end;
+}
+
+.num-results, .paginator {
+  flex-grow: 1;
+  flex-basis: 0;
 }
 
 .prev-page,
@@ -25,7 +27,7 @@
 }
 
 .paginate-button {
-  width: 150px;
+  width: 120px;
 }
 
 @media(max-width: 650px) {
