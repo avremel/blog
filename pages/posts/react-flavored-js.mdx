@@ -1,4 +1,4 @@
-import { CodeEmbed, PaginatorWrapper, Post } from '../../components'
+import { CodeEmbed, PaginatorWrapper, BlogMarkdown } from '../../components'
 
 export const meta = {
   title: 'React Flavored JavaScript'
@@ -87,8 +87,6 @@ CSS can be scoped to the component with namespacing ([BEM](http://getbem.com/nam
 
 If you have some tolerance for pain, jQuery + modern JS are a fine choice for building components. You will lose the shiny benefits, like a better DX (Developer Experience) and helpful guardrails, but you only have yourself to blame 😉.
 
-Interactive demo of the paginate component:
+<CodeEmbed path="https://stackblitz.com/edit/jquery-2mfqsw?embed=1&file=index.js" linkText={'Stackblitz demo of the component'} />
 
-<CodeEmbed path="https://stackblitz.com/edit/jquery-2mfqsw?embed=1&file=index.js" />
-
-export default ({ children }) => <Post meta={meta}>{children}</Post>
+export default ({ children }) => <BlogMarkdown meta={meta}>{children}</BlogMarkdown>

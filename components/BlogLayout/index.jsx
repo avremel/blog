@@ -3,7 +3,15 @@ import css from './index.module.css'
 
 const BlogLayout = ({children}) => {
   return (
-    <div className={css.wrapper}>{children}</div>
+    <div className='DocsPage'>
+      <main className='DocsBody'>
+        <div className='DocsContent' page-type='document'>
+          <article className='DocsMarkdown'>
+            {children}
+          </article>
+        </div>
+      </main>
+    </div>
   )
 }
 

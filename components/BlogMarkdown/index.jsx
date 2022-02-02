@@ -1,6 +1,6 @@
 import { MDXProvider } from '@mdx-js/react'
 import cn from 'classnames'
-import { BlogLayout } from '../../components'
+import { BlogLayout } from '..'
 import css from './index.module.css'
 
 const Link = ({href, children}) => {
@@ -19,9 +19,7 @@ const components = {
 export default function Post({meta, children}) {
   return (
     <MDXProvider components={components}>
-      <article className='DocsMarkdown'>
-        <BlogLayout meta={meta}>{children}</BlogLayout>
-      </article>
+      <BlogLayout meta={meta}>{children}</BlogLayout>
     </MDXProvider>
   )
 }
