@@ -1,3 +1,4 @@
+import Head from 'next/head'
 import { MDXProvider } from '@mdx-js/react'
 import cn from 'classnames'
 import { BlogLayout } from '..'
@@ -36,8 +37,13 @@ const components = {
 
 export default function Post({meta, children}) {
   return (
-    <MDXProvider components={components}>
-      <BlogLayout meta={meta}>{children}</BlogLayout>
-    </MDXProvider>
+    <>
+      <Head>
+        <title>{meta.title}</title>
+      </Head>
+      <MDXProvider components={components}>
+        <BlogLayout meta={meta}>{children}</BlogLayout>
+      </MDXProvider>
+    </>
   )
 }
