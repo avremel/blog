@@ -1,9 +1,14 @@
 .wrapper {
+  display: none;
   margin-top: 10px;
   margin-bottom: 10px;
 }
 
 @media (min-width: 600px) {
+  .wrapper {
+    display: block;
+  }
+
   .full-width {
     left: 40%;
     margin-left: -40vw;
