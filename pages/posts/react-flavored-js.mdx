@@ -8,7 +8,7 @@ export const meta = {
 
 <Aside pTags={
   [
-    `My goal is to demonstrate how to create stateful + reusable components with JS/jQuery. I'm picking on React because that's what I'm most comfortable with.`,
+    `The goal is to demonstrate how to create stateful + reusable components with JS/jQuery. I'm picking on React because that's what I'm most comfortable with.`,
   ]} />
 
 Picture yourself in prehistoric times, lurking in a den of DOM mutations and jQuery. State is `hidden` in innocuous looking `input` fields. `event`'s are left loose to propogate. How can we take the hardened lessons of modern web frameworks and apply them to a codebase which eschews any sense of order?
@@ -35,9 +35,7 @@ Picture yourself in prehistoric times, lurking in a den of DOM mutations and jQu
 ```js
 PaginateBar = new PaginateBarComponent({
   selector: '#paginate-bar',
-  onChange: (newPageNum) => {
-    // API call or whatever
-  },
+  onChange: (newPageNum) => (// API call or whatever),
   children: `
     <div style="color: Tomato; font-style: italic;">
       MY DASHBOARD
@@ -102,20 +100,21 @@ class PaginateBarComponent {
 **We are leveraging modern-ish JS**
 - [Classes](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes) for **encapsulation**.
 -  [Private fields and methods](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Private_class_fields) provide a measure of **safety**.
-- [Object.preventExtensions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/preventExtensions) prevents the creation of unwanted fields.
+- [Object.preventExtensions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/preventExtensions) disables new fields.
 - [Template tags](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals) for defining chunks of HTML. It's the closest you'll get to [JSX](https://reactjs.org/docs/introducing-jsx.html).
 
-## Tell me about the tradeoffs
-Whereas React effectively tracks `prop` changes and triggers rerenders, we must
-  1. explicitly notify the component of `prop` changes,
-  2. and call `setValues` to update the DOM.
+## Tell me more
 
-With jQuery, you typically render some HTML upfront and mutate the DOM as needed. React's [Virtual DOM](https://reactjs.org/docs/faq-internals.html) allows you to declare your UI, and handles DOM updates on `prop/state` change.
-  - Although we could emulate this approach by tearing down the DOM on each `prop` change, [why would we?](https://svelte.dev/blog/virtual-dom-is-pure-overhead)
-  - CSS can be scoped to the component with namespacing ([BEM](http://getbem.com/naming/) is a popular convention). JS could load the CSS file, but that might come with a [performance cost](https://web.dev/defer-non-critical-css/#optimize).
+- This approach obviates the need for a build step.
+
+- Whereas React effectively tracks `prop` changes and triggers rerenders, we must explicitly notify the component of `prop` changes (with `setValues`).
+
+- Modern frameworks provide guardrails to keep you on the beaten path. JavaScript is the wild west in comparison and requires *much* more discipline.
+
+- Traditionally, you render HTML upfront and mutate it as needed. React allows you to declare your UI, and manages DOM updates for you on `prop/state` change. We _could_ emulate this approach by tearing down the DOM on `prop/state` change, [but why would we?](https://svelte.dev/blog/virtual-dom-is-pure-overhead)
 
 ## In Conclusion
 
-If you have some tolerance for pain, jQuery + modern JS are a fine choice for building components. You will lose the shiny benefits, like a better DX (Developer Experience) and helpful guardrails, but you only have yourself to blame 😉.
+If you have tolerance for discomfort, jQuery + modern JS can be a mediocre subsitute for modern frameworks. You will lose the awsome DX (Developer Experience) but you only have yourself to blame 😉.
 
 export default ({ children }) => <BlogMarkdown meta={meta}>{children}</BlogMarkdown>
