@@ -53,7 +53,7 @@ PaginateBar.setValues({
 
 **Notice how we are micking React**
 - The component [attaches itself to a selector](https://reactjs.org/docs/rendering-elements.html#rendering-an-element-into-the-dom).
-- `constructor` _and_ `setValues` ingest [`props`](https://reactjs.org/docs/components-and-props.html).
+- `constructor` and `setValues` ingest [`props`](https://reactjs.org/docs/components-and-props.html).
 - Consumers can provide an `onChange` callback.
 - Arbitrary HTML can be included via [`children`](https://reactjs.org/docs/composition-vs-inheritance.html#containment).
 
@@ -107,14 +107,14 @@ class PaginateBarComponent {
 
 - This approach obviates the need for a build step.
 
-- Whereas React effectively tracks `prop` changes and triggers rerenders, we must explicitly notify the component of `prop` changes (with `setValues`).
-
 - Modern frameworks provide guardrails to keep you on the beaten path. JavaScript is the wild west in comparison and requires *much* more discipline.
 
-- Traditionally, you render HTML upfront and mutate it as needed. React allows you to declare your UI, and manages DOM updates for you on `prop/state` change. We _could_ emulate this approach by tearing down the DOM on `prop/state` change, [but why would we?](https://svelte.dev/blog/virtual-dom-is-pure-overhead)
+- Whereas React effectively tracks `prop` changes and triggers rerenders, we must explicitly notify our component of `prop` changes via `setValues`.
+
+- Traditionally, you render HTML upfront and mutate on demand. React allows you to declare your UI, and manages DOM updates for you ([docs](https://reactjs.org/docs/faq-internals.html)). We _could_ emulate this approach by tearing down the DOM on `prop/state` change, [but why would we?](https://svelte.dev/blog/virtual-dom-is-pure-overhead)
 
 ## In Conclusion
 
-If you have tolerance for discomfort, jQuery + modern JS can be a mediocre subsitute for modern frameworks. You will lose the awsome DX (Developer Experience) but you only have yourself to blame 😉.
+If you have a hight tolerance for discomfort, jQuery + modern JS can be a mediocre subsitute for React-like frameworks. You will lose the awsome DX (Developer Experience) but you only have yourself to blame 😉.
 
 export default ({ children }) => <BlogMarkdown meta={meta}>{children}</BlogMarkdown>
