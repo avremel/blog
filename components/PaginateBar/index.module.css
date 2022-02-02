@@ -9,18 +9,18 @@
   align-items: end;
 }
 
-#num-results {
+.num-results {
   margin-right: auto;
 }
 
-#paginator {
+.paginator {
   margin-left: auto;
   display: flex;
   gap: 5px;
 }
 
-#prev-page,
-#next-page {
+.prev-page,
+.next-page {
   display: none;
 }
 
@@ -34,7 +34,7 @@
     align-items: center;
   }
 
-  #num-results, #paginator {
+  .num-results, .paginator {
     margin-left: revert;
     margin-right: revert;
   }

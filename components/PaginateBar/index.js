@@ -1,4 +1,5 @@
 import $ from 'jquery'
+import css from './index.module.css'
 
 class PaginateBarComponent {
   #selector;
@@ -42,12 +43,12 @@ class PaginateBarComponent {
 
   #setInitialDOM() {
     const html = `
-      <div class="paginate-bar">
-        <div id="num-results"></div>
-        <div id="children">${this.#children}</div>
-        <div id="paginator">
-          <button class='button paginate-button' id='prev-page'>PREV PAGE</button>
-          <button class='button paginate-button' id='next-page'>NEXT PAGE</button>
+      <div class=${css['paginate-bar']}>
+        <div id='num-results' class=${css['num-results']}></div>
+        <div id='children' class=${css['children']}>${this.#children}</div>
+        <div id='paginator' class=${css['paginator']}>
+          <button class=${css['button'] + ' ' + css['paginate-button']} id='prev-page'>PREV PAGE</button>
+          <button class=${css['button'] + ' ' + css['paginate-button']} id='next-page'>NEXT PAGE</button>
         </div>
       </div>
     `;

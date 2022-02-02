@@ -1,6 +1,10 @@
-import PaginatorWrapper from '../../components/paginate-bar/wrapper.js'
-import StackblitzEmbed from '../../components/stackblitz-embed.jsx'
+import { CodeEmbed, PaginatorWrapper, Post } from '../../components'
 
+export const meta = {
+  title: 'React Flavored JavaScript'
+}
+
+# React Flavored JavaScript
 
 Picture yourself going back in time, lurking about in a den of DOM mutations and jQuery. State is `hidden` in innocuous looking `input` fields. `event`'s are left loose to propogate. How would we take the hardened lessons of modern web frameworks and apply them to a codebase which eschews any sense of order?
 
@@ -85,4 +89,6 @@ If you have some tolerance for pain, jQuery + modern JS are a fine choice for bu
 
 Interactive demo of the paginate component:
 
-<StackblitzEmbed path="https://stackblitz.com/edit/jquery-2mfqsw?embed=1&file=paginate_bar/index.js&theme=dark" />
+<CodeEmbed path="https://stackblitz.com/edit/jquery-2mfqsw?embed=1&file=paginate_bar/index.js&theme=dark" />
+
+export default ({ children }) => <Post meta={meta}>{children}</Post>
