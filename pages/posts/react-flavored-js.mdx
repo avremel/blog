@@ -111,7 +111,7 @@ class PaginateBarComponent {
 
 - Whereas React effectively tracks `prop` changes and triggers rerenders, we must explicitly notify our component of `prop` changes via `setValues`.
 
-- Traditionally, you render HTML upfront and mutate on demand. React allows you to declare your UI, and manages DOM updates for you ([docs](https://reactjs.org/docs/faq-internals.html)). We _could_ emulate this approach by tearing down the DOM on `prop/state` change, [but why would we?](https://svelte.dev/blog/virtual-dom-is-pure-overhead)
+- Traditionally, we would render HTML upfront and mutate on demand. React allows you to declare your UI, and manages DOM updates for you ([docs](https://reactjs.org/docs/faq-internals.html)). We _could_ emulate this approach by tearing down the DOM on `prop/state` change, [but why would we?](https://svelte.dev/blog/virtual-dom-is-pure-overhead)
 
 ## In Conclusion
 
