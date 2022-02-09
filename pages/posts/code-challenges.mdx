@@ -1,0 +1,83 @@
+import { Aside, BlogMarkdown } from '../../components'
+
+export const meta = {
+  title: '100 Code Challenges',
+}
+
+# 100 Code Challenges
+
+<Aside pTags={
+  [
+    `Guess I gotta hold myself accountable and do the code thingy. I'll aim to post one a day.`,
+    `Python is cleaner than JS in some ways, but nervous to use it since I'm not currently working with Python.`
+  ]} />
+
+## 1. twoSum
+
+|             |             |
+| ----------- | ----------- |
+| Link        | [Leetcode](https://leetcode.com/problems/two-sum/)      |
+| BigO        | O(n) space/time                             |
+| Note        | `Map` to bypass object key stringification. |
+
+```js
+const twoSum = function(nums, target) {
+    let temp = new Map()
+    
+    for (let idx = 0; idx < nums.length; idx++) {
+        const num = nums[idx]
+        const diff = target-num
+        if (temp.has(diff)) {
+            return [temp.get(diff), idx]
+        }
+        
+        temp.set(num, idx);
+    }
+
+    return []
+};
+```
+
+## 2. isPalindrome
+
+|             |             |
+| ----------- | ----------- |
+| Link        | [Leetcode](https://leetcode.com/problems/palindrome-number/)      |
+| BigO        | O(n) space/time                             |
+
+```js
+const isPalindrome = function(x) {
+  let stack = [];
+  
+  let val = x.toString()
+
+  // middle left/right idx
+  let left, right;
+
+  const mid = Math.floor(val.length / 2);
+  if (val.length % 2 == 1) {
+    left = mid - 1
+    right = mid + 1
+  } else {
+    left = mid - 1
+    right = mid
+  }
+
+  for (let i=0; i < val.length; i++) {
+    const char = val[i]
+    if (i <= left) {
+      stack.push(char)
+    }
+    if (i >= right) {
+      const popped = stack.pop()
+      if (popped !== char) {
+        return false
+      }
+    }
+  }
+
+  return true
+};
+```
+
+export default ({ children }) => <BlogMarkdown meta={meta}>{children}</BlogMarkdown>
