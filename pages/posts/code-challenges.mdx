@@ -12,29 +12,42 @@ export const meta = {
     `Python is cleaner than JS in some ways, but nervous to use it since I'm not currently working with Python.`
   ]} />
 
-## 1. twoSum
+## 3. Roman to Integer
 
 |             |             |
 | ----------- | ----------- |
-| Link        | [Leetcode](https://leetcode.com/problems/two-sum/)      |
-| BigO        | O(n) space/time                             |
-| Note        | `Map` to bypass object key stringification. |
+| Link        | [Leetcode](https://leetcode.com/problems/roman-to-integer/)      |
+| BigO        | O(n) space/time    
 
 ```js
-const twoSum = function(nums, target) {
-    let temp = new Map()
-    
-    for (let idx = 0; idx < nums.length; idx++) {
-        const num = nums[idx]
-        const diff = target-num
-        if (temp.has(diff)) {
-            return [temp.get(diff), idx]
-        }
-        
-        temp.set(num, idx);
-    }
+const romanToInt = function(s) {
+  const NUM_BY_CHAR = {
+    I: 1,
+    V: 5,
+    X: 10,
+    L: 50,
+    C: 100,
+    D: 500,
+    M: 1000,
+  }
+  
+  const SUBTRACTABLE_NUM = new Set(['I', 'X', 'C'])
 
-    return []
+  let ret = 0
+  let lastNum = null
+  for (let i = s.length-1 ; i >= 0; i--) {
+    const char = s[i];
+    let num = NUM_BY_CHAR[char]
+
+    if (SUBTRACTABLE_NUM.has(char) && lastNum && num < lastNum) {
+      ret -= num;
+    } else {
+      ret += num;
+    }
+    lastNum = num;
+  }
+
+  return ret;
 };
 ```
 
@@ -77,6 +90,31 @@ const isPalindrome = function(x) {
   }
 
   return true
+};
+```
+## 1. twoSum
+
+|             |             |
+| ----------- | ----------- |
+| Link        | [Leetcode](https://leetcode.com/problems/two-sum/)      |
+| BigO        | O(n) space/time                             |
+| Note        | `Map` to bypass object key stringification. |
+
+```js
+const twoSum = function(nums, target) {
+    let temp = new Map()
+    
+    for (let idx = 0; idx < nums.length; idx++) {
+        const num = nums[idx]
+        const diff = target-num
+        if (temp.has(diff)) {
+            return [temp.get(diff), idx]
+        }
+        
+        temp.set(num, idx);
+    }
+
+    return []
 };
 ```
 
