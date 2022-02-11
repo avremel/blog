@@ -30,7 +30,7 @@ const twoEvens = arr => {
   for (let x=currIdx-1; x >= 0; x--) {
     const num = arr[x]
     
-    if (num) {
+    if (num !== 0) {
       arr[x] = ''
       arr[currIdx] = num
 
