@@ -12,6 +12,41 @@ export const meta = {
     `Python is cleaner than JS in some ways, but nervous to use it since I'm not currently working with Python.`
   ]} />
 
+## 4. Two evens
+
+|             |             |
+| ----------- | ----------- |
+| Link        | [Interview Camp ($)](https://interviewcamp.io/courses/101687/lectures/2629074)      |
+| BigO        | O(n) time / O(1) space                             |
+| Note        | `[1,2,5,6,8, '', '', ''] -> [1,2,2,5,6,6,8,8]`. Placeholders always exist. |
+
+```js
+const twoEvens = arr => {
+  const arrLen = arr.length
+  if (!arrLen || arr[arrLen-1] !== '') return arr
+
+  let currIdx = arrLen - 1
+
+  for (let x=currIdx-1; x >= 0; x--) {
+    const num = arr[x]
+    
+    if (num) {
+      arr[x] = ''
+      arr[currIdx] = num
+
+      if (num % 2 === 0) {
+        arr[currIdx-1] = num
+  
+        currIdx -= 1
+      }
+      currIdx -= 1
+    }
+  }
+
+  return arr
+}
+```
+
 ## 3. Roman to Integer
 
 |             |             |
