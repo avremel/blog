@@ -21,26 +21,29 @@ export const meta = {
 | Note        | `[1,2,5,6,8, '', '', ''] -> [1,2,2,5,6,6,8,8]`. Placeholders always exist. |
 
 ```js
+const findLastNum = arr => {
+  let i = arr.length - 1
+  while (i >= 0) {
+    if (arr[i] !== '') break
+    i--
+  }
+
+  return i
+}
+
 const twoEvens = arr => {
-  const arrLen = arr.length
-  if (!arrLen || arr[arrLen-1] !== '') return arr
+  let end = arr.length - 1
+  let last = findLastNum(arr)
 
-  let currIdx = arrLen - 1
-
-  for (let x=currIdx-1; x >= 0; x--) {
-    const num = arr[x]
-    
-    if (num !== 0) {
-      arr[x] = ''
-      arr[currIdx] = num
-
-      if (num % 2 === 0) {
-        arr[currIdx-1] = num
-  
-        currIdx -= 1
-      }
-      currIdx -= 1
+  while (last >= 0) {
+    if (arr[last] % 2 == 0) {
+      arr[end] = arr[end-1] = arr[last]
+      end -= 2
+    } else {
+      arr[end] = arr[last]
+      end -= 1
     }
+    last -= 1
   }
 
   return arr
