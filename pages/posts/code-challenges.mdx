@@ -13,7 +13,7 @@ export const meta = {
   ]} />
 
 
-## 7. Sub array to sort
+## 6. Sub array to sort
 
 Interview Camp Ch 1. Homerwork #3
 
@@ -75,7 +75,7 @@ const subArrayUnsorted = arr => {
 }
 ```
 
-## 6. Sort Squared
+## 5. Sort Squared
 
 Interview Camp Ch 1. Homerwork #2
 
@@ -114,7 +114,7 @@ const sortSquared = arr => {
 
 ```
 
-## 5. Reverse sentence
+## 4. Reverse sentence
 
 Interview Camp Ch 1. Homerwork #1
 
@@ -138,40 +138,6 @@ const reverseSentence = sentence => {
   res += sentence.slice(0, currWordEnd+1)
 
   return res
-}
-```
-
-## 4. Two evens
-
-Interview Camp Ch. 1 Lecture
-
-```js
-const findLastNum = arr => {
-  let i = arr.length - 1
-  while (i >= 0) {
-    if (arr[i] !== '') break
-    i--
-  }
-
-  return i
-}
-
-const twoEvens = arr => {
-  let end = arr.length - 1
-  let last = findLastNum(arr)
-
-  while (last >= 0) {
-    if (arr[last] % 2 == 0) {
-      arr[end] = arr[end-1] = arr[last]
-      end -= 2
-    } else {
-      arr[end] = arr[last]
-      end -= 1
-    }
-    last -= 1
-  }
-
-  return arr
 }
 ```
 
