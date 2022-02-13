@@ -12,13 +12,138 @@ export const meta = {
     `Python is cleaner than JS in some ways, but nervous to use it since I'm not currently working with Python.`
   ]} />
 
+
+## 7. Sub array to sort
+
+Interview Camp Ch 1. Homerwork #3
+
+<Aside pTags={[
+  `Given an array of integers, find the continuous subarray, which when sorted, results in the entire array being sorted.`,
+  `For example: A = [0,2,3,1,8,6,9], result is the subarray [2,3,1,8,6]`,
+]} />
+
+```js
+const subArrayUnsorted = arr => {
+  let start_unsorted = null
+  let end_unsorted = null
+
+  // asc look for dip
+  for (let i=0; i<arr.length - 1; i++) {
+    if (arr[i] > arr[i+1]) {
+      start_unsorted = i
+      break
+    }
+  }
+
+  if (start_unsorted === null) return null
+
+  // desc look for bump
+  for (let i=arr.length-1; i>0; i--) {
+    if (arr[i] < arr[i-1]) {
+      end_unsorted = i
+      break
+    }
+  }
+
+  let min = Infinity
+  let max = -Infinity
+
+  for (let i=start_unsorted; i<=end_unsorted; i++) {
+    min = Math.min(min, arr[i])
+    max = Math.max(max, arr[i])
+  }
+
+  // expand start_unsorted
+  for (let i=0; i<start_unsorted; i++) {
+    if (arr[i] > min) {
+      start_unsorted = i
+      break
+    }
+  }
+
+  // expand end_unsorted
+  for (let i=arr.length-1; i>end_unsorted; i--) {
+    if (arr[i] < max) {
+      end_unsorted = i
+      break
+    }
+  }
+
+  // console.log(arr.slice(start_unsorted, end_unsorted+1))
+
+  return [start_unsorted, end_unsorted]
+}
+```
+
+## 6. Sort Squared
+
+Interview Camp Ch 1. Homerwork #2
+
+<Aside pTags={[
+  `Given a sorted array in non-decreasing order, return an array of squares of each number, also in non-decreasing order. For example:`,
+  `[-4,-2,-1,0,3,5] -> [0,1,4,9,16,25]`,
+  `How can you do it in O(n) time?`
+]} />
+
+```js
+const sortSquared = arr => {
+  if (!arr.length) return []
+
+  let start = 0
+  let end = arr.length - 1
+  let ret = Array.from(Array(arr.length))
+
+  let retIdx = arr.length - 1
+  while (start <= end) {
+    let startVal = Math.abs(arr[start])
+    let endVal = Math.abs(arr[end])
+
+    if (startVal > endVal) {
+      ret[retIdx] = startVal ** 2
+      start++
+    } else {
+      ret[retIdx] = endVal ** 2
+      end--
+    }
+
+    retIdx--
+  }
+
+  return ret
+}
+
+```
+
+## 5. Reverse sentence
+
+Interview Camp Ch 1. Homerwork #1
+
+<Aside pTags={
+  [
+    `Given a sentence, reverse the words of the sentence. For example, "i live in a house" becomes "house a in live i".`,
+  ]} />
+
+```js
+const reverseSentence = sentence => {
+  let res = ''
+  let currWordEnd = sentence.length - 1
+
+  for (let i=sentence.length-1; i >= 0; i--) {
+    if (sentence[i] === ' ') {
+      res += sentence.slice(i+1, currWordEnd+1) + ' '
+      currWordEnd = i-1
+    }
+  }
+
+  res += sentence.slice(0, currWordEnd+1)
+
+  return res
+}
+```
+
 ## 4. Two evens
 
-|             |             |
-| ----------- | ----------- |
-| Link        | [Interview Camp ($)](https://interviewcamp.io/courses/101687/lectures/2629074)      |
-| BigO        | O(n) time / O(1) space                             |
-| Note        | `[1,2,5,6,8, '', '', ''] -> [1,2,2,5,6,6,8,8]`. Placeholders always exist. |
+Interview Camp Ch. 1 Lecture
 
 ```js
 const findLastNum = arr => {
@@ -52,10 +177,7 @@ const twoEvens = arr => {
 
 ## 3. Roman to Integer
 
-|             |             |
-| ----------- | ----------- |
-| Link        | [Leetcode](https://leetcode.com/problems/roman-to-integer/)      |
-| BigO        | O(n) space/time    
+[Leetcode](https://leetcode.com/problems/roman-to-integer/)
 
 ```js
 const romanToInt = function(s) {
@@ -91,10 +213,7 @@ const romanToInt = function(s) {
 
 ## 2. isPalindrome
 
-|             |             |
-| ----------- | ----------- |
-| Link        | [Leetcode](https://leetcode.com/problems/palindrome-number/)      |
-| BigO        | O(n) space/time                             |
+[Leetcode](https://leetcode.com/problems/palindrome-number/)
 
 ```js
 const isPalindrome = function(x) {
@@ -132,11 +251,7 @@ const isPalindrome = function(x) {
 ```
 ## 1. twoSum
 
-|             |             |
-| ----------- | ----------- |
-| Link        | [Leetcode](https://leetcode.com/problems/two-sum/)      |
-| BigO        | O(n) space/time                             |
-| Note        | `Map` to bypass object key stringification. |
+[Leetcode](https://leetcode.com/problems/two-sum/)
 
 ```js
 const twoSum = function(nums, target) {
