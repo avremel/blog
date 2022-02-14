@@ -12,6 +12,47 @@ export const meta = {
     `Python is cleaner than JS in some ways, but nervous to use it since I'm not currently working with Python.`
   ]} />
 
+## 7. Sort Marbles
+
+Interview Camp Ch 1. Homerwork #4
+
+<Aside pTags={[
+  `Given an array with n marbles colored Red, White or Blue, sort them so that marbles of the same color are adjacent, with the colors in the order Red, White and Blue.`,
+  `Assume the colors are given as numbers - 0 (Red), 1 (White) and 2 (Blue).`,
+  `For example, if A = [1,0,1,2,1,0,1,2], Output = [0,0,1,1,1,1,2,2].`,
+]} />
+
+```js
+const swap = (arr, a, b) => {
+  const aVal = arr[a]
+  const bVal = arr[b]
+
+  arr[b] = aVal
+  arr[a] = bVal
+}
+
+const sortMarbles = (arr, pivot) => {
+  let leftBound = 0
+  let rightBound = arr.length - 1
+
+  for (let i=0; i<arr.length-1; i++) {
+    if (arr[i] < pivot) {
+      swap(arr, i, leftBound)
+      leftBound++
+    }
+  }
+
+  for (let i=arr.length-1; i>=0; i--) {
+    if (arr[i] > pivot) {
+      swap(arr, i, rightBound)
+      rightBound--
+    }
+  }
+
+
+  return arr
+}
+```
 
 ## 6. Sub array to sort
 
