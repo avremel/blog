@@ -11,6 +11,42 @@ export const meta = {
     `Guess I gotta hold myself accountable and do the code thingy. Mostly Interview Camp related.`,
   ]} />
 
+## 8. Longest Unique Substring
+
+Interview Camp Ch 2. Homerwork #1
+
+<Aside pTags={[
+  `Given a String, find the longest substring with unique characters.`,
+  `For example: "whatwhywhere" --> "atwhy"`,
+]} />
+
+```
+const longestSubstring = str => {
+  let start = end = 0
+  let longestNumChars = 0;
+  let longest = null;
+  let currSet = new Set()
+
+  while (start < str.length) {
+    if (currSet.has(str[end])) {
+      const numChars = end - start
+      if (numChars > longestNumChars) {
+        longestNumChars = numChars
+        longest = str.slice(start, end)
+      }
+
+      currSet.delete(str[start])
+      start++
+    } else {
+      currSet.add(str[end])
+      end++
+    }
+  }
+
+  return longest
+}
+```
+
 ## 7. Sort Marbles
 
 Interview Camp Ch 1. Homerwork #4
