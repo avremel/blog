@@ -8,8 +8,44 @@ export const meta = {
 
 <Aside pTags={
   [
-    `Guess I gotta hold myself accountable and do the code thingy. Mostly Interview Camp related.`,
+    `Gotta hold myself accountable. Mostly Interview Camp related.`,
   ]} />
+
+## 9. Prefix sum with target
+
+Interview Camp Ch 2. Homerwork #2
+
+<Aside pTags={[
+  `Given an array of positive and negative integers, find a subarray whose sum equals X.`,
+  `For example: Input = [2,4,-2,1,-3,5,-3], X = 5 --> Result = [2,4,-2,1]`,
+]} />
+
+```js
+const prefixSumWithTarget = (arr, target) => {
+  if (!arr || !arr.length) return null
+
+  let idx_by_sum = {}
+  let sum = 0
+
+  for (let i=0; i<arr.length; i++) {
+    sum += arr[i]
+
+    if (sum === target) {
+      return [0, i]
+    }
+
+    const matchingSum = idx_by_sum[sum-target]
+
+    if (matchingSum !== undefined) {
+      return [matchingSum + 1, i]
+    }
+
+    idx_by_sum[sum] = i
+  }
+
+  return null
+}
+```
 
 ## 8. Longest Unique Substring
 
