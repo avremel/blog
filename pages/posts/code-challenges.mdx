@@ -11,9 +11,45 @@ export const meta = {
     `Gotta hold myself accountable. Mostly Interview Camp related.`,
   ]} />
 
+## 11. Binary insert at index
+
+Interview Camp Ch 5. Homework #1.
+
+<Aside pTags={[
+  `You are given a sorted array A and a target T. Return the index where T would be placed if inserted in order. For example,`,
+  `A = [1,2,4,5,6,8] and T = 3, return index 2`,
+  `A = [1,2,4,5,6,8] and T = 0, return index 0`,
+  `A = [1,2,4,5,6,8] and T = 4, return index 3.`,
+]} />
+
+```js
+const binaryInsert = (arr, num) => {
+  if (!arr) return null
+  if (!arr.length) return 0
+
+  let start = 0
+  let end = arr.length-1
+
+  while (start <= end) {
+    let mid = Math.floor(start + (end-start) / 2)
+
+    if (arr[mid] > num) {
+      if (mid-1 < 0 || arr[mid-1] <= num) {
+        return mid
+      }
+      end = mid-1
+    } else {
+      start = mid+1
+    }
+  }
+
+  return arr.length
+}
+```
+
 ## 10. Find first occurrence
 
-Interview Camp Ch 5. Homerwork #1
+Interview Camp Ch 5. Lecture #1.
 
 <Aside pTags={[
   `Given a sorted array that can contain duplicates, find the first occurrence of a target element T.`,
