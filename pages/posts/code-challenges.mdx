@@ -11,6 +11,35 @@ export const meta = {
     `Gotta hold myself accountable. Mostly Interview Camp related.`,
   ]} />
 
+## 12. squareRoot
+
+Interview Camp Ch 5. Homework #2.
+
+<Aside pTags={[
+  `Find the square root of an integer X. For example, squareRoot(4) = 2. It is ok to find the integer floor of the square root. So squareRoot(5) or squareRoot(8) can also return 2. squareRoot(9) will return 3.`,
+  `Using Binary Search, you can search for square roots over the integer space. This is pretty fast because it takes O(log(n)) time. Assume that x*x is less than the integer limit.`,
+]} />
+
+```js
+const squareRoot = n => {
+  let start = 0
+  let end = n
+
+  while (start <= end) {
+    let mid = Math.floor(start + (end-start) / 2)
+    let result = mid ** 2
+    if (Math.floor(result) === n) return mid
+
+    if (result > n) {
+      end = mid-1
+    } else {
+      start = mid+1
+    }
+  }
+}
+
+```
+
 ## 11. Binary insert at index
 
 Interview Camp Ch 5. Homework #1.
@@ -83,7 +112,7 @@ const binaryFindFirst = (arr, target) => {
 
 ## 9. Prefix sum with target
 
-Interview Camp Ch 2. Homerwork #2
+Interview Camp Ch 2. Homework #2
 
 <Aside pTags={[
   `Given an array of positive and negative integers, find a subarray whose sum equals X.`,
@@ -119,7 +148,7 @@ const prefixSumWithTarget = (arr, target) => {
 
 ## 8. Longest Unique Substring
 
-Interview Camp Ch 2. Homerwork #1
+Interview Camp Ch 2. Homework #1
 
 <Aside pTags={[
   `Given a String, find the longest substring with unique characters.`,
@@ -155,7 +184,7 @@ const longestSubstring = str => {
 
 ## 7. Sort Marbles
 
-Interview Camp Ch 1. Homerwork #4
+Interview Camp Ch 1. Homework #4
 
 <Aside pTags={[
   `Given an array with n marbles colored Red, White or Blue, sort them so that marbles of the same color are adjacent, with the colors in the order Red, White and Blue.`,
@@ -197,7 +226,7 @@ const sortMarbles = (arr, pivot) => {
 
 ## 6. Sub array to sort
 
-Interview Camp Ch 1. Homerwork #3
+Interview Camp Ch 1. Homework #3
 
 <Aside pTags={[
   `Given an array of integers, find the continuous subarray, which when sorted, results in the entire array being sorted.`,
@@ -259,7 +288,7 @@ const subArrayUnsorted = arr => {
 
 ## 5. Sort Squared
 
-Interview Camp Ch 1. Homerwork #2
+Interview Camp Ch 1. Homework #2
 
 <Aside pTags={[
   `Given a sorted array in non-decreasing order, return an array of squares of each number, also in non-decreasing order. For example:`,
@@ -298,7 +327,7 @@ const sortSquared = arr => {
 
 ## 4. Reverse sentence
 
-Interview Camp Ch 1. Homerwork #1
+Interview Camp Ch 1. Homework #1
 
 <Aside pTags={
   [
