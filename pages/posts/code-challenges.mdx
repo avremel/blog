@@ -21,14 +21,30 @@ Interview Camp Ch 5. Homework #2.
 ]} />
 
 ```js
+// closer but lower
+const isCloser = (n, closest, cur_closest) => {
+  const newTotal = cur_closest ** 2
+  const oldTotal = closest ** 2
+
+  if (newTotal >= n) return false
+
+  return (newTotal > oldTotal) && newTotal < n
+}
+
 const squareRoot = n => {
-  let start = 0
+  let start = 1
   let end = n
+  let closest = start
 
   while (start <= end) {
     let mid = Math.floor(start + (end-start) / 2)
     let result = mid ** 2
-    if (Math.floor(result) === n) return mid
+    
+    if (result === n) return mid
+
+    if (isCloser(n, closest, mid)) {
+      closest = mid
+    }
 
     if (result > n) {
       end = mid-1
@@ -36,6 +52,8 @@ const squareRoot = n => {
       start = mid+1
     }
   }
+
+  return closest
 }
 
 ```
