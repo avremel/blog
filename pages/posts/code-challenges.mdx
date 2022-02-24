@@ -11,6 +11,43 @@ export const meta = {
     `Gotta hold myself accountable. Mostly Interview Camp related.`,
   ]} />
 
+## 13. Find Peak
+
+Interview Camp Ch 5. Homework #3.
+
+<Aside pTags={[
+  `Search for a Peak: A peak element in array A is an A[i] where its adjacent elements are less than A[i]. So, A[i - 1] < A[i] and A[i + 1] < A[i].`,
+  `Assume there are no duplicates. Also, assume that A[-1] and A[length] are negative infinity (-∞). So A[0] can be a peak if A[1] < A[0].`
+]} />
+
+```js
+const findPeak = arr => {
+  let start = 0
+  let end = arr.length-1
+
+  while (start <= end) {
+    let mid = Math.floor(start + (end-start) / 2)
+
+    // peak at ends
+    if ((mid === 0 && arr[mid] > arr[mid+1]) || (mid === arr.length-1 && arr[mid] > arr[mid-1])) {
+      return arr[mid]
+    }
+
+    // peak in middle
+    if (arr[mid] > arr[mid-1] && arr[mid] > arr[mid+1]) {
+      return arr[mid]
+    }
+
+    if (arr[mid] > arr[mid-1]) {
+      start = mid+1
+    } else {
+      end = mid-1
+    }
+  }
+}
+
+```
+
 ## 12. squareRoot
 
 Interview Camp Ch 5. Homework #2.
