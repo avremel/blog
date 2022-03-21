@@ -1,15 +1,140 @@
 import { Aside, BlogMarkdown } from '../../components'
 
 export const meta = {
-  title: '100 Code Challenges',
+  title: 'Code Challenges',
 }
 
-# 100 Code Challenges
+# Code Challenges
+
+Interview Camp Ch 7. Lecutre #2.
 
 <Aside pTags={
   [
-    `Gotta hold myself accountable. Mostly Interview Camp related.`,
+    `You are given a Linked List with nodes that have values 0, 1 or 2. Sort the linked list.`,
+    `Input: 1 -> 0 -> 2 -> 1 -> 2 -> 1 Output: 0 -> 1 -> 1 -> 1 -> 2 -> 2`
   ]} />
+
+```js
+class Node {
+  constructor(data, next=null) {
+    this.data = data
+    this.next = next
+  }
+
+  getNext() {
+    return this.next
+  }
+
+  setNext(next) {
+    this.next = next
+  }
+
+  getData() {
+    return this.data
+  }
+
+  setData(data) {
+    this.data = data
+  }
+}
+
+class LinkedList {
+  constructor(head, tail) {
+    this.head = head
+    this.tail = tail
+  }
+
+  getHead() {
+    return this.head
+  }
+
+  setHead(head) {
+    this.head = head
+  }
+
+  getTail() {
+    return this.tail
+  }
+
+  setTail(tail) {
+    this.tail = tail
+  }
+
+  append(toAdd) {
+    if (!this.head) {
+      this.head = toAdd
+    } else {
+      this.tail.setNext(toAdd)
+    }
+    this.tail = toAdd
+  }
+
+  appendList(newList) {
+    if (!newList || !newList.head) {
+      return
+    }
+
+    this.append(newList.head)
+    this.tail = newList.tail
+  }
+
+  printList() {
+    let currentNode = this.head
+    while (currentNode) {
+      console.log(currentNode.getData())
+      currentNode = currentNode.getNext()
+    }
+  }
+}
+
+const sortList = (input) => {
+  let zeros = new LinkedList()
+  let ones = new LinkedList()
+  let twos = new LinkedList()
+
+  let currentNode = input.head
+  while (currentNode !== null) {
+    const val = currentNode.data
+    if (val === 0) {
+      zeros.append(currentNode)
+    } else if (val === 1) {
+      ones.append(currentNode)
+    } else if (val === 2) {
+      twos.append(currentNode)
+    }
+    currentNode = currentNode.getNext()
+  }
+
+  if (zeros.getTail()) {
+    zeros.tail.next = null
+  }
+  if (ones.getTail()) {
+    ones.tail.next = null
+  }
+  if (twos.getTail()) {
+    twos.tail.next = null
+  }
+
+  let result = new LinkedList()
+  if (zeros) {
+    result.appendList(zeros)
+  }
+  if (ones) {
+    result.appendList(ones)
+  }
+  if (twos) {
+    result.appendList(twos)
+  }
+
+  result.printList()
+}
+
+// 1 -> 0 -> 2 -> 1 -> 2 -> 1
+const tail = new Node(1)
+const head = new Node(1, new Node(0, new Node(2, new Node(1, new Node(2, tail)))))
+const input = new LinkedList(head, tail)
+sortList(input)
+```
 
 ## 14. Coin Change
 
