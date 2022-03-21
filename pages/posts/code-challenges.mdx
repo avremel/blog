@@ -6,6 +6,51 @@ export const meta = {
 
 # Code Challenges
 
+## 16. Split Linked List based on odd/even index
+
+Interview Camp Ch 7. Homework #1.
+
+```js
+const oddEvenLists = (input) => {
+  const evens = new LinkedList()
+  const odds = new LinkedList()
+
+  let currentNode = input.head
+
+  count = 0
+  while (currentNode) {
+    if (count % 2 == 0) {
+      evens.append(currentNode)
+    } else {
+      odds.append(currentNode)
+    }
+
+    currentNode = currentNode.getNext()
+    count += 1
+  }
+
+  if (evens.getTail()) {
+    evens.tail.next = null
+  }
+
+  if (odds.getTail()) {
+    odds.tail.next = null
+  }
+
+  console.log('evens')
+  evens.printList()
+
+  console.log('odds')
+  odds.printList()
+}
+
+// 1 -> 2 -> 3 -> 4 -> 5
+const tail = new Node(5)
+const head = new Node(1, new Node(2, new Node(3, new Node(4, tail))))
+const input = new LinkedList(head, tail)
+oddEvenLists(input)
+```
+
 ## 15. Sort Linked List
 
 Interview Camp Ch 7. Lecutre #2.
