@@ -6,6 +6,88 @@ export const meta = {
 
 # Code Challenges
 
+## 17. Find cycle start
+
+Interview Camp Ch 7. Homework #2.
+
+<Aside pTags={[
+  `Given a Linked List with a cycle, find the node where the cycle begins.`
+]} />
+
+```js
+const one = new Node(1)
+const two = new Node(2)
+const three = new Node(3)
+const four = new Node(4)
+const five = new Node(5)
+
+one.setNext(two)
+two.setNext(three)
+three.setNext(four)
+four.setNext(five)
+five.setNext(two)
+
+const findLength = input => {
+  let slowPointer = input
+  let fastPointer = input
+
+  while (fastPointer) {
+    fastPointer = fastPointer.getNext()
+
+    if (slowPointer === fastPointer) {
+      break
+    }
+    fastPointer = fastPointer.getNext()
+    if (slowPointer === fastPointer) {
+      break
+    }
+
+    slowPointer = slowPointer.getNext()
+  }
+
+  const pointersMeetAt = slowPointer
+  let currentNode = slowPointer.getNext()
+
+  count = 0
+  while (currentNode) {
+    count += 1
+    if (currentNode === pointersMeetAt) {
+      break
+    }
+    currentNode = currentNode.getNext()
+  }
+
+  return count
+}
+
+const findNthLast = (input, n) => {
+  let trailingPointer = input
+  let pointer = input
+  let count = 0
+
+  while (count < n) {
+    pointer = pointer.getNext()
+    count += 1
+  }
+
+  while (true) {
+    if (trailingPointer === pointer) {
+      return trailingPointer.getData()
+    }
+    trailingPointer = trailingPointer.getNext()
+    pointer = pointer.getNext()
+  }
+
+}
+
+const findCycleStart = (input) => {
+  let lengthOfCycle = findLength(input)
+  let result = findNthLast(input, lengthOfCycle)
+
+  return result
+}
+```
+
 ## 16. Split Linked List based on odd/even index
 
 Interview Camp Ch 7. Homework #1.
