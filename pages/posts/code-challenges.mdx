@@ -6,6 +6,74 @@ export const meta = {
 
 # Code Challenges
 
+## 19. isPalindrome
+
+Interview Camp Ch 7. Homework #4
+
+```js
+class Node {
+  constructor(value, next=null) {
+    this.value = value
+    this.next = next
+  }
+}
+
+const findMiddleIdx = (input) => {
+  let curr = input
+  count = 0
+  while (curr) {
+    count += 1
+    curr = curr.next
+  }
+
+  return Math.floor(count/2)
+}
+
+const reverseSecondHalf = (input, mid) => {
+  count = 0
+  prev = null
+  curr = input
+  while (curr) {
+    count += 1
+
+    let next = curr.next
+
+    if (count > mid) {
+      curr.next = prev
+    }
+
+    prev = curr
+    curr = next
+  }
+
+  return prev
+}
+
+const isPalindrome = (input) => {
+  const mid = findMiddleIdx(input)
+  let head = input
+  let tail = reverseSecondHalf(input, mid)
+
+  let count = 0
+  while (count < mid) {
+    if (head.value === tail.value) {
+      head = head.next
+      tail = tail.next
+    } else {
+      return false
+    }
+
+    count += 1
+  }
+
+  return true
+}
+
+const input = new Node('A', new Node('B', new Node('C', new Node('B', new Node('A')))))
+// const input = new Node('A', new Node('B', new Node('C', new Node('B', new Node('A', new Node('Z'))))))
+console.log(isPalindrome(input))
+```
+
 ## 18. Find Smallest subarray
 
 Interview Camp Ch 7. Homework #3
