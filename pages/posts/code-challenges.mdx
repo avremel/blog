@@ -6,6 +6,126 @@ export const meta = {
 
 # Code Challenges
 
+## 18. Find Smallest subarray
+
+Interview Camp Ch 7. Homework #3
+
+```js
+class Node {
+  constructor(key, value, prev=null, next=null) {
+    this.key = key
+    this.value = value
+    this.prev = prev
+    this.next = next
+  }
+}
+
+class LinkedHashTable {
+  constructor(capacity) {
+    this.size = 0
+    this.capacity = capacity
+    this.hashMap = {}
+    this.head = null
+    this.tail = null
+  }
+
+  add(key, value) {
+    if (this.hashMap[key]) {
+      this.remove(key)
+    } else {
+      this.size += 1
+    }
+
+    const toAdd = new Node(key, value)
+    this.appendToLinkedList(toAdd)
+    this.hashMap[key] = toAdd
+  }
+
+  remove(key) {
+    if (!this.hashMap[key]) return
+
+    const toRemove = this.hashMap[key]
+    this.removeFromLinkedList(toRemove)
+  }
+
+  appendToLinkedList(toAdd) {
+    if (this.tail) {
+      this.tail.next = toAdd
+      toAdd.prev = this.tail
+    } else {
+      this.head = toAdd
+    }
+    this.tail = toAdd
+  }
+
+  removeFromLinkedList(toRemove) {
+    if (toRemove.prev) {
+      toRemove.prev.next = toRemove.next
+    }
+
+    if (toRemove.next) {
+      toRemove.next.prev = toRemove.prev
+    }
+
+    if (this.head === toRemove) {
+      this.head = toRemove.next
+    }
+
+    if (this.tail === toRemove) {
+      this.tail = toRemove.prev
+    }
+  }
+}
+
+const smallestSubarrayWithValues = (doc, s) => {
+  // pretend punctuation non-existent
+  doc = doc.replace(',', '')
+
+  let resultLength = Infinity
+  let resultText = ''
+
+  let trackWords = new LinkedHashTable(s.length)
+
+  let wordStart = 0
+  for (let i=0; i<doc.length; i++) {
+    let word = null
+    if (doc[i] === ' ') {
+      word = doc.slice(wordStart, i)
+    } else if (i === doc.length-1) {
+      word = doc.slice(wordStart, doc.length)
+    }
+
+    if (word) {
+      if (s.includes(word)) {
+        trackWords.add(word, wordStart)
+
+        if (trackWords.size === s.length) {
+          const start = trackWords.head.value
+          const end = trackWords.tail.value + trackWords.tail.key.length
+          const substringLength = end - start
+          if (substringLength < resultLength) {
+            resultLength = substringLength
+            resultText = doc.slice(start, end)
+          }
+        }
+      }
+  
+      wordStart = i+1
+    }
+  }
+
+  return resultText
+}
+
+// const doc = "a set of words that is complete in itself, typically containing a subject and predicate, conveying a statement, question, exclamation, or command, and consisting of a main clause and sometimes one or more subordinate clauses"
+
+const doc = "one of the car and bike and one of those"
+
+const s = ["and", "of", "one"]
+
+console.log(smallestSubarrayWithValues(doc, s))
+```
+
 ## 17. Find cycle start
 
 Interview Camp Ch 7. Homework #2.
