@@ -6,6 +6,152 @@ export const meta = {
 
 # Code Challenges
 
+## 20. Max Sliding Window
+
+Interview Camp Ch. 10 Homework #1
+
+```js
+class Node {
+  constructor(value) {
+    this.value = value
+    this.prev = null
+    this.next = null
+  }
+}
+
+class Queue {
+  constructor() {
+    this.front = null
+    this.back = null
+  }
+
+  enqueue(value) {
+    const node = new Node(value)
+    if (!this.front) {
+      this.front = this.back = node
+    } else {
+      if (this.back) {
+        this.back.prev = node
+        node.next = this.back
+      }
+      this.back = node
+    }
+  }
+
+  dequeue() {
+    if (!this.front) return
+
+    const oldFront = this.front.value
+    const newFront = this.front.prev
+
+    newFront.next = null
+    this.front = newFront
+
+    return oldFront
+  }
+
+  getFront() {
+    return this.front?.value
+  }
+
+  getBack() {
+    return this.back?.value
+  }
+}
+
+class DoubledEndedQueue {
+  constructor() {
+    this.front = null
+    this.back = null
+  }
+
+  enqueue(value) {
+    const node = new Node(value)
+    if (!this.front) {
+      this.front = this.back = node
+    } else {
+      this.back.prev = node
+      node.next = this.back
+      this.back = node
+    }
+  }
+
+  dequeue() {
+    if (!this.front) return
+
+    const oldFront = this.front.value
+    const newFront = this.front.prev
+    newFront.next = null
+    this.front = newFront
+
+    return oldFront
+  }
+
+  removeBack() {
+    if (!this.back) return
+
+    if (this.back === this.front) {
+      this.front = null
+      this.back = null
+    } else {
+      this.back = this.back.next
+    }
+  }
+
+  getFront() {
+    return this.front?.value
+  }
+
+  getBack() {
+    return this.back?.value
+  }
+}
+
+class QueueWithMax {
+  constructor() {
+    this.queue = new Queue()
+    this.maxQueue = new DoubledEndedQueue()
+  }
+
+  enqueue(value) {
+    this.queue.enqueue(value)
+    while(this.maxQueue.getBack() < value) {
+      this.maxQueue.removeBack()
+    }
+
+    this.maxQueue.enqueue(value)
+  }
+
+  dequeue() {
+    const value = this.queue.dequeue()
+    if (this.maxQueue.getFront() === value) {
+      this.maxQueue.dequeue()
+    }
+  }
+
+  findMax() {
+    return this.maxQueue.getFront()
+  }
+}
+
+const maxSlidingWindow = (arr, n) => {
+  let q = new QueueWithMax()
+
+  for (let i=0; i<arr.length; i++) {
+    q.enqueue(arr[i])
+
+    if (i >= n-1) {
+      console.log({val: arr[i], max: q.findMax()})
+
+      // for next iteration
+      q.dequeue()
+    }
+  }
+}
+const arr = [4,6,5,2,4,7]
+maxSlidingWindow(arr, 3)
+```
+
 ## 19. isPalindrome
 
 Interview Camp Ch 7. Homework #4
