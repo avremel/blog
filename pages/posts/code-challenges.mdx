@@ -6,9 +6,59 @@ export const meta = {
 
 # Code Challenges
 
+## 22. Spiral
+
+Interview Camp Ch. 12 Homework #3
+
+<Aside pTags={[
+  `Print elements of a matrix in spiral order.`
+]} />
+
+```js
+const printLayer = (a, layer, lastCol, lastRow) => {
+  if (lastCol === layer && lastRow === layer) {
+    console.log(a[lastRow][lastCol])
+  }
+
+  for (let curr = layer; curr < lastCol; curr++) {
+    console.log(a[layer][curr])
+  }
+
+  for (let curr = layer; curr < lastRow; curr++) {
+    console.log(a[curr][lastCol])
+  }
+
+  for (let curr = lastCol; curr > layer; curr--) {
+    console.log(a[lastRow][curr])
+  }
+
+  for (let curr = lastRow; curr > layer; curr--) {
+    console.log(a[curr][layer])
+  }
+}
+
+const printSpiral = a => {
+  for (let layer=0; layer<a.length / 2; layer++) {
+    let lastCol = a[0].length - 1 - layer
+    let lastRow = a.length - 1 - layer
+
+    printLayer(a, layer, lastCol, lastRow)
+  }
+}
+
+const matrix = [
+  [1, 2, 3, 4],
+  [5, 6, 7, 8],
+  [9, 10, 11, 12],
+  [13, 14, 15, 16],
+]
+
+printSpiral(matrix)
+```
+
 ## 21. ZigZag
 
-Interview Camp Ch. 10 Homework #1
+Interview Camp Ch. 12 Homework #2
 
 <Aside pTags={[
   `Print a 2D array in Diagonal ZigZag order.`
