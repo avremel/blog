@@ -6,6 +6,74 @@ export const meta = {
 
 # Code Challenges
 
+## 21. ZigZag
+
+Interview Camp Ch. 10 Homework #1
+
+<Aside pTags={[
+  `Print a 2D array in Diagonal ZigZag order.`
+]} />
+
+```js
+const atEdge = (N, x, y) => {
+  return x === 0 || x === N - 1 || y === 0 || y === N - 1
+}
+
+const printZigZag = (N, matrix) => {
+  let x = 0
+  let y = 0
+
+  let crawledEdge = false
+  let goingDown = false
+
+  while (true) {
+    console.log(matrix[x][y])
+
+    if (atEdge(N, x, y) && !crawledEdge) {
+      goingDown = !goingDown
+      if (x === N - 1) {
+        y += 1
+      }
+      else if (y === N - 1) {
+        x += 1
+      }
+      else if (x === 0) {
+        y += 1
+      }
+      else if (y === 0) {
+        x += 1
+      }
+      crawledEdge = true
+    }
+    else {
+      crawledEdge = false
+      if (goingDown) {
+        x += 1
+        y -= 1
+      } else {
+        x -= 1
+        y += 1
+      }
+    }
+
+    if (x === N || y === N) {
+      break
+    }
+  }
+}
+
+const N = 4
+
+const matrix = [
+  [1, 2, 3, 4],
+  [5, 6, 7, 8],
+  [9, 10, 11, 12],
+  [13, 14, 15, 16],
+]
+
+printZigZag(N, matrix)
+```
+
 ## 20. Max Sliding Window
 
 Interview Camp Ch. 10 Homework #1
