@@ -6,6 +6,42 @@ export const meta = {
 
 # Code Challenges
 
+## 23. Rotate by X
+
+Interview Camp Ch. 12 Homework #4
+
+<Aside pTags={[
+  `Rotate an array A by X items.`
+]} />
+
+```js
+const reverseArr = (arr, start, end) => {
+
+  while (start < end) {
+    const temp = arr[start]
+    arr[start] = arr[end]
+    arr[end] = temp
+
+    start++
+    end--
+  }
+
+  return arr
+}
+
+const rotateByX = (arr, X) => {
+  const reverseNum = X % arr.length
+
+  arr = reverseArr(arr, 0, arr.length-1)
+  arr = reverseArr(arr, 0, reverseNum-1)
+  arr = reverseArr(arr, reverseNum, arr.length-1)
+
+  return arr
+}
+
+console.log(rotateByX([1,2,3,4,5,6], 2))
+```
+
 ## 22. Spiral
 
 Interview Camp Ch. 12 Homework #3
