@@ -9,8 +9,8 @@ import css from './index.module.css'
 
 const Link = ({href, children}) => {
   return (
-    <a className='DocsMarkdown--link' href={href} target='_blank'>
-      <span className='DocsMarkdown--link-content'>
+    <a className='link' href={href} target='_blank'>
+      <span className='link-content'>
         {children}
       </span>
     </a>
@@ -18,12 +18,12 @@ const Link = ({href, children}) => {
 }
 
 const InlineCode = (props) => {
-  return <code {...props} className='InlineCode' />
+  return <code {...props} className='inline-code' />
 }
 
 const CodeBlock = ({children}) => {
   return (
-    <pre className={cn(css['code-block-wrapper'], "CodeBlock CodeBlock-scrolls-horizontally CodeBlock-is-light-in-light-theme")}>
+    <pre className={cn(css['code-block-wrapper'])}>
       <code dangerouslySetInnerHTML={{__html: hljs.highlightAuto(children).value}} />
     </pre>
   )

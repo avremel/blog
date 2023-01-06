@@ -7,9 +7,9 @@ const Layout = ({title, children}) => {
       <Head>
         <title>{title}</title>
       </Head>
-      <div className='DocsPage'>
-        <main className='DocsBody'>
-          <div className='DocsContent' page-type='document'>
+      <div className='page'>
+        <main className='body'>
+          <div className='content' page-type='document'>
             {children}
           </div>
         </main>

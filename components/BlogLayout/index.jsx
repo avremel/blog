@@ -5,7 +5,7 @@ import css from './index.module.css'
 const BlogLayout = ({meta, children}) => {
   return (
     <Layout title={meta.title}>
-      <article className='DocsMarkdown'>
+      <article className='markdown'>
         {children}
       </article>
     </Layout>
