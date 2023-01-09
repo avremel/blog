@@ -1,4 +1,39 @@
-# Algolia
+import { Aside, BlogMarkdown, CodeEmbed, PaginatorWrapper } from '../../components'
 
+export const meta = {
+  title: 'Algolia',
+}
 
+## Algolia
 
+### Issues with core offering
+- No support for facet groups.
+  - Workaround is to have groupings defined in code.
+  - But how do you know if a group has at least one facet with data? Can't loop through facets (see further "issues with frontend library").
+    - Each facet group has a data attribute with number of facets.
+    - Each facet which gets rendered and has no data, decrements that count.
+    - If count is 0, hide the group.
+    - When `uiState` updates, reset the facet group count.
+- Very limited support for pre-configured ranges.
+  - Will show ranges with 0 results, leading to dead pages
+  - No counts
+  - No multi-select
+  - Workaround to bucket ranges at index time for each range (e.g. add an attribute `price: $100-200`), but:
+    - Expensive (for indexing) and tedious.
+- Each sort requires a [virtual replica](https://www.algolia.com/doc/guides/managing-results/refine-results/sorting/in-depth/replicas/#what-are-virtual-replicas) of the index. Can get unwieldy to manage if you have ~100 sorts.
+- Rules control things like "if I'm on refrigeration page I want to see these facets". Rules are missing critical features which have been around in Endeca for 15+ years:
+  - No notion of hierarchy. If I set a rule on Refrigeration, it doesn't get applied to French Door Refrigerators by default. Has to be explicitly added.
+  - No way to set a global rule like "If you select Brand, show Series". That would have to be configured in application logic/code.
+  - Only one rule can be in effect for any given page. They can't be layered on each other.
+    - This constraint applies even when the two rules target the exact same filter. For example, there are two types of rules (Visual/Manual) which control different _consequences_. There is no way for them to coexist. This limitation seems very arbitrary.
+
+### Issues with frontend library (react-hooks)
+- All widgets must be mounted on the DOM for app state to be maintained
+  - Accordians, modals must be collapsed with CSS
+- No reliable way to loop through facets and check for facets with data
+- See https://github.com/algolia/instantsearch/discussions/5353 about both
+- Client side transition between pages with different rules (facets to show) seems to break, requires page reload
+- next/link has no native support
+- Autocomplete has no native hook integration. The integration which does exist is buggy (sometimes out of sync with main app)
+
+export default ({ children }) => <BlogMarkdown meta={meta}>{children}</BlogMarkdown>

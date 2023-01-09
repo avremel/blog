@@ -3,4 +3,5 @@
   margin-bottom: 20px;
   background-color: #1D1F200D;
   padding: 10px;
+  overflow-x: auto;
 }
