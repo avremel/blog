@@ -1,26 +1,46 @@
 import { Aside, BlogMarkdown, CodeEmbed, PaginatorWrapper } from '../../components'
 
 export const meta = {
-  title: 'Algolia',
+  title: 'Faceted search: From Endeca to Algolia',
 }
 
-## Algolia
+## Faceted Search: Endeca to Algolia
+[Faceted search](https://en.wikipedia.org/wiki/Faceted_search) has been powering e-commerce for decades. Endeca has been our go-to solution for over a decade but it's time to migrate to Algolia. Like with any migration, the replacement has some improvements and some feature regressions.
+
+First let's clarify what these solutions are at a high level:
+
+**Endeca**
+- Self-host ELT infra (Endeca Forge)
+- Self-host infra to serve traffic
+- Windows desktop application (Endeca Developer Studio) for configuration (stored internally as XML):
+  - The ELT pipline
+  - Facet groups
+  - Facets / Facet values
+  - [Precendence Rules](https://docs.oracle.com/cd/E70265_01/config.11-3/Endecaconfig/html/gscg_precedence_rules.xmlconcept_07D2A3108D044CD38274C1BCEBBA9C4C.html) (if this facet value is selected, display these facets)
+  - And more
+- Write all the UI code yourself
+
+**Algolia**
+- ETL is as simple as posting to an API
+- Algolia manages all infra (ETL and serving traffic), scales as needed
+- Web app for configuration:
+  - Configuring facets
+  - [Rules](https://www.algolia.com/doc/guides/managing-results/rules/rules-overview/)
+  - And more
+- Provides UI libraries for all popular frameworks. You can either use the widgets out of the box and customize the CSS or use them as [headless components](https://medium.com/@nirbenyair/headless-components-in-react-and-why-i-stopped-using-ui-libraries-a8208197c268). We are using the [React Hooks library](https://www.algolia.com/doc/guides/building-search-ui/what-is-instantsearch/react-hooks/) which gives us the ability to customize the UI as much as we like.
+
+**Missing features in Algolia**
+- Limited support for pre-configured ranges (for example, Price: $100 - $200):
+  - Will show ranges which have 0 results
+  - Won't show how many results per range
+  - No multi-select
+  - _Possible workaround: Bucket items at index time and treat them like facets._
+- Each sort requires a [virtual replica](https://www.algolia.com/doc/guides/managing-results/refine-results/sorting/in-depth/replicas/#what-are-virtual-replicas) of the index. Can get unwieldy to manage if you have many sorts.
+- No support for facet groups (for example, group Height, Width in a Dimensions group). They must be defined in code.
+  - When a facet group has no facets with data, hiding the group requires some DOM hackery.
 
 ### Issues with core offering
-- No support for facet groups.
-  - Workaround is to have groupings defined in code.
-  - But how do you know if a group has at least one facet with data? Can't loop through facets (see further "issues with frontend library").
-    - Each facet group has a data attribute with number of facets.
-    - Each facet which gets rendered and has no data, decrements that count.
-    - If count is 0, hide the group.
-    - When `uiState` updates, reset the facet group count.
-- Very limited support for pre-configured ranges.
-  - Will show ranges with 0 results, leading to dead pages
-  - No counts
-  - No multi-select
-  - Workaround to bucket ranges at index time for each range (e.g. add an attribute `price: $100-200`), but:
-    - Expensive (for indexing) and tedious.
-- Each sort requires a [virtual replica](https://www.algolia.com/doc/guides/managing-results/refine-results/sorting/in-depth/replicas/#what-are-virtual-replicas) of the index. Can get unwieldy to manage if you have ~100 sorts.
+
 - Rules control things like "if I'm on refrigeration page I want to see these facets". Rules are missing critical features which have been around in Endeca for 15+ years:
   - No notion of hierarchy. If I set a rule on Refrigeration, it doesn't get applied to French Door Refrigerators by default. Has to be explicitly added.
   - No way to set a global rule like "If you select Brand, show Series". That would have to be configured in application logic/code.
