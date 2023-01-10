@@ -13,3 +13,35 @@
   background: #1D1F200D;
   padding: 2px;
 }
+
+table {
+  margin: 10px 0;
+}
+
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th, td {
+  padding: 4px;
+  min-width: 250px;
+}
+
+blockquote {
+  background-color: #f3f3f4;
+}
+
+blockquote p {
+  padding: 4px;
+  font-style: italic;
+}
+
+ul {
+  margin: 4px 0;
+}
+
+p {
+  margin: 10px 0;
+}

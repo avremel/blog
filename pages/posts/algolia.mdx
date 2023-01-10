@@ -5,55 +5,57 @@ export const meta = {
 }
 
 ## Faceted Search: Endeca to Algolia
-[Faceted search](https://en.wikipedia.org/wiki/Faceted_search) has been powering e-commerce for decades. Endeca has been our go-to solution for over a decade but it's time to migrate to Algolia. Like with any migration, the replacement has some improvements and some feature regressions.
+[Faceted search](https://en.wikipedia.org/wiki/Faceted_search) has been powering e-commerce since the dawn of the internet. Endeca has been our go-to solution for close to two decades but the time is ripe for change and iNnOvAtIoN. Like with any migration, the replacement - Algolia - is gooder is some ways and badder in others.
 
-First let's clarify what these solutions are at a high level:
+|Endeca  |Algolia |
+|---|---|
+|Self-host ELT infra (Endeca Forge)|ETL is as simple as POSTing to an API|
+|Self-host infra to serve traffic|Algolia manages all infra and scales as needed|
+|Windows application (Endeca Developer Studio) for configuration|Web app for configuration|
+|Write all UI code yourself|Provides UI libraries for all popular frameworks. You can either use out-of-the-box components and customize the CSS or use [headless components](https://medium.com/@nirbenyair/headless-components-in-react-and-why-i-stopped-using-ui-libraries-a8208197c268) for extra flexibility.|
 
-**Endeca**
-- Self-host ELT infra (Endeca Forge)
-- Self-host infra to serve traffic
-- Windows desktop application (Endeca Developer Studio) for configuration (stored internally as XML):
-  - The ELT pipline
-  - Facet groups
-  - Facets / Facet values
-  - [Precendence Rules](https://docs.oracle.com/cd/E70265_01/config.11-3/Endecaconfig/html/gscg_precedence_rules.xmlconcept_07D2A3108D044CD38274C1BCEBBA9C4C.html) (if this facet value is selected, display these facets)
-  - And more
-- Write all the UI code yourself
+#### Algolia is gooder
 
-**Algolia**
-- ETL is as simple as posting to an API
-- Algolia manages all infra (ETL and serving traffic), scales as needed
-- Web app for configuration:
-  - Configuring facets
-  - [Rules](https://www.algolia.com/doc/guides/managing-results/rules/rules-overview/)
-  - And more
-- Provides UI libraries for all popular frameworks. You can either use the widgets out of the box and customize the CSS or use them as [headless components](https://medium.com/@nirbenyair/headless-components-in-react-and-why-i-stopped-using-ui-libraries-a8208197c268). We are using the [React Hooks library](https://www.algolia.com/doc/guides/building-search-ui/what-is-instantsearch/react-hooks/) which gives us the ability to customize the UI as much as we like.
+- [Rules](https://www.algolia.com/doc/guides/managing-results/rules/rules-overview/) (or [Precedence Rules](https://docs.oracle.com/cd/E70265_01/config.11-3/Endecaconfig/html/gscg_precedence_rules.xmlconcept_07D2A3108D044CD38274C1BCEBBA9C4C.html) in Endeca) is the ability to give the user a unique experience based on the the particular applied filters. For example, if the user is viewing Air Conditioners, display the BTU facet. Algolia has many more "consequences" than Endeca, like boost/bury categories, hide items, pin items, return custom data, etc.
+- [Insights](https://www.algolia.com/doc/guides/building-search-ui/going-further/send-insights-events/js/) to track user interactions and display them on a pretty dashboard.
+- [Personalization](https://www.algolia.com/doc/guides/personalization/what-is-personalization/)
+- Fully managed infra and CDN, as befitting a SaaSy offering
+- Frontend libraries to simplify building the UI
+- And more
 
-**Missing features in Algolia**
-- Limited support for pre-configured ranges (for example, Price: $100 - $200):
-  - Will show ranges which have 0 results
-  - Won't show how many results per range
-  - No multi-select
-  - _Possible workaround: Bucket items at index time and treat them like facets._
-- Each sort requires a [virtual replica](https://www.algolia.com/doc/guides/managing-results/refine-results/sorting/in-depth/replicas/#what-are-virtual-replicas) of the index. Can get unwieldy to manage if you have many sorts.
-- No support for facet groups (for example, group Height, Width in a Dimensions group). They must be defined in code.
-  - When a facet group has no facets with data, hiding the group requires some DOM hackery.
 
-### Issues with core offering
+#### Algolia is badder
 
-- Rules control things like "if I'm on refrigeration page I want to see these facets". Rules are missing critical features which have been around in Endeca for 15+ years:
-  - No notion of hierarchy. If I set a rule on Refrigeration, it doesn't get applied to French Door Refrigerators by default. Has to be explicitly added.
-  - No way to set a global rule like "If you select Brand, show Series". That would have to be configured in application logic/code.
-  - Only one rule can be in effect for any given page. They can't be layered on each other.
-    - This constraint applies even when the two rules target the exact same filter. For example, there are two types of rules (Visual/Manual) which control different _consequences_. There is no way for them to coexist. This limitation seems very arbitrary.
+Limited support for pre-configured ranges (for example, Price: $100 - $200):
+- Will show ranges which have 0 results
+- Won't show how many results per range
+- No multi-select
+- _Possible workaround: Bucket items at index time and treat them like facets._
 
-### Issues with frontend library (react-hooks)
-- All widgets must be mounted on the DOM for app state to be maintained
-  - Accordians, modals must be collapsed with CSS
-- No reliable way to loop through facets and check for facets with data
-- See https://github.com/algolia/instantsearch/discussions/5353 about both
-- Client side transition between pages with different rules (facets to show) seems to break, requires page reload
-- next/link has no native support
-- Autocomplete has no native hook integration. The integration which does exist is buggy (sometimes out of sync with main app)
+Each sort requires a [virtual replica](https://www.algolia.com/doc/guides/managing-results/refine-results/sorting/in-depth/replicas/#what-are-virtual-replicas) of the index. Can get unwieldy to manage if you have many sorts.
+
+No support for facet groups (for example, group Height, Width in a Dimensions group). Groupings must be defined in code.
+  - When a facet group has no facets with data, hiding the group requires some DOM hackery, but _is_ possible.
+
+Rules:
+- Endeca rules can be layered on each other, each triggered by different filters. Algolia only allows a single active rule at a time, even when the two rules are different types - [one Visual and the other Manual](https://www.algolia.com/doc/guides/managing-results/rules/rules-overview/in-depth/implementing-rules/#using-the-rules-dashboard).
+- Endeca rules are hierarchy-aware; I can set a rule for Refrigeration category and the rule will be applied to descendant categories. Algolia rules have no notion of hierarchy.
+
+#### Frontend libraries
+>The Search REST API is the core of Algolia Search. Around it, Algolia built a complete ecosystem, of libraries, tools, and a dashboard. You should use the official API clients and libraries to implement Algolia. They’re all open source, and the code is available on GitHub.
+
+>There’s no SLA if you use the REST API directly.
+
+Quotes from [here](https://www.algolia.com/doc/rest-api/search/). The frontend libraries are clearly the recommended path.
+
+In my experience this is both gooder and badder than not having any frontend libraries. Gooder - speeds up development and saves you a lot of "plumbing". Badder - you are at the mercy of the library API and perf.
+
+Which is a perfect segway to discuss some of the issues I've encountered with [React InstantSearch Hooks](https://www.algolia.com/doc/guides/building-search-ui/what-is-instantsearch/react-hooks/):
+- Widgets must be mounted on the DOM for application state to be maintained. See [here](https://discourse.algolia.com/t/react-retain-refinement-state-when-component-dismounts/11862/2). Say goodbye to your favorite Accordian and Modal libraries (looking at you, [RadixUI](https://www.radix-ui.com/)), it's time to roll your own CSS based solution.
+- No reliable way to iterate through facets and inspect the data (see [this discussion](https://github.com/algolia/instantsearch/discussions/5353)).
+- No native support for [Next/Link](https://nextjs.org/docs/api-reference/next/link), see [this long running issue](https://github.com/algolia/instantsearch/issues/5241).
+- Navigating to a page with a different Facet Order (controlled by Rules) always seems to break _something_. I've resorted to doing a full page reload in those scenarios (like switching categories).
+- Autocomplete doesn't have a native hook and feels tied together with the React InstantSearch Hooks using duct tape.
+- Autocomplete is sometimes out of sync with application state and is confused about the current selected category.
 
 export default ({ children }) => <BlogMarkdown meta={meta}>{children}</BlogMarkdown>
