@@ -67,7 +67,7 @@ Which is a perfect segway to discuss some of the issues I've encountered with [R
 - No reliable way to iterate through facets and inspect the data (see [this discussion](https://github.com/algolia/instantsearch/discussions/5353)).
 - No native support for [Next/Link](https://nextjs.org/docs/api-reference/next/link), see [this long running issue](https://github.com/algolia/instantsearch/issues/5241).
 - Navigating to a page with a different Facet Order (controlled by Rules) always seems to break _something_. I've resorted to doing a full page reload in those scenarios (like switching categories).
-- Autocomplete doesn't have a native hook and feels tied together with the React InstantSearch Hooks using duct tape.
+- Autocomplete doesn't have a native hook and feels tied together with React InstantSearch Hooks using duct tape.
 - Autocomplete is sometimes out of sync with application state and is confused about the current selected category.
 
 export default ({ children }) => <BlogMarkdown meta={meta}>{children}</BlogMarkdown>
