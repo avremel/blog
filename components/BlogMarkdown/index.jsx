@@ -41,11 +41,16 @@ const H2 = ({children}) => {
   )
 }
 
+const Table = ({children}) => {
+  return <div className={css['table-wrapper']}><table>{children}</table></div>
+}
+
 const components = {
   a: Link,
   inlineCode: InlineCode,
   code: CodeBlock,
   h2: H2,
+  table: Table,
 }
 
 export default function Post({meta, children}) {
