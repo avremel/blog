@@ -63,11 +63,14 @@ Quotes from [here](https://www.algolia.com/doc/rest-api/search/). The frontend l
 In my experience this is both gooder and badder than not having any frontend libraries. Gooder - speeds up development and saves you a lot of "plumbing". Badder - you are at the mercy of the library API and perf.
 
 Which is a perfect segway to discuss some of the issues I've encountered with [React InstantSearch Hooks](https://www.algolia.com/doc/guides/building-search-ui/what-is-instantsearch/react-hooks/):
+- Excessive re-renders. Hard to reason about why the library hooks are doing 5-10 re-renders for a single user selection.
 - Widgets must be mounted on the DOM for application state to be maintained. See [here](https://discourse.algolia.com/t/react-retain-refinement-state-when-component-dismounts/11862/2). Say goodbye to your favorite Accordian and Modal libraries (looking at you, [RadixUI](https://www.radix-ui.com/)), it's time to roll your own CSS based solution.
 - No reliable way to iterate through facets and inspect the data (see [this discussion](https://github.com/algolia/instantsearch/discussions/5353)).
 - No native support for [Next/Link](https://nextjs.org/docs/api-reference/next/link), see [this long running issue](https://github.com/algolia/instantsearch/issues/5241).
+  - A new [experimental package](https://www.npmjs.com/package/instantsearch-router-next-experimental) to integrate wiht NextJS was just released.
 - Navigating to a page with a different Facet Order (controlled by Rules) always seems to break _something_. I've resorted to doing a full page reload in those scenarios (like switching categories).
 - Autocomplete doesn't have a native hook and feels tied together with React InstantSearch Hooks using duct tape.
 - Autocomplete is sometimes out of sync with application state and is confused about the current selected category.
+  - _Possible workaround: Trigger a page reload for user selections (clicking on suggestions, etc). You lose client side navigation, but at least the UI is correct._ 
 
 export default ({ children }) => <BlogMarkdown meta={meta}>{children}</BlogMarkdown>
