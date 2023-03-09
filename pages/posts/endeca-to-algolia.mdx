@@ -17,19 +17,19 @@ export const meta = {
 <meta name="twitter:url" value="https://avikaminetzky.dev/posts/endeca-to-algolia" />
 
 ## Faceted Search: Endeca to Algolia
-[Faceted search](https://en.wikipedia.org/wiki/Faceted_search) has been powering e-commerce since the dawn of the internet. Endeca has been our go-to solution for close to two decades but the time is ripe for change and iNnOvAtIoN. Like with any migration, the replacement - Algolia - is gooder is some ways and badder in others.
+[Faceted search](https://en.wikipedia.org/wiki/Faceted_search) has been powering e-commerce since the dawn of the internet. Endeca has been our go-to solution for close to two decades but the time is ripe for change. As with any migration, the replacement - Algolia - is gooder is some ways and badder in others.
 
 |Endeca  |Algolia |
 |---|---|
-|Self-host ELT infra (Endeca Forge)|ETL is as simple as POSTing to an API|
+|Self-host data ingestion infra (Endeca Forge)|Data ingestion is as simple as POSTing to an API|
 |Self-host infra to serve traffic|Algolia manages all infra and scales as needed|
 |Windows application (Endeca Developer Studio) for configuration|Web app for configuration|
-|Write all UI code yourself|Provides UI libraries for all popular frameworks. You can either use out-of-the-box components and customize the CSS or use [headless components](https://medium.com/@nirbenyair/headless-components-in-react-and-why-i-stopped-using-ui-libraries-a8208197c268) for extra flexibility.|
+|Write all UI code yourself|Provides UI libraries for all popular frameworks. You can either use out-of-the-box components and customize the CSS or use [headless components](https://medium.com/@nirbenyair/headless-components-in-react-and-why-i-stopped-using-ui-libraries-a8208197c268) for added flexibility.|
 
 #### Algolia is gooder
 
-- [Rules](https://www.algolia.com/doc/guides/managing-results/rules/rules-overview/) (or [Precedence Rules](https://docs.oracle.com/cd/E70265_01/config.11-3/Endecaconfig/html/gscg_precedence_rules.xmlconcept_07D2A3108D044CD38274C1BCEBBA9C4C.html) in Endeca) is the ability to give the user a unique experience based on the the particular applied filters. For example, if the user is viewing Air Conditioners, display the BTU facet. Algolia has many more "consequences" than Endeca, like boost/bury categories, hide items, pin items, return custom data, etc.
-- [Insights](https://www.algolia.com/doc/guides/building-search-ui/going-further/send-insights-events/js/) to track user interactions and display them on a pretty dashboard.
+- [Rules](https://www.algolia.com/doc/guides/managing-results/rules/rules-overview/) (or [Precedence Rules](https://docs.oracle.com/cd/E70265_01/config.11-3/Endecaconfig/html/gscg_precedence_rules.xmlconcept_07D2A3108D044CD38274C1BCEBBA9C4C.html) in Endeca) is the ability to provide a unique user experience for a particular page. For example, if the user is searching for "range hoods", bury `ranges` and boost `range hoods`. Algolia has more rule based customizations than Endeca like boost/bury categories, hide items, pin items, return custom data, etc.
+- [Insights](https://www.algolia.com/doc/guides/building-search-ui/going-further/send-insights-events/js/) track user interactions (items viewed, filters clicked, items clicked, conversions, etc).
 - [Personalization](https://www.algolia.com/doc/guides/personalization/what-is-personalization/)
 - Fully managed infra and CDN, as befitting a SaaSy offering
 - Frontend libraries to simplify building the UI
@@ -58,7 +58,7 @@ Rules:
 
 >There’s no SLA if you use the REST API directly.
 
-Quotes from [here](https://www.algolia.com/doc/rest-api/search/). The frontend libraries are clearly the recommended path.
+Quotes from [here](https://www.algolia.com/doc/rest-api/search/). The use of their frontend libraries is clearly the recommended path.
 
 In my experience this is both gooder and badder than not having any frontend libraries. Gooder - speeds up development and saves you a lot of "plumbing". Badder - you are at the mercy of the library API and perf.
 
@@ -66,9 +66,9 @@ Which is a perfect segway to discuss some of the issues I've encountered with [R
 - Excessive re-renders. Hard to reason about why the library hooks are doing 5-10 re-renders for a single user selection.
 - Widgets must be mounted on the DOM for application state to be maintained. See [here](https://discourse.algolia.com/t/react-retain-refinement-state-when-component-dismounts/11862/2). Say goodbye to your favorite Accordian and Modal libraries (looking at you, [RadixUI](https://www.radix-ui.com/)), it's time to roll your own CSS based solution.
 - No reliable way to iterate through facets and inspect the data (see [this discussion](https://github.com/algolia/instantsearch/discussions/5353)).
-- No native support for [Next/Link](https://nextjs.org/docs/api-reference/next/link), see [this long running issue](https://github.com/algolia/instantsearch/issues/5241).
-  - _Possible workaround: A new [experimental package](https://www.npmjs.com/package/instantsearch-router-next-experimental) to integrate with NextJS was just released._
-- Navigating to a page with a different Facet Order (controlled by Rules) always seems to break _something_. I've resorted to doing a full page reload in those scenarios (like switching categories).
+- Until very recently, no native support for [Next/Link](https://nextjs.org/docs/api-reference/next/link), see [this long running issue](https://github.com/algolia/instantsearch/issues/5241). An official [package](https://www.npmjs.com/package/react-instantsearch-hooks-router-nextjs) is now available, but in my experience isn't stable.
+- Client side filtering which trigger a rule seem to cause the filter widgets to unmount, which in turn clears their selection. In these cases, I force a page reload.
+  - _Possible workaround: Force a page refresh on filters which trigger a rule change._
 - Autocomplete doesn't have a native hook and feels tied together with React InstantSearch Hooks using duct tape.
 - Autocomplete is sometimes out of sync with application state and is confused about the current selected category.
   - _Possible workaround: Trigger a page reload for user selections (clicking on suggestions, etc). You lose client side navigation, but at least the UI is correct._
