@@ -38,3 +38,11 @@ ul {
 p {
   margin: 10px 0;
 }
+
+.algolia-facet {
+  max-width: 200px !important;
+}
+
+.algolia-range-facet {
+  max-width: 100px !important;
+}
