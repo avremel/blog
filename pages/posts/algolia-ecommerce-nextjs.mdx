@@ -1,0 +1,56 @@
+import { Aside, BlogMarkdown, Image } from '../../components'
+
+export const meta = {
+  title: 'Algolia for Ecommerce + NextJS',
+}
+
+# Algolia 🤝 Ecommerce 🤝 NextJS
+
+Algolia provides tools to implement an ecommerce search experience. At its core, it consists of a) search, b) filtering, c) merchandising and d) analytics.
+
+### Search
+
+The first part of configuring search is deciding which attributes get searched and in which order ("Searcheable attributes"). For example, you might have:
+1. Brand
+2. SKU
+3. Type, Appearance
+4. Color
+
+Next, you will setup custom signals to rank records ("Ranking and Sorting"). The default ranking mechanism has:
+- `typo`: Results with more typos are demoted.
+- `words`: Number of words from the query that matched at least once.
+- `filters`: Score of filters when using filters or Rule boosts.
+- `exact`: Number of query words matching exactly.
+
+You can also add a strict sorts or custom rankings (relative boosts like Solr's [`bq` parameter](https://solr.apache.org/guide/7_6/the-dismax-query-parser.html)).
+
+Custom ranking is useful for boosting in stock, popular or new products.
+
+Strict sort is useful when you are [rolling up variants](https://www.algolia.com/doc/guides/managing-results/refine-results/grouping/how-to/item-variations/) into a single product card and want to control which variant shows up first. Otherwise, I would avoid strict sort, as it can interfere with search relevance.
+
+Debugging search relevance is intuitive and painless, thanks the Ranking popup in the dashboard which tells you exactly why a specific record ranks the way it does relative to other records.
+
+<Image src="/debug_relevance.png" alt="Debugging relevance in Algolia's dashboard" />
+
+Gone are the days when you need to debug esoteric Solr flavored parameters with a pitiful command of math. No need to configure tokenizers and ngrams either. 
+
+[See my project](https://github.com/avremel/lucene) for a very basic overview of how search relevance works.
+
+### Filtering
+
+Any attribute that will be used as a filter needs to be added to the Facets list. Filters come with counts and are searchable.
+
+Note the distinction between [facets and filters](https://www.algolia.com/doc/guides/managing-results/refine-results/faceting/#difference-between-filters-and-facets).
+
+<Image className="algolia-facet" src="/facet.png" alt="Brand filter example" />
+
+If you are rolling up variants, you will need to decide how to represent variants in filters:
+1. Have all filters reflect variant counts. This is the default.
+2. Set `facetingAfterDistinct` globally [docs](https://www.algolia.com/doc/api-reference/api-parameters/facetingAfterDistinct/). This option will only show and count filter values which are part of the primary variant.
+3. Selectively apply `afterDistinct` [docs](https://www.algolia.com/doc/api-reference/api-parameters/attributesForFaceting/#parameter-option-afterdistinct) to the filters which should reflect the primary variant. The other filters will reflect the values and counts of _all_ variants.
+
+Algolia has a [widget](https://www.algolia.com/doc/api-reference/widgets/numeric-menu/react-hooks/) to display preset ranges. The problem is that a) it's single select, b) doesn't show counts and c) will show options that lead to zero results. The recommended workaround is to create a new attribute at index time to bucket the filter values and display a regular facet.
+
+<Image className="algolia-range-facet" src="/range_facet.png" alt="Range filter example" />
+
+export default ({ children }) => <BlogMarkdown meta={meta}>{children}</BlogMarkdown>
