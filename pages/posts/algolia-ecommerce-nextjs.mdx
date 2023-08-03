@@ -52,7 +52,7 @@ If you are rolling up variants, you will need to decide how to represent variant
 Algolia has a [widget](https://www.algolia.com/doc/api-reference/widgets/numeric-menu/react-hooks/) to display preset ranges. The problem is that a) it's single select, b) doesn't show counts and c) will show options that lead to zero results. The recommended workaround is to create a new attribute at index time to bucket the filter values and display a regular facet.
 
 ### Sorting
-
+- multiple virtual replicas
 
 
 ### Merchandising
@@ -73,5 +73,9 @@ What I described is a visual rule. Confusingly there is another type of rule ("m
 - Create a conditionless rule [docs](https://www.algolia.com/doc/guides/managing-results/rules/rules-overview/?utm_medium=page_link&utm_source=dashboard#conditionless-rules)
 
 Visual and manual rules cannot coexist with the same triggers (the first rule [takes precedence](https://www.algolia.com/doc/guides/managing-results/rules/rules-overview/in-depth/rule-matching-algorithm/#precedence-logic)).
+
+Pinning with filters gets orphaned items.
+
+Can merchandise query suggestions index
 
 export default ({ children }) => <BlogMarkdown meta={meta}>{children}</BlogMarkdown>
