@@ -6,7 +6,7 @@ export const meta = {
 
 # Algolia 🤝 Ecommerce 🤝 NextJS
 
-Algolia provides tools to implement an ecommerce search experience. At its core, it consists of a) search, b) filtering, c) merchandising and d) analytics.
+A collection of notes/impressions/footguns.
 
 ### Search
 
@@ -51,6 +51,27 @@ If you are rolling up variants, you will need to decide how to represent variant
 
 Algolia has a [widget](https://www.algolia.com/doc/api-reference/widgets/numeric-menu/react-hooks/) to display preset ranges. The problem is that a) it's single select, b) doesn't show counts and c) will show options that lead to zero results. The recommended workaround is to create a new attribute at index time to bucket the filter values and display a regular facet.
 
-<Image className="algolia-range-facet" src="/range_facet.png" alt="Range filter example" />
+### Sorting
+
+
+
+### Merchandising
+
+Rule's have a rich set of features. Rules can be triggered by search term, filter or context (a user defined tag, for example mobile/desktop). It can also be limited by a date range - useful for promotions.
+
+A rule can have mulitple "strategies":
+- Pin/hide products
+- Boost/bury by any filterable attribute (category, brand, style, etc).
+- Filter results
+- Redirect
+
+What I described is a visual rule. Confusingly there is another type of rule ("manual rule") with some overlapping functionality but also has different features. A manual rule can:
+- Be triggered by detecting a facet value in a query [docs](https://www.algolia.com/doc/guides/solutions/ecommerce/filtering-and-navigation/tutorials/auto-selected-facets/)
+- Dynamically add query parameters
+- Remove/replace words
+- Replace an entire query
+- Create a conditionless rule [docs](https://www.algolia.com/doc/guides/managing-results/rules/rules-overview/?utm_medium=page_link&utm_source=dashboard#conditionless-rules)
+
+Visual and manual rules cannot coexist with the same triggers (the first rule [takes precedence](https://www.algolia.com/doc/guides/managing-results/rules/rules-overview/in-depth/rule-matching-algorithm/#precedence-logic)).
 
 export default ({ children }) => <BlogMarkdown meta={meta}>{children}</BlogMarkdown>
