@@ -1,12 +1,37 @@
 import { Aside, BlogMarkdown, Image } from '../../components'
 
 export const meta = {
-  title: 'Algolia 🤝 Ecommerce 🤝 NextJS',
+  title: 'Algolia + Ecommerce + NextJS',
 }
 
-# Algolia 🤝 Ecommerce 🤝 NextJS
+# Algolia + Ecommerce + NextJS
 
 A collection of notes/impressions/footguns.
+
+### Item Variants
+
+Many ecommerce sites will have a single product card for multiple variantions of that item like color or size. To configure that functionality, you will [need to](https://www.algolia.com/doc/guides/managing-results/refine-results/grouping/how-to/item-variations/):
+- Create a record for every variant.
+- Turn on Distinct (`distinct`) and choose an attibute to group variants (`attributeForDistinct`).
+- If you want to display meaninful information for each variant (like price, link, images), each variant will need to duplicate the data for _every_ one of it's sibling variants.
+- To control which variant shows up as the primary record, add a strict sort to Ranking and Sorting (SORT-BY `is_default_varaint`).
+
+Your data will look like:
+```js
+{
+  is_default: true,
+  group_sku: 'AB'
+  sku: 'AB1',
+  color: 'blue',
+  variants: [
+    { sku: 'AB2', color: 'grey', price: 100 },
+    { sku: 'AB3', color: 'blue', price: 120 },
+    { sku: 'AB4', color: 'red', price: 110 },
+  ]
+}
+```
+
+<span style={{ color: 'red', fontSize: '20px' }}>⚠</span> Filtering won't remove irrelevant variants from a recored. For example, if you filter by blue, the other colors will still show up, and you need to remove them in application code.
 
 ### Search
 
@@ -16,21 +41,21 @@ First you need to decide which attributes get searched and in which order ("Sear
 3. Type, Appearance
 4. Color
 
-The default ranking mechanism is:
+The default ranking mechanism is roughly:
 - `typo`: Results with more typos are demoted.
-- `words`: Number of words from the query that matched at least once.
+- `words`: Number of words in the query which match at least once.
 - `filters`: Score of filters when using filters or Rule boosts.
 - `exact`: Number of query words matching exactly.
 
 You can layer on custom signals to further influence the order of results ("Ranking and Sorting"), in two flavors:
 1. Custom rankings (relative boosts like Solr's [`bq` parameter](https://solr.apache.org/guide/7_6/the-dismax-query-parser.html)). Useful for boosting in stock, popular, new products, etc.
-2. Strict sort. Generally, I would avoid strict sort, as it overrides the default of sort-by-relevance. I did find it helpful if you are [rolling up variants](https://www.algolia.com/doc/guides/managing-results/refine-results/grouping/how-to/item-variations/) into a single product card and want to control which variant shows up first. 
+2. Strict sort. Generally you want to avoid strict sort, as it overrides sort-by-relevance. It is helpful though if you are rolling up variants and would like to control which variant is the primary one. 
 
-Debugging search relevance is intuitive and painless, thanks the Ranking popup in the dashboard which explains why a specific record ranks the way it does relative to other records.
+Debugging search relevance is intuitive and painless, thanks the ranking popup in the dashboard which explains why a specific record ranks the way it does relative to other records.
 
 <Image src="/debug_relevance.png" alt="Debugging relevance in Algolia's dashboard" />
 
-Algolia's approach to configuring and tweaking search relevance feels like it's at the right layer of abstraction. Simple to understand, sensible defaults, yet customizable. Contrast with Solr, which requires the user to fiddle with low level primitives like tokenizers, ngrams and pesky math. Debuggin search relevance in Solr requires the users to have intimate knowledge of _how_ Solr determines relevance.
+Algolia's approach to configuring and tweaking search relevance feels like it's at the right layer of abstraction. Simple to understand, sensible defaults, yet customizable. Contrast with Solr, which requires the user to fiddle with low level primitives like tokenizers, ngrams and pesky math.
 
 For Lucene based search engines, see [Relevant Search](https://www.manning.com/books/relevant-search) and my [toy search engine](https://github.com/avremel/lucene).
 
@@ -40,12 +65,14 @@ Any attribute that will be used as a filter needs to be added to the Facets list
 
 <Image className="algolia-facet" src="/facet.png" alt="Brand filter example" />
 
-If you have chosen to [roll up variants](https://www.algolia.com/doc/guides/managing-results/refine-results/grouping/how-to/item-variations/), there are a number of approaches to Filtering:
-1. Have all filters reflect variant counts. This is the default behavior.
+If you have chosen to [roll up variants](https://www.algolia.com/doc/guides/managing-results/refine-results/grouping/how-to/item-variations/), these are your options:
+1. The default behavior of having all filters reflect variant counts.
+    -  ⚠ Users will see inflated counts in filters which won't reflect the number of items on the page.
 2. Set `facetingAfterDistinct` globally [docs](https://www.algolia.com/doc/api-reference/api-parameters/facetingAfterDistinct/), to only show and count filter values which are part of the primary variant.
+    -  ⚠ Values which never show up in the primary variant for a given list of results will be ignored.
 3. Apply `afterDistinct` [docs](https://www.algolia.com/doc/api-reference/api-parameters/attributesForFaceting/#parameter-option-afterdistinct) to individual filters. Only those filters will reflect the primary variant.
 
-Algolia has a [widget](https://www.algolia.com/doc/api-reference/widgets/numeric-menu/react-hooks/) to display preset ranges. The problem is that a) it's single select, b) doesn't show counts and c) will show options that lead to zero results. The recommended workaround is to create a new attribute at index time to bucket the filter values and display a regular facet.
+⚠ Algolia has a [widget](https://www.algolia.com/doc/api-reference/widgets/numeric-menu/react-hooks/) to display preset ranges. The problem is that a) it's single select, b) doesn't show counts and c) will show options that lead to zero results. The recommended workaround is to create a new attribute at index time to bucket the filter values and display a regular facet.
 
 ### Sorting
 Each sort requires a new index which is kinda painful to manage. The recommended approach is to use [virtual replica](https://www.algolia.com/doc/guides/managing-results/refine-results/sorting/in-depth/replicas/#what-are-virtual-replicas)'s.
@@ -54,7 +81,7 @@ Beware that merchandising rules get copied over when sort indices are created an
 
 ### Merchandising
 
-Rule's have a rich set of features. Rules can be triggered by search term, filter or context (a user defined tag, for example mobile/desktop). It can also be limited by a date range - useful for promotions.
+Rule's have a rich set of features. Rules can be triggered by search term, filter or context (a user defined tag, for example mobile/desktop). It can also be limited by a date range - useful for seasonal promotions.
 
 A rule can have mulitple "strategies":
 - Pin/hide products
@@ -69,12 +96,23 @@ What I described is a visual rule. Confusingly there is another type of rule ("m
 - Replace an entire query
 - Create a conditionless rule [docs](https://www.algolia.com/doc/guides/managing-results/rules/rules-overview/?utm_medium=page_link&utm_source=dashboard#conditionless-rules)
 
-Visual and manual rules cannot coexist with the same triggers (the first rule [takes precedence](https://www.algolia.com/doc/guides/managing-results/rules/rules-overview/in-depth/rule-matching-algorithm/#precedence-logic)).
+⚠ Visual and manual rules cannot coexist with the same triggers (the first rule [takes precedence](https://www.algolia.com/doc/guides/managing-results/rules/rules-overview/in-depth/rule-matching-algorithm/#precedence-logic)).
 
-Pinning with filters gets orphaned items.
+- Pinning with filters gets orphaned items.
+- Can merchandise query suggestions index.
+- facet display (and facet values) is coupled to rules.
+- no way to display filters based on product type in result list (like endeca..)
+- alternative is to maintain facet display separately
 
-Can merchandise query suggestions index
+### Usage
 
-frontend - only include instantsearch + hooks with autocomplete on the list page!! otherwise will make network calls on every single page load!!!
+### Frontend
+
+- only include instantsearch + hooks with autocomplete on the list page!! otherwise will make network calls on every single page load!!!
+  - conditional hooks by wrapping... but can get _very_ messy
+- single hook per filter
+- never duplicate hooks
+- dont remove or add widgets (like filters) after the initial load, hide with css  if needed
+getServerState widgets/facets should match the app to avoid dupe calls
 
 export default ({ children }) => <BlogMarkdown meta={meta}>{children}</BlogMarkdown>
