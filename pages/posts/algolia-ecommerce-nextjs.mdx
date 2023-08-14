@@ -6,14 +6,12 @@ export const meta = {
 
 # Algolia + Ecommerce + NextJS
 
-A collection of notes/impressions/footguns.
-
 ### Item Variants
 
-Many ecommerce sites will have a single product card for multiple variantions of that item like color or size. To configure that functionality, you will [need to](https://www.algolia.com/doc/guides/managing-results/refine-results/grouping/how-to/item-variations/):
+Many ecommerce sites will have a product card which displays variantions of that item, like color and size. To configure that functionality, you will [need to](https://www.algolia.com/doc/guides/managing-results/refine-results/grouping/how-to/item-variations/):
 - Create a record for every variant.
 - Turn on Distinct (`distinct`) and choose an attibute to group variants (`attributeForDistinct`).
-- If you want to display meaninful information for each variant (like price, link, images), each variant will need to duplicate the data for _every_ one of it's sibling variants.
+- To display meaningful information for each variant (like price, link, images), you will need to duplicate the data for _every_ one of it's sibling variants.
 - To control which variant shows up as the primary record, add a strict sort to Ranking and Sorting (SORT-BY `is_default_varaint`).
 
 Your data will look like:
@@ -108,6 +106,11 @@ Confusingly there is another type of rule ("manual rule") with some overlapping 
 
 ### Usage
 
+### Analytics
+
+No distinction between add to cart and conversion
+Tags so metrics are meaningful (autocomplete vs list page etc)
+
 ### Frontend
 
 - only include instantsearch + hooks with autocomplete on the list page!! otherwise will make network calls on every single page load!!!
@@ -116,5 +119,9 @@ Confusingly there is another type of rule ("manual rule") with some overlapping 
 - never duplicate hooks
 - dont remove or add widgets (like filters) after the initial load, hide with css  if needed
 getServerState widgets/facets should match the app to avoid dupe calls
+- must be mounted
+-- slideouts/dialogs hidden with css
+-- any link must have a mounted filter (hide with css if no want show)
+- cant use next/router (router.push/Link) if server side props change which trigger change in hooks
 
 export default ({ children }) => <BlogMarkdown meta={meta}>{children}</BlogMarkdown>
