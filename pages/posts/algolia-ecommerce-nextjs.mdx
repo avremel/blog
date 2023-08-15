@@ -75,7 +75,7 @@ If you have chosen to [roll up variants](https://www.algolia.com/doc/guides/mana
 ### Sorting
 Each sort requires a new ([virtual](https://www.algolia.com/doc/guides/managing-results/refine-results/sorting/in-depth/replicas/#what-are-virtual-replicas)) index. It can be hard to manange if you have many of them.
 
-⚠ Merchandising rules (and more) get copied over to new sort indices and can potentially interfere with sorting. Make sure to remove them if nescessary.
+⚠ Merchandising rules (and more) get copied over to new sort indices and can potentially interfere with sorting. Make sure to remove them if necessary.
 
 ### Merchandising
 
@@ -95,7 +95,7 @@ A rule can have multiple consequences:
 
 Keep in mind that:
 1. Rules have no notion of hierarchy. A sub-category will not inherit from a rule from its parent category.
-2. Only one rule will match at a time. You can't have one rule control pinnning and another control boosting.
+2. Only one rule will match at a time. You can't have one rule control pinnning and another control boosting. [Rule precedence logic](https://www.algolia.com/doc/guides/managing-results/rules/rules-overview/in-depth/rule-matching-algorithm/#precedence-logic) arbitrates which rule gets actived.
 
 ⚠ Because of these contraints, whenever you have a general rule (for example, `in_stock = true`) with a bunch of consequences and a more specific rule (for example, `in_stock = true AND color = 'green`) with an additional consequence, you will need to copy over all the consequences from the general rule to the more specific rule.
 
@@ -110,14 +110,27 @@ Confusingly there is another type of rule ("manual rule") with some overlapping 
 - Replace an entire query
 - Create a conditionless rule ([docs](https://www.algolia.com/doc/guides/managing-results/rules/rules-overview/?utm_medium=page_link&utm_source=dashboard#conditionless-rules))
 
-⚠ Visual and manual rules cannot coexist for the same triggers ([rule precedence logic](https://www.algolia.com/doc/guides/managing-results/rules/rules-overview/in-depth/rule-matching-algorithm/#precedence-logic)).
-
-### Usage
+⚠ Visual and manual rules cannot coexist for the same triggers, so you will have to choose one or the other. 
 
 ### Analytics
 
-No distinction between add to cart and conversion
-Tags so metrics are meaningful (autocomplete vs list page etc)
+Algolia provides a ton of data about how a user interacts with search:
+- Which categeries were visited
+- Which filters were clicked on
+- Top search terms
+- Searches without clicks
+- Searches without results
+- Click through rate
+- Conversion rate
+  - ⚠ There is no distinction between add-to-cart and a purchase. They all get lumped together. 
+
+You can further enrich the data by providing custom `analyticsTags` ([docs](https://www.algolia.com/doc/api-reference/api-parameters/analyticsTags/)). For example:
+  - Tag which queries are coming from autocomplete or from the list page.
+  - Tag queries by category page.
+  - A/B test a new user experience.
+
+<!-- 
+### Usage
 
 ### Frontend
 
@@ -132,6 +145,6 @@ getServerState widgets/facets should match the app to avoid dupe calls
 -- any link must have a mounted filter (hide with css if no want show)
 - cant use next/router (router.push/Link) if server side props change which trigger change in hooks
 
-### security
+### security -->
 
 export default ({ children }) => <BlogMarkdown meta={meta}>{children}</BlogMarkdown>
