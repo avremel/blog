@@ -29,7 +29,7 @@ Your data will look like:
 }
 ```
 
-<span style={{ color: 'red', fontSize: '20px' }}>⚠</span> Filtering won't remove irrelevant variants from a recored. For example, if you filter by blue, the other colors will still show up, and you need to remove them in application code.
+⚠ Filtering won't remove irrelevant variants from a recored. For example, if you filter by blue, the other colors will still show up, and you need to remove them with application code.
 
 ### Search
 
@@ -63,46 +63,54 @@ Any attribute that will be used as a filter needs to be added to the Facets list
 
 <Image className="algolia-facet" src="/facet.png" alt="Brand filter example" />
 
-If you have chosen to [roll up variants](https://www.algolia.com/doc/guides/managing-results/refine-results/grouping/how-to/item-variations/), these are your options:
+If you have chosen to [roll up variants](https://www.algolia.com/doc/guides/managing-results/refine-results/grouping/how-to/item-variations/), your options are:
 1. The default behavior of having all filters reflect variant counts.
     -  ⚠ Users will see inflated counts in filters which won't reflect the number of items on the page.
-2. Set `facetingAfterDistinct` globally [docs](https://www.algolia.com/doc/api-reference/api-parameters/facetingAfterDistinct/), to only show and count filter values which are part of the primary variant.
-    -  ⚠ Values which never show up in the primary variant for a given list of results will be ignored.
+2. Set `facetingAfterDistinct` globally ([docs](https://www.algolia.com/doc/api-reference/api-parameters/facetingAfterDistinct/)) to only show and count filter values which are part of the primary variant.
+    -  ⚠ Values which don't show up as a primary variant for a given set of results will be ignored.
 3. Apply `afterDistinct` [docs](https://www.algolia.com/doc/api-reference/api-parameters/attributesForFaceting/#parameter-option-afterdistinct) to individual filters. Only those filters will reflect the primary variant.
 
 ⚠ Algolia has a [widget](https://www.algolia.com/doc/api-reference/widgets/numeric-menu/react-hooks/) to display preset ranges. The problem is that a) it's single select, b) doesn't show counts and c) will show options that lead to zero results. The recommended workaround is to create a new attribute at index time to bucket the filter values and display a regular facet.
 
 ### Sorting
-Each sort requires a new index which is kinda painful to manage. The recommended approach is to use [virtual replica](https://www.algolia.com/doc/guides/managing-results/refine-results/sorting/in-depth/replicas/#what-are-virtual-replicas)'s.
+Each sort requires a new ([virtual](https://www.algolia.com/doc/guides/managing-results/refine-results/sorting/in-depth/replicas/#what-are-virtual-replicas)) index. It can be hard to manange if you have many of them.
 
-Beware that merchandising rules get copied over when sort indices are created and can potentially interfere with sorting.
+⚠ Merchandising rules (and more) get copied over to new sort indices and can potentially interfere with sorting. Make sure to remove them if nescessary.
 
 ### Merchandising
 
-Rule's have a rich set of features. Rules can be triggered by search term, filter or context (a user defined tag, for example mobile/desktop). It can also be limited by a date range - useful for seasonal promotions.
+#### Visual Rules
 
-A rule can have mulitple "strategies":
+Merchandising rules come with a rich set of features. Rules can be triggered by a search term, filter or a context (for example mobile/desktop). It can also be limited by a date range - useful for seasonal promotions.
+
+The query suggestion index can be merchandised as well.
+
+A rule can have multiple consequences:
 - Pin/hide products
 - Boost/bury by any filterable attribute (category, brand, style, etc).
 - Filter results
 - Redirect
+- Control which filters should display
+- Control how filter values should display (pin, sort, etc)
 
-What I described up until now is called a visual rule.
+Rules have no notion of hierarchy. A sub-category will not inherit from a rule from its parent category.
 
-Confusingly there is another type of rule ("manual rule") with some overlapping functionality but also has different features. A manual rule can:
-- Be triggered by detecting a facet value in a query [docs](https://www.algolia.com/doc/guides/solutions/ecommerce/filtering-and-navigation/tutorials/auto-selected-facets/)
+Only one rule will match at a time. You can't have one rule control pinnning and another control boosting.
+
+⚠ In my experience, coupling filter display to merchandising rules can become unwieldly to manage. For example, if you setup a rule to display a color filter for men's clothing, but have another rule to pin an item if a user is filtering by in stock mens clothing. You now need to duplicate the filter display rule for the more specific rule.
+
+⚠ Let's say have a trigger of `in_stock = true` which pins 10 items to the top of a list. If 3 of the items go out of stock, their positions will become "orphaned" and be filled by any item. Ideally, the remaining 7 items would become position 1 - 7.
+
+#### Manual Rules
+
+Confusingly there is another type of rule ("manual rule") with some overlapping functionality but also different features. A manual rule can:
+- Be triggered by detecting a facet value in a query ([docs](https://www.algolia.com/doc/guides/solutions/ecommerce/filtering-and-navigation/tutorials/auto-selected-facets/))
 - Dynamically add query parameters
 - Remove/replace words
 - Replace an entire query
-- Create a conditionless rule [docs](https://www.algolia.com/doc/guides/managing-results/rules/rules-overview/?utm_medium=page_link&utm_source=dashboard#conditionless-rules)
+- Create a conditionless rule ([docs](https://www.algolia.com/doc/guides/managing-results/rules/rules-overview/?utm_medium=page_link&utm_source=dashboard#conditionless-rules))
 
-⚠ Visual and manual rules cannot coexist with the same triggers (the first rule [takes precedence](https://www.algolia.com/doc/guides/managing-results/rules/rules-overview/in-depth/rule-matching-algorithm/#precedence-logic)).
-
-- Pinning with filters gets orphaned items.
-- Can merchandise query suggestions index.
-- facet display (and facet values) is coupled to rules.
-- no way to display filters based on product type in result list (like endeca..)
-- alternative is to maintain facet display separately
+⚠ Visual and manual rules cannot coexist for the same triggers ([rule precedence logic](https://www.algolia.com/doc/guides/managing-results/rules/rules-overview/in-depth/rule-matching-algorithm/#precedence-logic)).
 
 ### Usage
 
@@ -123,5 +131,7 @@ getServerState widgets/facets should match the app to avoid dupe calls
 -- slideouts/dialogs hidden with css
 -- any link must have a mounted filter (hide with css if no want show)
 - cant use next/router (router.push/Link) if server side props change which trigger change in hooks
+
+### security
 
 export default ({ children }) => <BlogMarkdown meta={meta}>{children}</BlogMarkdown>
