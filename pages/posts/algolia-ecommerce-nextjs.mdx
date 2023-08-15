@@ -93,13 +93,13 @@ A rule can have multiple consequences:
 - Control which filters should display
 - Control how filter values should display (pin, sort, etc)
 
-Rules have no notion of hierarchy. A sub-category will not inherit from a rule from its parent category.
+Keep in mind that:
+1. Rules have no notion of hierarchy. A sub-category will not inherit from a rule from its parent category.
+2. Only one rule will match at a time. You can't have one rule control pinnning and another control boosting.
 
-Only one rule will match at a time. You can't have one rule control pinnning and another control boosting.
+⚠ Because of these contraints, whenever you have a general rule (for example, `in_stock = true`) with a bunch of consequences and a more specific rule (for example, `in_stock = true AND color = 'green`) with an additional consequence, you will need to copy over all the consequences from the general rule to the more specific rule.
 
-⚠ In my experience, coupling filter display to merchandising rules can become unwieldly to manage. For example, if you setup a rule to display a color filter for men's clothing, but have another rule to pin an item if a user is filtering by in stock mens clothing. You now need to duplicate the filter display rule for the more specific rule.
-
-⚠ Let's say have a trigger of `in_stock = true` which pins 10 items to the top of a list. If 3 of the items go out of stock, their positions will become "orphaned" and be filled by any item. Ideally, the remaining 7 items would become position 1 - 7.
+⚠ In some scenarios, you will need to actively monitor pinned items: If you have a filter trigger (for example, `in_stock = true`) which pins 10 items to the top of a list and some items go out of stock, their positions will become "orphaned" and be filled by random items. There is no automatic way to keep all the pinned items at the top of the list. 
 
 #### Manual Rules
 
