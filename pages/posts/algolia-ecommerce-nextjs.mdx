@@ -1,4 +1,4 @@
-import { Aside, BlogMarkdown, Image } from '../../components'
+import { BlogMarkdown, Image } from '../../components'
 
 export const meta = {
   title: 'Algolia + Ecommerce + NextJS',
@@ -67,7 +67,7 @@ Debugging search relevance is intuitive and painless, thanks the ranking popup i
 Algolia's approach to configuring and tweaking search relevance feels like it's at the right layer of abstraction. Simple to understand, sensible defaults, yet customizable. Contrast with Solr/Elastic Search, which requires the user to fiddle with low level primitives like tokenizers, ngrams and pesky math.
 
 <aside style={{ background: '#1D1F200D', padding: '10px' }}>
-  To understand the mechanics of Lucene based search engines, see <a target="_blank" href="https://www.manning.com/books/relevant-search">Relevant Search</a> and my <a target="_blank" href="https://github.com/avremel/lucene">toy search engine</a>.
+  To understand the mechanics of Lucene based search engines, see <a target="_blank" href="https://www.manning.com/books/relevant-search">Relevant Search</a> and my <a target="_blank" href="https://github.com/avremel/lucene">demo search engine</a>.
 </aside>
 
 ### Filtering
@@ -141,16 +141,29 @@ Algolia provides a ton of data about how a user interacts with search:
 - Searches without results
 - Click through rate
 - Conversion rate
-  - ⚠ There is no distinction between add-to-cart and a purchase. They all get lumped together. 
+
+⚠ Conversions can't differntiate between add-to-cart and a purchase. Ideally, they would be separate events. 
 
 You can further enrich the data by providing custom `analyticsTags` ([docs](https://www.algolia.com/doc/api-reference/api-parameters/analyticsTags/)). For example:
   - Tag which queries are coming from autocomplete or from the list page.
   - Tag queries by category page.
   - A/B test a new user experience.
 
+Provides for providing insight into how users are engaging with your website, Algolia uses these signals for [dynamic reranking](https://www.algolia.com/doc/guides/algolia-ai/re-ranking/), [personalization](https://www.algolia.com/doc/guides/personalization/what-is-personalization/) and [Recommend](https://www.algolia.com/doc/guides/algolia-recommend/overview/).
+
 ### Frontend Library
 
+>The Search REST API is the core of Algolia Search. Around it, Algolia built a complete ecosystem, of libraries, tools, and a dashboard. You should use the official API clients and libraries to implement Algolia. They're all open source, and the code is available on GitHub.
 
+>There's no SLA if you use the REST API directly.
+
+Quotes from [here](https://www.algolia.com/doc/rest-api/search/).
+
+The offical clients come with per-session in-memory [caching](https://www.algolia.com/doc/api-client/getting-started/customize/javascript/?client=javascript#caching-requests-and-responses), network retries for flakey connections and much more.
+
+⚠ You may be tempted to call the API's directly to cache responses and save on usage costs. However, besides for losing out on all the functionality these clients provide, you will lose out on analytics, which are an important component of the product.
+
+[React InstantSearch Hooks](https://www.algolia.com/doc/guides/building-search-ui/what-is-instantsearch/react/#using-hooks)
 
 <!-- 
 ### Usages
