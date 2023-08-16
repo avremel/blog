@@ -49,6 +49,21 @@ p {
   }
 }
 
+.algolia-variants {
+  max-width: 300px;
+  float: right;
+}
+
+@media (max-width: 700px) {
+  .algolia-variants {
+    max-width: revert;
+    float: revert;
+    width: 100%;
+    text-align: center;
+    margin: 10px 0;
+  }
+}
+
 .algolia-range-facet {
   max-width: 100px !important;
 }
