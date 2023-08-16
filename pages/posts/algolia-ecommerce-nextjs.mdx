@@ -142,7 +142,7 @@ Algolia provides a ton of data about how a user interacts with search:
 - Click through rate
 - Conversion rate
 
-⚠ Conversions can't differntiate between add-to-cart and a purchase. Ideally, they would be separate events. 
+⚠ Conversions don't diffrentiate between add-to-cart and a purchase. Ideally, they would be separate events. 
 
 You can further enrich the data by providing custom `analyticsTags` ([docs](https://www.algolia.com/doc/api-reference/api-parameters/analyticsTags/)). For example:
   - Tag which queries are coming from autocomplete or from the list page.
@@ -152,6 +152,8 @@ You can further enrich the data by providing custom `analyticsTags` ([docs](http
 Provides for providing insight into how users are engaging with your website, Algolia uses these signals for [dynamic reranking](https://www.algolia.com/doc/guides/algolia-ai/re-ranking/), [personalization](https://www.algolia.com/doc/guides/personalization/what-is-personalization/) and [Recommend](https://www.algolia.com/doc/guides/algolia-recommend/overview/).
 
 ### Frontend Library
+
+#### Why use an official client
 
 >The Search REST API is the core of Algolia Search. Around it, Algolia built a complete ecosystem, of libraries, tools, and a dashboard. You should use the official API clients and libraries to implement Algolia. They're all open source, and the code is available on GitHub.
 
