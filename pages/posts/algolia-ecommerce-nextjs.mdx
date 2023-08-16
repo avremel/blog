@@ -8,32 +8,43 @@ export const meta = {
 
 ### Item Variants
 
-Many ecommerce sites will have a product card which displays variantions of that item, like color and size. To configure that functionality, you will [need to](https://www.algolia.com/doc/guides/managing-results/refine-results/grouping/how-to/item-variations/):
-- Create a record for every variant.
+Many ecommerce sites will have a product card which displays variantions of an item like color and size. To setup, you will [need to](https://www.algolia.com/doc/guides/managing-results/refine-results/grouping/how-to/item-variations/):
+- Create a record for each variant.
 - Turn on Distinct (`distinct`) and choose an attibute to group variants (`attributeForDistinct`).
-- To display meaningful information for each variant (like price, link, images), you will need to duplicate the data for _every_ one of it's sibling variants.
-- To control which variant shows up as the primary record, add a strict sort to Ranking and Sorting (SORT-BY `is_default_varaint`).
+- To display meaningful information for each variant - like price and an image - you will need to duplicate the data so that each variant record contains data for _every_ one of it's siblings.
+- To control which variant shows up as the primary record, add a strict sort to Ranking and Sorting (SORT BY `is_default_varaint`).
 
-Your data will look like:
-```js
-{
-  is_default: true,
-  group_sku: 'AB'
-  sku: 'AB1',
-  color: 'blue',
-  variants: [
-    { sku: 'AB2', color: 'grey', price: 100 },
-    { sku: 'AB3', color: 'blue', price: 120 },
-    { sku: 'AB4', color: 'red', price: 110 },
-  ]
-}
+Your data will look like something like:
+```json
+[
+  {
+    "is_default": true,
+    "group_sku": "AB",
+    "sku": "AB1",
+    "color": "blue",
+    "variants": [
+      { "sku": "AB1", "color": "blue", "price": 100 },
+      { "sku": "AB2", "color": "yellow", "price": 100 },
+    ]
+  },
+  {
+    "is_default": false,
+    "group_sku": 'AB'
+    "sku": "AB2",
+    "color": "yellow",
+    "variants": [
+      { "sku": "AB1", "color": "blue", "price": 100 },
+      { "sku": "AB2", "color": "yellow", "price": 100 },
+    ]
+  }
+]
 ```
 
-⚠ Filtering won't remove irrelevant variants from a recored. For example, if you filter by blue, the other colors will still show up, and you need to remove them with application code.
+⚠ Filtering won't remove irrelevant variants from a recored. For example, if you filter by blue, the other colors will still show up. You'll need to remove them with application code.
 
 ### Search
 
-First you need to decide which attributes get searched and in which order ("Searcheable attributes"). A typical example might be:
+You choose which attributes get searched and in which order ("Searcheable attributes"). A typical example might be:
 1. Brand
 2. SKU
 3. Type, Appearance
@@ -47,43 +58,47 @@ The default ranking mechanism is roughly:
 
 You can layer on custom signals to further influence the order of results ("Ranking and Sorting"), in two flavors:
 1. Custom rankings (relative boosts like Solr's [`bq` parameter](https://solr.apache.org/guide/7_6/the-dismax-query-parser.html)). Useful for boosting in stock, popular, new products, etc.
-2. Strict sort. Generally you want to avoid strict sort, as it overrides sort-by-relevance. It is helpful though if you are rolling up variants and would like to control which variant is the primary one. 
+2. Strict sort. Generally you want to avoid strict sort, as it overrides sort-by-relevance. One exception is if you are rolling up variants and would like to control which variant is the primary one. 
 
 Debugging search relevance is intuitive and painless, thanks the ranking popup in the dashboard which explains why a specific record ranks the way it does relative to other records.
 
 <Image src="/debug_relevance.png" alt="Debugging relevance in Algolia's dashboard" />
 
-Algolia's approach to configuring and tweaking search relevance feels like it's at the right layer of abstraction. Simple to understand, sensible defaults, yet customizable. Contrast with Solr, which requires the user to fiddle with low level primitives like tokenizers, ngrams and pesky math.
+Algolia's approach to configuring and tweaking search relevance feels like it's at the right layer of abstraction. Simple to understand, sensible defaults, yet customizable. Contrast with Solr/Elastic Search, which requires the user to fiddle with low level primitives like tokenizers, ngrams and pesky math.
 
-For Lucene based search engines, see [Relevant Search](https://www.manning.com/books/relevant-search) and my [toy search engine](https://github.com/avremel/lucene).
+<aside style={{ background: '#1D1F200D', padding: '10px' }}>
+  To understand the mechanics of Lucene based search engines, see <a target="_blank" href="https://www.manning.com/books/relevant-search">Relevant Search</a> and my <a target="_blank" href="https://github.com/avremel/lucene">toy search engine</a>.
+</aside>
 
 ### Filtering
 
-Any attribute that will be used as a filter needs to be added to the Facets list. Filters come with counts and are searchable.
+<div>
+  <div>Any attribute that will be used as a filter needs to be added to the Facets list. Filters come with counts and are searchable.</div>
 
-<Image className="algolia-facet" src="/facet.png" alt="Brand filter example" />
+  <img className="algolia-facet" src="/facet.png" alt="Brand filter example" style={{ marginLeft: '10px', float: 'right' }} />
+</div>
 
 If you have chosen to [roll up variants](https://www.algolia.com/doc/guides/managing-results/refine-results/grouping/how-to/item-variations/), your options are:
 1. The default behavior of having all filters reflect variant counts.
     -  ⚠ Users will see inflated counts in filters which won't reflect the number of items on the page.
 2. Set `facetingAfterDistinct` globally ([docs](https://www.algolia.com/doc/api-reference/api-parameters/facetingAfterDistinct/)) to only show and count filter values which are part of the primary variant.
     -  ⚠ Values which don't show up as a primary variant for a given set of results will be ignored.
-3. Apply `afterDistinct` [docs](https://www.algolia.com/doc/api-reference/api-parameters/attributesForFaceting/#parameter-option-afterdistinct) to individual filters. Only those filters will reflect the primary variant.
+3. Apply `afterDistinct` ([docs](https://www.algolia.com/doc/api-reference/api-parameters/attributesForFaceting/#parameter-option-afterdistinct)) to individual filters. Only those filters will reflect the primary variant.
 
 ⚠ Algolia has a [widget](https://www.algolia.com/doc/api-reference/widgets/numeric-menu/react-hooks/) to display preset ranges. The problem is that a) it's single select, b) doesn't show counts and c) will show options that lead to zero results. The recommended workaround is to create a new attribute at index time to bucket the filter values and display a regular facet.
 
 ### Sorting
-Each sort requires a new ([virtual](https://www.algolia.com/doc/guides/managing-results/refine-results/sorting/in-depth/replicas/#what-are-virtual-replicas)) index. It can be hard to manange if you have many of them.
+Each sort requires a new ([virtual](https://www.algolia.com/doc/guides/managing-results/refine-results/sorting/in-depth/replicas/#what-are-virtual-replicas)) index. For example, you need an index for price ascending _and_ price descending.
 
-⚠ Merchandising rules (and more) get copied over to new sort indices and can potentially interfere with sorting. Make sure to remove them if necessary.
+⚠ Merchandising rules (and other settings) get copied over to new sort indices and can potentially interfere with sorting. Make sure to remove them as needed.
 
 ### Merchandising
 
-#### Visual Rules
+#### Rules
 
-Merchandising rules come with a rich set of features. Rules can be triggered by a search term, filter or a context (for example mobile/desktop). It can also be limited by a date range - useful for seasonal promotions.
+Merchandising rules come with a rich set of features. Rules can be triggered by a search term, filter or a context (for example mobile/desktop). It can also be limited by a date range which is useful for seasonal promotions.
 
-The query suggestion index can be merchandised as well.
+Conveniently, the query suggestion index can be merchandised as well.
 
 A rule can have multiple consequences:
 - Pin/hide products
@@ -97,20 +112,24 @@ Keep in mind that:
 1. Rules have no notion of hierarchy. A sub-category will not inherit from a rule from its parent category.
 2. Only one rule will match at a time. You can't have one rule control pinnning and another control boosting. [Rule precedence logic](https://www.algolia.com/doc/guides/managing-results/rules/rules-overview/in-depth/rule-matching-algorithm/#precedence-logic) arbitrates which rule gets actived.
 
-⚠ Because of these contraints, whenever you have a general rule (for example, `in_stock = true`) with a bunch of consequences and a more specific rule (for example, `in_stock = true AND color = 'green`) with an additional consequence, you will need to copy over all the consequences from the general rule to the more specific rule.
+Because of these contraints, if you have a general rule (for example, `in_stock = true`) with a bunch of consequences and a more specific rule (for example, `in_stock = true AND color = 'green`) with an additional consequence, you will need to copy over the consequences from the general rule to the more specific rule.
+
+I prefer to not use rules for configuring filter display logic. Filter display is rarely modified and is no big deal to roll-your-own.
 
 ⚠ In some scenarios, you will need to actively monitor pinned items: If you have a filter trigger (for example, `in_stock = true`) which pins 10 items to the top of a list and some items go out of stock, their positions will become "orphaned" and be filled by random items. There is no automatic way to keep all the pinned items at the top of the list. 
 
 #### Manual Rules
 
-Confusingly there is another type of rule ("manual rule") with some overlapping functionality but also different features. A manual rule can:
+The previous section described "visual" rules.
+
+Confusingly there is another type of rule - "manual rule" - with some overlapping functionality but also different features. A manual rule can:
 - Be triggered by detecting a facet value in a query ([docs](https://www.algolia.com/doc/guides/solutions/ecommerce/filtering-and-navigation/tutorials/auto-selected-facets/))
 - Dynamically add query parameters
 - Remove/replace words
 - Replace an entire query
 - Create a conditionless rule ([docs](https://www.algolia.com/doc/guides/managing-results/rules/rules-overview/?utm_medium=page_link&utm_source=dashboard#conditionless-rules))
 
-⚠ Visual and manual rules cannot coexist for the same triggers, so you will have to choose one or the other. 
+⚠ Visual and manual rules cannot coexist for the same triggers, so you will have to choose one or the other.
 
 ### Analytics
 
@@ -128,6 +147,10 @@ You can further enrich the data by providing custom `analyticsTags` ([docs](http
   - Tag which queries are coming from autocomplete or from the list page.
   - Tag queries by category page.
   - A/B test a new user experience.
+
+### Frontend Library
+
+
 
 <!-- 
 ### Usages

@@ -40,7 +40,13 @@ p {
 }
 
 .algolia-facet {
-  max-width: 200px !important;
+  max-width: 230px !important;
+}
+
+@media (max-width: 700px) {
+  .algolia-facet {
+    max-width: 150px !important;
+  }
 }
 
 .algolia-range-facet {

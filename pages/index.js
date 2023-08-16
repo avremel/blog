@@ -5,9 +5,9 @@ const Home = () => {
   return (
     <Layout title='Avi Kaminetzky - Blog'>
       <ul>
-        {/* <li><a href="/posts/algolia-sanity">Algolia 🤝 Sanity</a></li>
-        <li><a href="/posts/endeca-to-algolia">Faceted search: From Endeca to Algolia</a></li> */}
-        <li><a href="/posts/algolia-ecommerce-nextjs">Algolia</a></li>
+        <li><a href="/posts/algolia-ecommerce-nextjs">Algolia + Ecommerce + NextJS</a></li>
+        <li><a target="_blank" href="https://github.com/avremel/lucene">Simple Search Engine</a></li>
+        <li><a target="_blank" href="https://medium.com/@avremelk/solr-gottchas-a-tutorial-a953c8b3e775">Solr + Python — A Tutorial</a></li>
         <li><a href="/posts/react-flavored-js">React Flavored Javascript</a></li>
       </ul>
 
