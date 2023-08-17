@@ -2,9 +2,14 @@
   word-wrap: break-word;
 }
 
-.inline-code {
+code {
   background: #1D1F200D;
   padding: 2px;
+}
+
+pre > code {
+  display: grid;
+  padding: 10px;
 }
 
 table {

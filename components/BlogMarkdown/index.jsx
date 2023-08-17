@@ -2,9 +2,6 @@ import { MDXProvider } from '@mdx-js/react'
 import cn from 'classnames'
 import { BlogLayout } from '..'
 import slugify from '../../utils/slugify'
-import hljs from 'highlight.js/lib/core';
-import javascript from 'highlight.js/lib/languages/javascript';
-hljs.registerLanguage('javascript', javascript);
 import css from './index.module.css'
 
 const Link = ({href, children}) => {
@@ -21,13 +18,9 @@ const InlineCode = (props) => {
   return <code {...props} className='inline-code' />
 }
 
-const CodeBlock = ({children}) => {
-  return (
-    <pre className={cn(css['code-block-wrapper'])}>
-      <code dangerouslySetInnerHTML={{__html: hljs.highlightAuto(children).value}} />
-    </pre>
-  )
-}
+const Pre = (props) => <pre className={cn(css['code-block-wrapper'])} {...props} />
+
+const Code = ({children}) => <code dangerouslySetInnerHTML={{__html: hljs.highlightAuto(children).value}} />
 
 const H2 = ({children}) => {
   const id = `${slugify(children)}`
@@ -48,7 +41,8 @@ const Table = ({children}) => {
 const components = {
   a: Link,
   inlineCode: InlineCode,
-  code: CodeBlock,
+  // pre: Pre,
+  // code: Code,
   h2: H2,
   table: Table,
 }

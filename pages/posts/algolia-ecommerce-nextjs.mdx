@@ -36,7 +36,7 @@ Your data will look like something like:
   },
   {
     "is_default": false,
-    "group_sku": 'AB'
+    "group_sku": "AB",
     "sku": "AB2",
     "color": "yellow",
     "variants": [
@@ -199,10 +199,13 @@ Another consequence is that in order to get server-side-rendering (SSR) working 
 
 🔸 Since you are running your app server side solely to get back the Algolia state, you only care about mounting Algolia hooks and can avoid rendering anything else.
 
-<!-- 
 ### Usages
 
+debounce autocomplete
+
 ### Frontend
+
+what is autocomplete
 
 - only include instantsearch + hooks with autocomplete on the list page!! otherwise will make network calls on every single page load!!!
   - conditional hooks by wrapping... but can get _very_ messy
@@ -210,11 +213,8 @@ Another consequence is that in order to get server-side-rendering (SSR) working 
 - never duplicate hooks
 - dont remove or add widgets (like filters) after the initial load, hide with css  if needed
 getServerState widgets/facets should match the app to avoid dupe calls
-- must be mounted
--- slideouts/dialogs hidden with css
--- any link must have a mounted filter (hide with css if no want show)
 - cant use next/router (router.push/Link) if server side props change which trigger change in hooks
 
-### security -->
+### security
 
 export default ({ children }) => <BlogMarkdown meta={meta}>{children}</BlogMarkdown>
