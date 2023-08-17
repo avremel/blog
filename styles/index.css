@@ -1,15 +1,13 @@
-.markdown {
-  word-wrap: break-word;
-}
-
 code {
   background: #1D1F200D;
   padding: 2px;
 }
 
 pre > code {
+  background: #1D1F200D;
   display: grid;
   padding: 10px;
+  border-radius: 6px;
 }
 
 table {

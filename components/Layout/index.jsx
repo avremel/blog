@@ -1,9 +1,8 @@
 import React from 'react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import css from './index.module.css'
 
-const Layout = ({title, children}) => {
+const Layout = ({ title, children }) => {
   const { pathname } = useRouter()
 
   return (
@@ -11,17 +10,20 @@ const Layout = ({title, children}) => {
       <Head>
         <title>{title}</title>
       </Head>
-      <div className={css.page}>
+      <div>
         {pathname !== '/' && (
-          <nav>
-            <a href="/">Home</a>
+          <nav className="mb-3">
+            <a
+              className="border border-gray-200 bg-gray-200 text-gray-700 text-sm rounded-md px-4 py-1 transition duration-500 ease select-none hover:bg-gray-300 focus:outline-none focus:shadow-outline"
+              href="/"
+            >
+              ← Back
+            </a>
           </nav>
         )}
 
-        <main className='body'>
-          <div className='content' page-type='document'>
-            {children}
-          </div>
+        <main>
+          <div page-type="document">{children}</div>
         </main>
       </div>
     </>
