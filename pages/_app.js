@@ -39,7 +39,7 @@ const LI = (props) => <li {...props} className="mx-6 my-1 list-disc" />
 
 const Table = ({ children }) => {
   return (
-    <div className={css['table-wrapper']}>
+    <div className="">
       <table>{children}</table>
     </div>
   )
