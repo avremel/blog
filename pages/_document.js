@@ -5,7 +5,7 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head></Head>
-        <body className="my-10 mx-2 lg:max-w-screen-md lg:mx-auto">
+        <body>
           <Main />
           <NextScript />
         </body>

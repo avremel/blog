@@ -29,6 +29,10 @@ const H2 = ({ children }) => {
   )
 }
 
+const H3 = (props) => <h3 {...props} className="text-lg mb-3 font-semibold" />
+
+const H4 = (props) => <h4 {...props} className="text-md mb-2 font-semibold" />
+
 const P = (props) => <p {...props} className="my-3" />
 
 const Strong = (props) => <strong {...props} className="font-semibold" />
@@ -49,6 +53,8 @@ const components = {
   a: Link,
   h1: H1,
   h2: H2,
+  h3: H3,
+  h4: H4,
   p: P,
   ul: UL,
   li: LI,
