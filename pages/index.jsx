@@ -110,7 +110,7 @@ const Home = () => {
             external
           />
           <NavItem
-            date="April 2018"
+            date="Apr 2018"
             link="https://medium.com/@avremelk/solr-gottchas-a-tutorial-a953c8b3e775"
             text="Solr + Python — A Tutorial"
             external

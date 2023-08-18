@@ -37,9 +37,13 @@ const P = (props) => <p {...props} className="my-3" />
 
 const Strong = (props) => <strong {...props} className="font-semibold" />
 
-const UL = (props) => <ul {...props} className="my-3" />
+const UL = (props) => <ul {...props} className="my-3 list-disc" />
 
-const LI = (props) => <li {...props} className="mx-6 my-1 list-disc" />
+const OL = (props) => <ol {...props} className="my-3 list-decimal" />
+
+const LI = (props) => {
+  return <li {...props} className="mx-6 my-1" />
+}
 
 const Table = ({ children }) => {
   return (
@@ -64,6 +68,7 @@ const components = {
   h4: H4,
   p: P,
   ul: UL,
+  ol: OL,
   li: LI,
   strong: Strong,
   table: Table,

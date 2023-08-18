@@ -18,10 +18,10 @@ export const meta = {
 
 To setup, you will [need to](https://www.algolia.com/doc/guides/managing-results/refine-results/grouping/how-to/item-variations/):
 
-- Create a record for each variant.
-- Turn on Distinct (`distinct`) and choose an attibute to group variants (`attributeForDistinct`).
-- To display meaningful information for each variant - like price and an image - you will need to duplicate the data so that each variant record contains data for _every_ one of it's siblings.
-- To control which variant shows up as the primary record, add a strict sort to Ranking and Sorting (SORT BY `is_default_varaint`).
+1. Create a record for each variant.
+2. Turn on Distinct (`distinct`) and choose an attibute to group variants (`attributeForDistinct`).
+3. To display meaningful information for each variant - like price and an image - you will need to duplicate the data so that each variant record contains data for _every_ one of it's siblings.
+4. To control which variant shows up as the primary record, add a strict sort to Ranking and Sorting (SORT BY `is_default_varaint`).
 
 Your data will look like something like:
 ```json
@@ -94,7 +94,7 @@ If you have chosen to [roll up variants](https://www.algolia.com/doc/guides/mana
 
 :round_pushpin: Algolia has a [widget](https://www.algolia.com/doc/api-reference/widgets/numeric-menu/react-hooks/) to display preset ranges. The problem is that a) it's single select, b) doesn't show counts and c) will show options that lead to zero results. The recommended workaround is to create a new attribute at index time to bucket the filter values and display a regular facet.
 
-### Sorting
+## Sorting
 Each sort requires a new ([virtual](https://www.algolia.com/doc/guides/managing-results/refine-results/sorting/in-depth/replicas/#what-are-virtual-replicas)) index. For example, you need an index for price ascending _and_ price descending.
 
 :point_right: Merchandising rules (and other settings) get copied over to new sort indices and can potentially interfere with sorting. Make sure to remove them as needed.
@@ -170,20 +170,21 @@ The offical clients come with per-session in-memory [caching](https://www.algoli
 
 ## Frontend Libraries
 
-JS libraries: [Autocomplete](https://www.npmjs.com/package/@algolia/autocomplete-js), [InstantSearch](https://www.npmjs.com/package/instantsearch.js), [Search Insights](https://www.npmjs.com/package/search-insights)
+> JS libraries: [Autocomplete](https://www.npmjs.com/package/@algolia/autocomplete-js), [InstantSearch](https://www.npmjs.com/package/instantsearch.js), [Search Insights](https://www.npmjs.com/package/search-insights)
+>
+> NextJS/React libraries: [react-instantsearch](https://www.npmjs.com/package/react-instantsearch), [react-instantsearch-router-nextjs](https://www.npmjs.com/package/react-instantsearch-router-nextjs)
 
-NextJS/React libraries: [react-instantsearch](https://www.npmjs.com/package/react-instantsearch), [react-instantsearch-router-nextjs](https://www.npmjs.com/package/react-instantsearch-router-nextjs)
+Autocomplete is for search and autocomplete functionality, while InstantSearch responsible for displaying a list page with filters and products. Autocomple can be used together with InstantSearch for list pages or as a standalone component. Both libraries come in styled and non-styled (headless) modes and can be fully customized.
 
-Autocomplete is for search and autocomplete functionality, while Instant Search responsible for displaying a list page with filters and products. Autocomple can be used together with Instant Search for list pages or as a standalone component. Both libraries come in styled and non-styled (headless) modes and can be fully customized.
+### InstantSearch
 
-It's important to understant that Instant Search derives the app state from widgets which are mounted to the DOM. More specifically, when the filters are on the page and you make a selection, that selection is reflected in the URL and the filter badges. If you remove the filters, the selection is cleared. The offical workaround is to only hide filters with CSS. See [here](https://support.algolia.com/hc/en-us/articles/14677269895569-How-can-I-hide-my-filters-without-losing-the-applied-refinements-) and [here](https://discourse.algolia.com/t/instantsearch-js-3-how-to-dynamically-hide-show-a-filter-widget/10944) and a [React flavor](https://www.algolia.com/doc/guides/building-search-ui/widgets/show-and-hide-widgets/react/#keep-the-widget-mounted-but-hidden) of the same advice.
+InstantSearch derives the app state from widgets/hooks which are mounted to the DOM. More specifically, when the filters are on the page and you make a selection, that selection is reflected in the URL and the filter badges. If you remove the filters, the selection is cleared. The offical workaround is to only hide filters with CSS. See [here](https://support.algolia.com/hc/en-us/articles/14677269895569-How-can-I-hide-my-filters-without-losing-the-applied-refinements-) and [here](https://discourse.algolia.com/t/instantsearch-js-3-how-to-dynamically-hide-show-a-filter-widget/10944) and a [React flavor](https://www.algolia.com/doc/guides/building-search-ui/widgets/show-and-hide-widgets/react/#keep-the-widget-mounted-but-hidden) of the same advice.
 
 One consequence of this architecture is that you cannot use UI libraries that remove elements from the DOM. For example, you cannot use Algolia hooks inside Radix UI's [dialog component](https://www.radix-ui.com/primitives/docs/components/dialog).
 
 Another consequence is that in order to get server-side-rendering (SSR) working for NextJS, (somewhat confusingly) you need to:
 
 1. Extract the Algolia state by calling [getServerState](https://www.algolia.com/doc/api-reference/widgets/server-state/react/) with your _entire app_.
-
 2. Feed that state to `InstantSearchSSRProvider`.
 
 :point_right: Since you are running your app server side solely to get the Algolia state, you only care about rendering Algolia hooks and can avoid any other expensive side effects ([docs](https://www.algolia.com/doc/api-reference/widgets/server-state/react/#widget-param-children)).
@@ -193,6 +194,13 @@ const serverState = await getServerState(<App />, {
   renderToString,
 });
 ```
+
+**Some hard-learned lessons from wrestling with React InstantSearch**:
+- Afer a page refresh, don't add or remove hooks (the same goes for `getServerState`). For example, if you want to display a filter for series only if a brand selection was made, render both filters, but hide the series filter until it is needed.
+- Don't call the same exact hook more than once. For example, if you need `useRefinementList({ attribute: 'price' })` in two different places, call it once at the root of your app.
+- Sometimes you want to calculate the UI by taking a look at the data returned by all filters _at the same time_[^1]. The problem is that merging data from a bunch of hooks is [_painful_](https://github.com/algolia/instantsearch/discussions/5353#discussioncomment-4330951) and brittle.
+
+[^1]: For example, if you have a filter group called Dimensions which contains height, width and depth filters. If there are no values for any of the filters, you would probably want to hide the entire filter group. A possible workaround is doing something like `.filter-group::has(.facets:empty) { display: none }`.
 
 {/* ## Usage
 
@@ -208,6 +216,6 @@ const serverState = await getServerState(<App />, {
 - never duplicate hooks
 - dont remove or add widgets (like filters) after the initial load, hide with css  if needed
 getServerState widgets/facets should match the app to avoid dupe calls
-- cant use next/router (router.push/Link) if server side props change which trigger change in hooks */}
+*/}
 
 export default ({ children }) => <BlogMarkdown meta={meta}>{children}</BlogMarkdown>
