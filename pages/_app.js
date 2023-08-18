@@ -7,7 +7,7 @@ import slugify from '../utils/slugify'
 const Link = ({ href, children }) => {
   return (
     <a
-      className="underline underline-offset-4 hover:text-blue-500 hover:no-underline"
+      className="underline underline-offset-4 decoration-slate-400 hover:text-blue-500 hover:no-underline"
       href={href}
       target="_blank"
     >

@@ -38,14 +38,14 @@ const LinkedIn = ({ width, height }) => {
 
 const NavItem = ({ date, link, text, external = false }) => {
   return (
-    <li className="flex gap-4">
+    <li className="flex gap-6">
       <span className="border-solid border border-slate-300 text-slate-600 p-1 rounded h-fit text-center text-xs flex-shrink-0 basis-24">
         {date}
       </span>
       <a
         href={link}
         target={external ? '_blank' : ''}
-        className="underline underline-offset-8 decoration-slate-300"
+        className="underline underline-offset-8 decoration-slate-300 transition ease-in-out hover:scale-110"
       >
         {text}
       </a>
