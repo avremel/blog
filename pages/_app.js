@@ -50,10 +50,13 @@ const Table = ({ children }) => {
 }
 
 const Blockquote = (props) => (
-  <blockquote {...props} className="my-3 p-2 rounded-md bg-slate-100" />
+  <blockquote {...props} className="my-3 p-2 text-sm rounded-md bg-slate-100" />
 )
 
+const Pre = (props) => <pre {...props} className="my-3" />
+
 const components = {
+  pre: Pre,
   a: Link,
   h1: H1,
   h2: H2,

@@ -49,7 +49,7 @@ Your data will look like something like:
 ]
 ```
 
-🔸 Filtering won't remove irrelevant variants from a recored. For example, if you filter by blue, the other colors will still show up. You'll need to remove them with application code.
+:point_right: Filtering won't remove irrelevant variants from a recored. For example, if you filter by blue, yellow will still show up. You'll need to remove yellow with application code.
 
 ## Search
 
@@ -92,12 +92,12 @@ If you have chosen to [roll up variants](https://www.algolia.com/doc/guides/mana
     -  ⚠ Values which don't show up as a primary variant for a given set of results will be ignored.
 3. Apply `afterDistinct` ([docs](https://www.algolia.com/doc/api-reference/api-parameters/attributesForFaceting/#parameter-option-afterdistinct)) to individual filters. Only those filters will reflect the primary variant.
 
-⚠ Algolia has a [widget](https://www.algolia.com/doc/api-reference/widgets/numeric-menu/react-hooks/) to display preset ranges. The problem is that a) it's single select, b) doesn't show counts and c) will show options that lead to zero results. The recommended workaround is to create a new attribute at index time to bucket the filter values and display a regular facet.
+:round_pushpin: Algolia has a [widget](https://www.algolia.com/doc/api-reference/widgets/numeric-menu/react-hooks/) to display preset ranges. The problem is that a) it's single select, b) doesn't show counts and c) will show options that lead to zero results. The recommended workaround is to create a new attribute at index time to bucket the filter values and display a regular facet.
 
 ### Sorting
 Each sort requires a new ([virtual](https://www.algolia.com/doc/guides/managing-results/refine-results/sorting/in-depth/replicas/#what-are-virtual-replicas)) index. For example, you need an index for price ascending _and_ price descending.
 
-🔸 Merchandising rules (and other settings) get copied over to new sort indices and can potentially interfere with sorting. Make sure to remove them as needed.
+:point_right: Merchandising rules (and other settings) get copied over to new sort indices and can potentially interfere with sorting. Make sure to remove them as needed.
 
 ## Merchandising
 
@@ -123,7 +123,7 @@ Because of these contraints, if you have a general rule (for example, `in_stock 
 
 I prefer to not use rules for configuring filter display logic. Filter display is rarely modified and is no big deal to roll-your-own.
 
-🔸 In some scenarios, you will need to actively monitor pinned items: If you have a filter trigger (for example, `in_stock = true`) which pins 10 items to the top of a list and some items go out of stock, their positions will become "orphaned" and be filled by random items. There is no automatic way to keep all the pinned items at the top of the list. 
+:point_right: In some scenarios, you will need to actively monitor pinned items: If you have a filter trigger (for example, `in_stock = true`) which pins 10 items to the top of a list and some items go out of stock, their positions will become "orphaned" and be filled by random items. There is no automatic way to keep all the pinned items at the top of the list. 
 
 ### Manual Rules
 
@@ -136,7 +136,7 @@ Confusingly there is another type of rule - "manual rule" - with some overlappin
 - Replace an entire query
 - Create a conditionless rule ([docs](https://www.algolia.com/doc/guides/managing-results/rules/rules-overview/?utm_medium=page_link&utm_source=dashboard#conditionless-rules))
 
-🔸 Visual and manual rules cannot coexist for the same triggers, so you will have to choose one or the other.
+:round_pushpin: Visual and manual rules cannot coexist for the same triggers, so you will have to choose one or the other.
 
 ## Analytics
 
@@ -149,7 +149,7 @@ Algolia provides a ton of data about how a user interacts with search:
 - Click through rate
 - Conversion rate
 
-🔸 Conversions don't diffrentiate between add-to-cart and a purchase. Ideally, they would be separate events. 
+:round_pushpin: Conversions don't diffrentiate between add-to-cart and a purchase. Ideally, they would be separate events. 
 
 You can further enrich the data by providing custom `analyticsTags` ([docs](https://www.algolia.com/doc/api-reference/api-parameters/analyticsTags/)). For example:
   - Tag which queries are coming from autocomplete or from the list page.
@@ -158,54 +158,49 @@ You can further enrich the data by providing custom `analyticsTags` ([docs](http
 
 Provides for providing insight into how users are engaging with your website, Algolia uses these signals for [dynamic reranking](https://www.algolia.com/doc/guides/algolia-ai/re-ranking/), [personalization](https://www.algolia.com/doc/guides/personalization/what-is-personalization/) and [Recommend](https://www.algolia.com/doc/guides/algolia-recommend/overview/).
 
-## Frontend Library
+## Why use an official client
 
-### Why use an official client
+> The Search REST API is the core of Algolia Search. Around it, Algolia built a complete ecosystem, of libraries, tools, and a dashboard. You should use the official API clients and libraries to implement Algolia. They're all open source, and the code is available on GitHub.
 
-<aside style={{ background: '#1D1F200D', padding: '10px' }}>
-  The Search REST API is the core of Algolia Search. Around it, Algolia built a complete ecosystem, of libraries, tools, and a dashboard. You should use the official API clients and libraries to implement Algolia. They're all open source, and the code is available on GitHub.
-</aside>
-
-<aside style={{ background: '#1D1F200D', padding: '10px', marginTop: '10px' }}>
-  There's no SLA if you use the REST API directly.
-</aside>
+> There's no SLA if you use the REST API directly.
 
 Quotes from [here](https://www.algolia.com/doc/rest-api/search/).
 
 The offical clients come with per-session in-memory [caching](https://www.algolia.com/doc/api-client/getting-started/customize/javascript/?client=javascript#caching-requests-and-responses), network retries for flakey connections and much more.
 
-💡 You may be tempted to call the API's directly to cache responses and save on usage costs. However, besides for losing out on the many other benefits, you miss out on analytics, which are an important component of the product.
+## Frontend Libraries
 
-### Libraries
+JS libraries: [Autocomplete](https://www.npmjs.com/package/@algolia/autocomplete-js), [InstantSearch](https://www.npmjs.com/package/instantsearch.js), [Search Insights](https://www.npmjs.com/package/search-insights)
 
-JS libraries:
-- [Autocomplete](https://www.npmjs.com/package/@algolia/autocomplete-js)
-- [InstantSearch](https://www.npmjs.com/package/instantsearch.js)
-- [Search Insights](https://www.npmjs.com/package/search-insights)
+NextJS/React libraries: [react-instantsearch](https://www.npmjs.com/package/react-instantsearch), [react-instantsearch-router-nextjs](https://www.npmjs.com/package/react-instantsearch-router-nextjs)
 
-For NextJS/React:
-- [react-instantsearch](https://www.npmjs.com/package/react-instantsearch)
-- [react-instantsearch-router-nextjs](https://www.npmjs.com/package/react-instantsearch-router-nextjs)
+Autocomplete is for search and autocomplete functionality, while Instant Search responsible for displaying a list page with filters and products. Autocomple can be used together with Instant Search for list pages or as a standalone component. Both libraries come in styled and non-styled (headless) modes and can be fully customized.
 
-The key to understanding Instant Search is that the state of the app is derived from widgets that are mounted to the DOM. More specifically, when the filters are on the page and you make a selection, that selection is reflected in the URL and the filter badges. If you remove the filters, the selection is cleared.
-
-The common advice is to hide filters with CSS as needed. See [here](https://support.algolia.com/hc/en-us/articles/14677269895569-How-can-I-hide-my-filters-without-losing-the-applied-refinements-) and [here](https://discourse.algolia.com/t/instantsearch-js-3-how-to-dynamically-hide-show-a-filter-widget/10944) and a [React flavor](https://www.algolia.com/doc/guides/building-search-ui/widgets/show-and-hide-widgets/react/#keep-the-widget-mounted-but-hidden) of the same advice.
+It's important to understant that Instant Search derives the app state from widgets which are mounted to the DOM. More specifically, when the filters are on the page and you make a selection, that selection is reflected in the URL and the filter badges. If you remove the filters, the selection is cleared. The offical workaround is to only hide filters with CSS. See [here](https://support.algolia.com/hc/en-us/articles/14677269895569-How-can-I-hide-my-filters-without-losing-the-applied-refinements-) and [here](https://discourse.algolia.com/t/instantsearch-js-3-how-to-dynamically-hide-show-a-filter-widget/10944) and a [React flavor](https://www.algolia.com/doc/guides/building-search-ui/widgets/show-and-hide-widgets/react/#keep-the-widget-mounted-but-hidden) of the same advice.
 
 One consequence of this architecture is that you cannot use UI libraries that remove elements from the DOM. For example, you cannot use Algolia hooks inside Radix UI's [dialog component](https://www.radix-ui.com/primitives/docs/components/dialog).
 
-Another consequence is that in order to get server-side-rendering (SSR) working for NextJS, you need to:
+Another consequence is that in order to get server-side-rendering (SSR) working for NextJS, (somewhat confusingly) you need to:
+
 1. Extract the Algolia state by calling [getServerState](https://www.algolia.com/doc/api-reference/widgets/server-state/react/) with your _entire app_.
-2. Feed the Algolia state to `InstantSearchSSRProvider`.
 
-🔸 Since you are running your app server side solely to get back the Algolia state, you only care about mounting Algolia hooks and can avoid rendering anything else.
+2. Feed that state to `InstantSearchSSRProvider`.
 
-### Usages
+:point_right: Since you are running your app server side solely to get the Algolia state, you only care about rendering Algolia hooks and can avoid any other expensive side effects ([docs](https://www.algolia.com/doc/api-reference/widgets/server-state/react/#widget-param-children)).
 
-debounce autocomplete
+```jsx
+const serverState = await getServerState(<App />, {
+  renderToString,
+});
+```
 
-### Frontend
+## Usage
 
-what is autocomplete
+- debounce autocomplete
+- verify network tab that clicking onf filteers doesn't dupe request
+
+:bulb: You may be tempted to save on usage costs by calling the API's directly server side and cache responses. However, you will miss out on analytics, which is an important component of the product.
+
 
 - only include instantsearch + hooks with autocomplete on the list page!! otherwise will make network calls on every single page load!!!
   - conditional hooks by wrapping... but can get _very_ messy
@@ -214,7 +209,5 @@ what is autocomplete
 - dont remove or add widgets (like filters) after the initial load, hide with css  if needed
 getServerState widgets/facets should match the app to avoid dupe calls
 - cant use next/router (router.push/Link) if server side props change which trigger change in hooks
-
-### security
 
 export default ({ children }) => <BlogMarkdown meta={meta}>{children}</BlogMarkdown>
