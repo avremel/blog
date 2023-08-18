@@ -3,7 +3,7 @@ import Head from 'next/head'
 
 const BlogLayout = ({ meta, children }) => {
   return (
-    <div className="p-6 lg:max-w-screen-md lg:mx-auto">
+    <div className="p-6 lg:max-w-screen-md lg:mx-auto text-slate-700">
       <Head>
         <title>{meta.title}</title>
       </Head>

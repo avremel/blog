@@ -55,8 +55,35 @@ const NavItem = ({ date, link, text, external = false }) => {
 const Home = () => {
   return (
     <div className="text-slate-700 flex flex-col h-screen p-10 lg:max-w-screen-md lg:mx-auto">
-      <header className="mb-4">
-        <h1 className="text-lg">Avi Kaminetzky</h1>
+      <header className="mb-6 flex justify-between items-center md:flex-col md:items-start md:gap-6">
+        <div>
+          <h1 className="text-2xl">Avi Kaminetzky</h1>
+
+          <h3 className="text-md text-slate-500">on software</h3>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <a href="https://www.linkedin.com/in/avi-dev/" target="_blank">
+            <LinkedIn width={30} height={30} />
+
+            <VisuallyHidden>LinkedIn Link</VisuallyHidden>
+          </a>
+
+          <a
+            href="https://stackoverflow.com/users/4822174/avi-kaminetzky"
+            target="_blank"
+          >
+            <StackOverflow width={26} height={26} />
+
+            <VisuallyHidden>StackOverflow Link</VisuallyHidden>
+          </a>
+
+          <a href="https://github.com/avremel" target="_blank">
+            <GitHubLogoIcon width="26" height="26" />
+
+            <VisuallyHidden>Github Link</VisuallyHidden>
+          </a>
+        </div>
       </header>
 
       <ul className="flex flex-col gap-4 overflow-y-auto">
@@ -89,31 +116,6 @@ const Home = () => {
           external
         />
       </ul>
-
-      <footer className="mt-auto">
-        <div className="flex items-center gap-3">
-          <a href="https://www.linkedin.com/in/avi-dev/" target="_blank">
-            <LinkedIn width={40} height={40} />
-
-            <VisuallyHidden>LinkedIn Link</VisuallyHidden>
-          </a>
-
-          <a
-            href="https://stackoverflow.com/users/4822174/avi-kaminetzky"
-            target="_blank"
-          >
-            <StackOverflow width={36} height={36} />
-
-            <VisuallyHidden>StackOverflow Link</VisuallyHidden>
-          </a>
-
-          <a href="https://github.com/avremel" target="_blank">
-            <GitHubLogoIcon width="30" height="30" />
-
-            <VisuallyHidden>Github Link</VisuallyHidden>
-          </a>
-        </div>
-      </footer>
     </div>
   )
 }
