@@ -1,4 +1,5 @@
 import React from 'react'
+import Head from 'next/head'
 import { GitHubLogoIcon } from '@radix-ui/react-icons'
 import { VisuallyHidden } from '../components'
 
@@ -38,13 +39,13 @@ const LinkedIn = ({ width, height }) => {
 const NavItem = ({ date, link, text, external = false }) => {
   return (
     <li className="flex gap-4">
-      <span className="border-solid border-2 border-slate-300 text-slate-600 py-1 px-3 rounded h-fit text-center text-sm flex-shrink-0 basis-24">
+      <span className="border-solid border-2 border-slate-300 text-slate-600 p-1 rounded h-fit text-center text-sm flex-shrink-0 basis-24">
         {date}
       </span>
       <a
         href={link}
         target={external ? '_blank' : ''}
-        className="underline underline-offset-4 decoration-slate-300"
+        className="underline underline-offset-8 decoration-slate-300"
       >
         {text}
       </a>
@@ -54,69 +55,75 @@ const NavItem = ({ date, link, text, external = false }) => {
 
 const Home = () => {
   return (
-    <div className="text-slate-700 flex flex-col h-screen p-10 lg:max-w-screen-md lg:mx-auto">
-      <header className="mb-6 flex justify-between items-center md:flex-col md:items-start md:gap-6">
-        <div>
-          <h1 className="text-2xl">Avi Kaminetzky</h1>
+    <>
+      <Head>
+        <title>Avi Kaminetzky on Softare</title>
+      </Head>
 
-          <h3 className="text-md text-slate-500">on software</h3>
-        </div>
+      <div className="text-slate-700 flex flex-col h-screen p-10 lg:max-w-screen-md lg:mx-auto">
+        <header className="mb-6 flex justify-between items-center md:flex-col md:items-start md:gap-6">
+          <div>
+            <h1 className="text-2xl">Avi Kaminetzky</h1>
 
-        <div className="flex items-center gap-2">
-          <a href="https://www.linkedin.com/in/avi-dev/" target="_blank">
-            <LinkedIn width={30} height={30} />
+            <h3 className="text-md text-slate-500">on software</h3>
+          </div>
 
-            <VisuallyHidden>LinkedIn Link</VisuallyHidden>
-          </a>
+          <div className="flex items-center gap-2">
+            <a href="https://www.linkedin.com/in/avi-dev/" target="_blank">
+              <LinkedIn width={30} height={30} />
 
-          <a
-            href="https://stackoverflow.com/users/4822174/avi-kaminetzky"
-            target="_blank"
-          >
-            <StackOverflow width={26} height={26} />
+              <VisuallyHidden>LinkedIn Link</VisuallyHidden>
+            </a>
 
-            <VisuallyHidden>StackOverflow Link</VisuallyHidden>
-          </a>
+            <a
+              href="https://stackoverflow.com/users/4822174/avi-kaminetzky"
+              target="_blank"
+            >
+              <StackOverflow width={26} height={26} />
 
-          <a href="https://github.com/avremel" target="_blank">
-            <GitHubLogoIcon width="26" height="26" />
+              <VisuallyHidden>StackOverflow Link</VisuallyHidden>
+            </a>
 
-            <VisuallyHidden>Github Link</VisuallyHidden>
-          </a>
-        </div>
-      </header>
+            <a href="https://github.com/avremel" target="_blank">
+              <GitHubLogoIcon width="26" height="26" />
 
-      <ul className="flex flex-col gap-4 overflow-y-auto">
-        <NavItem
-          date="Aug 2023"
-          link="/posts/algolia-ecommerce-nextjs"
-          text="Algolia + Ecommerce + NextJS"
-        />
-        <NavItem
-          date="Feb 2022"
-          link="/posts/react-flavored-js"
-          text="React Flavored Javascript"
-        />
-        <NavItem
-          date="May 2019"
-          link="https://github.com/avremel/lucene"
-          text="Simple Search Engine"
-          external
-        />
-        <NavItem
-          date="April 2018"
-          link="https://medium.com/@avremelk/solr-gottchas-a-tutorial-a953c8b3e775"
-          text="Solr + Python — A Tutorial"
-          external
-        />
-        <NavItem
-          date="Jan 2018"
-          link="https://medium.com/@avremelk/practical-redux-course-1aeb74bd01aa"
-          text="Practical Redux Course"
-          external
-        />
-      </ul>
-    </div>
+              <VisuallyHidden>Github Link</VisuallyHidden>
+            </a>
+          </div>
+        </header>
+
+        <ul className="flex flex-col gap-4 overflow-y-auto">
+          <NavItem
+            date="Aug 2023"
+            link="/posts/algolia-ecommerce-nextjs"
+            text="Algolia + Ecommerce + NextJS"
+          />
+          <NavItem
+            date="Feb 2022"
+            link="/posts/react-flavored-js"
+            text="React Flavored Javascript"
+          />
+          <NavItem
+            date="May 2019"
+            link="https://github.com/avremel/lucene"
+            text="Simple Search Engine"
+            external
+          />
+          <NavItem
+            date="April 2018"
+            link="https://medium.com/@avremelk/solr-gottchas-a-tutorial-a953c8b3e775"
+            text="Solr + Python — A Tutorial"
+            external
+          />
+          <NavItem
+            date="Jan 2018"
+            link="https://medium.com/@avremelk/practical-redux-course-1aeb74bd01aa"
+            text="Practical Redux Course"
+            external
+          />
+        </ul>
+      </div>
+    </>
   )
 }
 

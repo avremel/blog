@@ -8,7 +8,7 @@ const BlogLayout = ({ meta, children }) => {
         <title>{meta.title}</title>
       </Head>
 
-      <nav className="mb-3">
+      <nav className="mb-4">
         <a
           className="solid-solid border-2 border-slate-300 text-slate-700 text-sm rounded-md px-4 py-1 transition duration-500 ease select-none hover:bg-gray-300 focus:outline-none focus:shadow-outline"
           href="/"
