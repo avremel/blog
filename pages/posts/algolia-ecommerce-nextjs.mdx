@@ -195,7 +195,7 @@ const serverState = await getServerState(<App />, {
 });
 ```
 
-**Some hard-learned lessons from wrestling with React InstantSearch**:
+**Lessons learned from wrestling with React InstantSearch**:
 - Afer a page refresh, don't add or remove hooks (the same goes for `getServerState`). For example, if you want to display a filter for series only if a brand selection was made, render both filters, but hide the series filter until it is needed.
 - Don't call the same exact hook more than once. For example, if you need `useRefinementList({ attribute: 'price' })` in two different places, call it once at the root of your app.
 - Sometimes you want to calculate the UI by taking a look at the data returned by all filters _at the same time_[^1]. The problem is that merging data from a bunch of hooks is [_painful_](https://github.com/algolia/instantsearch/discussions/5353#discussioncomment-4330951) and brittle.
