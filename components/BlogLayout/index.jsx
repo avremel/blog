@@ -10,7 +10,7 @@ const BlogLayout = ({ meta, children }) => {
 
       <nav className="mb-3">
         <a
-          className="border border-gray-200 bg-gray-200 text-gray-700 text-sm rounded-md px-4 py-1 transition duration-500 ease select-none hover:bg-gray-300 focus:outline-none focus:shadow-outline"
+          className="solid-solid border-2 border-slate-300 text-slate-700 text-sm rounded-md px-4 py-1 transition duration-500 ease select-none hover:bg-gray-300 focus:outline-none focus:shadow-outline"
           href="/"
         >
           Home

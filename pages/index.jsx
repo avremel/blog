@@ -38,13 +38,13 @@ const LinkedIn = ({ width, height }) => {
 const NavItem = ({ date, link, text, external = false }) => {
   return (
     <li className="flex gap-4">
-      <span className="border-solid border-2 border-slate-300 text-slate-600 py-1 px-3 rounded-md h-fit text-center text-sm flex-shrink-0 basis-24">
+      <span className="border-solid border-2 border-slate-300 text-slate-600 py-1 px-3 rounded h-fit text-center text-sm flex-shrink-0 basis-24">
         {date}
       </span>
       <a
         href={link}
         target={external ? '_blank' : ''}
-        className="underline underline-offset-4"
+        className="underline underline-offset-4 decoration-slate-300"
       >
         {text}
       </a>
@@ -54,7 +54,7 @@ const NavItem = ({ date, link, text, external = false }) => {
 
 const Home = () => {
   return (
-    <div className="flex flex-col h-screen p-10 lg:max-w-screen-md lg:mx-auto">
+    <div className="text-slate-700 flex flex-col h-screen p-10 lg:max-w-screen-md lg:mx-auto">
       <header className="mb-4">
         <h1 className="text-lg">Avi Kaminetzky</h1>
       </header>
