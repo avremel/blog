@@ -6,7 +6,7 @@ export const meta = {
 
 # Algolia + Ecommerce + NextJS
 
-### Item Variants
+## Item Variants
 
 <div>
   <div>Many ecommerce sites will have a product card which displays variantions of an item like color and size.</div>
@@ -51,7 +51,7 @@ Your data will look like something like:
 
 🔸 Filtering won't remove irrelevant variants from a recored. For example, if you filter by blue, the other colors will still show up. You'll need to remove them with application code.
 
-### Search
+## Search
 
 You choose which attributes get searched and in which order ("Searcheable attributes"). A typical example might be:
 1. Brand
@@ -75,11 +75,9 @@ Debugging search relevance is intuitive and painless, thanks the ranking popup i
 
 Algolia's approach to configuring and tweaking search relevance feels like it's at the right layer of abstraction. Simple to understand, sensible defaults, yet customizable. Contrast with Solr/Elastic Search, which requires the user to fiddle with low level primitives like tokenizers, ngrams and pesky math.
 
-<aside style={{ background: '#1D1F200D', padding: '10px' }}>
-  To understand the mechanics of Lucene based search engines, see <a target="_blank" href="https://www.manning.com/books/relevant-search">Relevant Search</a> and my <a target="_blank" href="https://github.com/avremel/lucene">demo search engine</a>.
-</aside>
+> For more on Lucene based search engines, see [Relevant Search](https://www.manning.com/books/relevant-search) and my [demo search engine](https://github.com/avremel/lucene).
 
-### Filtering
+## Filtering
 
 <div>
   <div>Any attribute that will be used as a filter needs to be added to the Facets list. Filters come with counts and are searchable.</div>
@@ -101,9 +99,9 @@ Each sort requires a new ([virtual](https://www.algolia.com/doc/guides/managing-
 
 🔸 Merchandising rules (and other settings) get copied over to new sort indices and can potentially interfere with sorting. Make sure to remove them as needed.
 
-### Merchandising
+## Merchandising
 
-#### Rules
+### Rules
 
 Merchandising rules come with a rich set of features. Rules can be triggered by a search term, filter or a context (for example mobile/desktop). It can also be limited by a date range which is useful for seasonal promotions.
 
@@ -127,7 +125,7 @@ I prefer to not use rules for configuring filter display logic. Filter display i
 
 🔸 In some scenarios, you will need to actively monitor pinned items: If you have a filter trigger (for example, `in_stock = true`) which pins 10 items to the top of a list and some items go out of stock, their positions will become "orphaned" and be filled by random items. There is no automatic way to keep all the pinned items at the top of the list. 
 
-#### Manual Rules
+### Manual Rules
 
 The previous section described "visual" rules.
 
@@ -140,7 +138,7 @@ Confusingly there is another type of rule - "manual rule" - with some overlappin
 
 🔸 Visual and manual rules cannot coexist for the same triggers, so you will have to choose one or the other.
 
-### Analytics
+## Analytics
 
 Algolia provides a ton of data about how a user interacts with search:
 - Which categeries were visited
@@ -160,9 +158,9 @@ You can further enrich the data by providing custom `analyticsTags` ([docs](http
 
 Provides for providing insight into how users are engaging with your website, Algolia uses these signals for [dynamic reranking](https://www.algolia.com/doc/guides/algolia-ai/re-ranking/), [personalization](https://www.algolia.com/doc/guides/personalization/what-is-personalization/) and [Recommend](https://www.algolia.com/doc/guides/algolia-recommend/overview/).
 
-### Frontend Library
+## Frontend Library
 
-#### Why use an official client
+### Why use an official client
 
 <aside style={{ background: '#1D1F200D', padding: '10px' }}>
   The Search REST API is the core of Algolia Search. Around it, Algolia built a complete ecosystem, of libraries, tools, and a dashboard. You should use the official API clients and libraries to implement Algolia. They're all open source, and the code is available on GitHub.
@@ -178,7 +176,7 @@ The offical clients come with per-session in-memory [caching](https://www.algoli
 
 💡 You may be tempted to call the API's directly to cache responses and save on usage costs. However, besides for losing out on the many other benefits, you miss out on analytics, which are an important component of the product.
 
-#### Libraries
+### Libraries
 
 JS libraries:
 - [Autocomplete](https://www.npmjs.com/package/@algolia/autocomplete-js)

@@ -49,6 +49,10 @@ const Table = ({ children }) => {
   )
 }
 
+const Blockquote = (props) => (
+  <blockquote {...props} className="my-3 p-2 rounded-md bg-slate-100" />
+)
+
 const components = {
   a: Link,
   h1: H1,
@@ -60,6 +64,7 @@ const components = {
   li: LI,
   strong: Strong,
   table: Table,
+  blockquote: Blockquote,
 }
 
 function MyApp({ Component, pageProps }) {
