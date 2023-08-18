@@ -39,7 +39,7 @@ const LinkedIn = ({ width, height }) => {
 const NavItem = ({ date, link, text, external = false }) => {
   return (
     <li className="flex gap-4">
-      <span className="border-solid border-2 border-slate-300 text-slate-600 p-1 rounded h-fit text-center text-sm flex-shrink-0 basis-24">
+      <span className="border-solid border border-slate-300 text-slate-600 p-1 rounded h-fit text-center text-xs flex-shrink-0 basis-24">
         {date}
       </span>
       <a
@@ -92,7 +92,7 @@ const Home = () => {
           </div>
         </header>
 
-        <ul className="flex flex-col gap-4 overflow-y-auto">
+        <ul className="flex flex-col gap-4 overflow-y-auto pb-2">
           <NavItem
             date="Aug 2023"
             link="/posts/algolia-ecommerce-nextjs"
