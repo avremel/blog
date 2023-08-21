@@ -1,3 +1,12 @@
+sup {
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
+sup a {
+  text-decoration: none !important;
+}
+
 .algolia-facet {
   max-width: 230px !important;
 }

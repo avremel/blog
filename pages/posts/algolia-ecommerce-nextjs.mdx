@@ -6,6 +6,8 @@ export const meta = {
   date: 'Aug 2023',
 }
 
+This is _not_ intended as a comprehensive guide (the docs are superb) but rather notes on how to avoid common footguns. The second half discusses the frontend clients.
+
 ## Item Variants
 
 <div>
@@ -19,7 +21,6 @@ To setup, you will [need to](https://www.algolia.com/doc/guides/managing-results
 1. Create a record for each variant.
 2. Turn on Distinct (`distinct`) and choose an attibute to group variants (`attributeForDistinct`).
 3. To display meaningful information for each variant - like price and an image - you will need to duplicate the data so that each variant record contains data for _every_ one of it's siblings.
-4. To control which variant shows up as the primary record, add a strict sort to Ranking and Sorting (SORT BY `is_default_varaint`).
 
 Your data will look like something like:
 ```json
@@ -47,7 +48,9 @@ Your data will look like something like:
 ]
 ```
 
-:point_right: Filtering won't remove irrelevant variants from a recored. For example, if you filter by blue, yellow will still show up. You'll need to remove yellow with application code.
+:point_right: Filtering won't remove irrelevant variants from a record. For example, if you filter by blue, yellow will still show up. You'll need to remove yellow with application code.
+
+:bulb: To control which variant shows up as the primary record, add a strict sort to Ranking and Sorting (SORT BY `is_default_varaint`).
 
 ## Search
 
@@ -60,14 +63,14 @@ You choose which attributes get searched and in which order ("Searcheable attrib
 The default ranking mechanism is roughly:
 - `typo`: Results with more typos are demoted.
 - `words`: Number of words in the query which match at least once.
-- `filters`: Score of filters when using filters or Rule boosts.
+- `filters`: Score of filters when using filters or merchandising ("rule") boosts.
 - `exact`: Number of query words matching exactly.
 
 You can layer on custom signals to further influence the order of results ("Ranking and Sorting"), in two flavors:
-1. Custom rankings (relative boosts like Solr's [`bq` parameter](https://solr.apache.org/guide/7_6/the-dismax-query-parser.html)). Useful for boosting in stock, popular, new products, etc.
+1. Custom rankings (relative boosts like Solr's [`bq` parameter](https://solr.apache.org/guide/7_6/the-dismax-query-parser.html)). Useful for boosting in-stock, popular, new products, etc.
 2. Strict sort. Generally you want to avoid strict sort, as it overrides sort-by-relevance. One exception is if you are rolling up variants and would like to control which variant is the primary one. 
 
-Debugging search relevance is intuitive and painless, thanks the ranking popup in the dashboard which explains why a specific record ranks the way it does relative to other records.
+Debugging search relevance is intuitive and painless. The ranking popup in the dashboard which explains why a specific record ranks the way it does relative to other records.
 
 <img src="/debug_relevance.png" alt="Debugging relevance in Algolia's dashboard" />
 
@@ -85,25 +88,26 @@ Algolia's approach to configuring and tweaking search relevance feels like it's 
 
 If you have chosen to [roll up variants](https://www.algolia.com/doc/guides/managing-results/refine-results/grouping/how-to/item-variations/), your options are:
 1. The default behavior of having all filters reflect variant counts.
-    -  ⚠ Users will see inflated counts in filters which won't reflect the number of items on the page.
-2. Set `facetingAfterDistinct` globally ([docs](https://www.algolia.com/doc/api-reference/api-parameters/facetingAfterDistinct/)) to only show and count filter values which are part of the primary variant.
-    -  ⚠ Values which don't show up as a primary variant for a given set of results will be ignored.
-3. Apply `afterDistinct` ([docs](https://www.algolia.com/doc/api-reference/api-parameters/attributesForFaceting/#parameter-option-afterdistinct)) to individual filters. Only those filters will reflect the primary variant.
+    -  :-1: Users will see inflated counts in filters which won't reflect the number of items on the page.
+2. Set `facetingAfterDistinct` globally[^1] to only show and count filter values which are part of the primary variant.
+    -  :-1: Values which don't show up as a primary variant for a given set of results will be ignored.
+3. Apply `afterDistinct`[^2] to individual filters. Only those filters will reflect the primary variant.
 
-:round_pushpin: Algolia has a [widget](https://www.algolia.com/doc/api-reference/widgets/numeric-menu/react-hooks/) to display preset ranges. The problem is that a) it's single select, b) doesn't show counts and c) will show options that lead to zero results. The recommended workaround is to create a new attribute at index time to bucket the filter values and display a regular facet.
+[^1]: https://www.algolia.com/doc/api-reference/api-parameters/facetingAfterDistinct/
+[^2]: https://www.algolia.com/doc/api-reference/api-parameters/attributesForFaceting/#parameter-option-afterdistinct
+
+:vertical_traffic_light: Algolia has a [widget](https://www.algolia.com/doc/api-reference/widgets/numeric-menu/react-hooks/) to display preset ranges. The problem is that a) it's single select, b) doesn't show counts and c) will show options that lead to zero results. The recommended workaround is to create a new attribute at index time to bucket the filter values and display a regular facet.
 
 ## Sorting
-Each sort requires a new ([virtual](https://www.algolia.com/doc/guides/managing-results/refine-results/sorting/in-depth/replicas/#what-are-virtual-replicas)) index. For example, you need an index for price ascending _and_ price descending.
+Each sort requires a new [virtual](https://www.algolia.com/doc/guides/managing-results/refine-results/sorting/in-depth/replicas/#what-are-virtual-replicas) index. For example, you will need separate indices for price ascending and price descending.
 
-:point_right: Merchandising rules (and other settings) get copied over to new sort indices and can potentially interfere with sorting. Make sure to remove them as needed.
+:vertical_traffic_light: Merchandising rules (and other settings) get copied over to new sort indices and can potentially interfere with sorting. Make sure to remove them as needed.
 
 ## Merchandising
 
-### Rules
+Merchandising ("Rules") come with a rich set of features. Rules can be triggered by a search term, filter or a context (for example mobile/desktop). It can also be limited by a date range - useful for seasonal promotions.
 
-Merchandising rules come with a rich set of features. Rules can be triggered by a search term, filter or a context (for example mobile/desktop). It can also be limited by a date range which is useful for seasonal promotions.
-
-Conveniently, the query suggestion index can be merchandised as well.
+Conveniently, query suggestions can be merchandised as well.
 
 A rule can have multiple consequences:
 - Pin/hide products
@@ -119,22 +123,27 @@ Keep in mind that:
 
 Because of these contraints, if you have a general rule (for example, `in_stock = true`) with a bunch of consequences and a more specific rule (for example, `in_stock = true AND color = 'green'`) with an additional consequence, you will need to copy over the consequences from the general rule to the more specific rule.
 
-I prefer to not use rules for configuring filter display logic. Filter display is rarely modified and is no big deal to roll-your-own.
+I prefer to avoid rules for configuring filter display logic. Filter display is rarely modified and is no big deal to roll-your-own.[^3]
 
-:point_right: In some scenarios, you will need to actively monitor pinned items: If you have a filter trigger (for example, `in_stock = true`) which pins 10 items to the top of a list and some items go out of stock, their positions will become "orphaned" and be filled by random items. There is no automatic way to keep all the pinned items at the top of the list. 
+[^3]: Besides, any time you want to create a more specific boost/bury, you'll need to copy over the filter display logic to the more specific rule.
+
+:point_right: In some scenarios, you will need to actively monitor pinned items: If you have a filter trigger (for example, `in_stock = true`) which pins 10 items to the top of a list and some items go out of stock, their positions will become "orphaned" and be filled by random items. There is no automatic way to keep all the pinned items clustered at the top of the list. 
 
 ### Manual Rules
 
 The previous section described "visual" rules.
 
 Confusingly there is another type of rule - "manual rule" - with some overlapping functionality but also different features. A manual rule can:
-- Be triggered by detecting a facet value in a query ([docs](https://www.algolia.com/doc/guides/solutions/ecommerce/filtering-and-navigation/tutorials/auto-selected-facets/))
+- Be triggered by detecting a facet value in a query[^4]
 - Dynamically add query parameters
 - Remove/replace words
 - Replace an entire query
-- Create a conditionless rule ([docs](https://www.algolia.com/doc/guides/managing-results/rules/rules-overview/?utm_medium=page_link&utm_source=dashboard#conditionless-rules))
+- Create a conditionless rule[^5]
 
-:round_pushpin: Visual and manual rules cannot coexist for the same triggers, so you will have to choose one or the other.
+[^4]: https://www.algolia.com/doc/guides/solutions/ecommerce/filtering-and-navigation/tutorials/auto-selected-facets/
+[^5]: https://www.algolia.com/doc/guides/managing-results/rules/rules-overview/how-to/use-conditionless-rules/
+
+:round_pushpin: Visual and manual rules cannot coexist for the same triggers; you will have to choose one or the other.
 
 ## Analytics
 
@@ -149,10 +158,12 @@ Algolia provides a ton of data about how a user interacts with search:
 
 :round_pushpin: Conversions don't diffrentiate between add-to-cart and a purchase. Ideally, they would be separate events. 
 
-You can further enrich the data by providing custom `analyticsTags` ([docs](https://www.algolia.com/doc/api-reference/api-parameters/analyticsTags/)). For example:
+You can further enrich the data by providing custom `analyticsTags`[^6]. For example:
   - Tag which queries are coming from autocomplete or from the list page.
   - Tag queries by category page.
   - A/B test a new user experience.
+
+[^6]: https://www.algolia.com/doc/api-reference/api-parameters/analyticsTags/
 
 Provides for providing insight into how users are engaging with your website, Algolia uses these signals for [dynamic reranking](https://www.algolia.com/doc/guides/algolia-ai/re-ranking/), [personalization](https://www.algolia.com/doc/guides/personalization/what-is-personalization/) and [Recommend](https://www.algolia.com/doc/guides/algolia-recommend/overview/).
 
@@ -164,7 +175,7 @@ Provides for providing insight into how users are engaging with your website, Al
 
 Quotes from [here](https://www.algolia.com/doc/rest-api/search/).
 
-The offical clients come with per-session in-memory [caching](https://www.algolia.com/doc/api-client/getting-started/customize/javascript/?client=javascript#caching-requests-and-responses), network retries for flakey connections and much more.
+The offical clients come with per-session in-memory [caching](https://www.algolia.com/doc/api-client/getting-started/customize/javascript/?client=javascript#caching-requests-and-responses), network retries for flakey connections, [multi-query API requests](https://www.algolia.com/doc/guides/building-search-ui/going-further/optimize-search-request-usage/js/#check-if-you-are-using-single-or-multi-query-endpoint), and much more.
 
 ## Frontend Libraries
 
@@ -180,12 +191,12 @@ InstantSearch derives the app state from widgets/hooks which are mounted to the 
 
 One consequence of this architecture is that you cannot use UI libraries that remove elements from the DOM. For example, you cannot use Algolia hooks inside Radix UI's [dialog component](https://www.radix-ui.com/primitives/docs/components/dialog).
 
-Another consequence is that in order to get server-side-rendering (SSR) working for NextJS, (somewhat confusingly) you need to:
+Another consequence is that in order to get server-side-rendering (SSR) working for NextJS, you need to (somewhat confusingly):
 
 1. Extract the Algolia state by calling [getServerState](https://www.algolia.com/doc/api-reference/widgets/server-state/react/) with your _entire app_.
 2. Feed that state to `InstantSearchSSRProvider`.
 
-:point_right: Since you are running your app server side solely to get the Algolia state, you only care about rendering Algolia hooks and can avoid any other expensive side effects ([docs](https://www.algolia.com/doc/api-reference/widgets/server-state/react/#widget-param-children)).
+[^7]: https://www.algolia.com/doc/api-reference/widgets/server-state/react/#widget-param-children
 
 ```jsx
 const serverState = await getServerState(<App />, {
@@ -193,17 +204,20 @@ const serverState = await getServerState(<App />, {
 });
 ```
 
-**Lessons learned from wrestling with React InstantSearch**:
-- Afer a page refresh, don't add or remove hooks (the same goes for `getServerState`). For example, if you want to display a filter for series only if a brand selection was made, render both filters, but hide the series filter until it is needed.
-- Don't call the same exact hook more than once. For example, if you need `useRefinementList({ attribute: 'price' })` in two different places, call it once at the root of your app.
-- Sometimes you want to calculate the UI by taking a look at the data returned by all filters _at the same time_[^1]. The problem is that merging data from a bunch of hooks is [_painful and brittle_](https://github.com/algolia/instantsearch/discussions/5353#discussioncomment-4330951).
+:point_right: Since you are running your app server side solely to get the Algolia state, you only care about rendering Algolia hooks and can avoid any other expensive side effects[^7].
 
-[^1]: For example, if you have a filter group called Dimensions which contains height, width and depth filters. If there are no values for any of the filters, you would probably want to hide the entire filter group. A possible workaround is doing something like `.filter-group::has(.facets:empty) { display: none }`.
+**Architecture guidlines**:
+- Afer a page refresh, don't add or remove hooks (the same goes for `getServerState`). For example, if you want to display a series filter only if a brand selection was made, render both filters, but hide the series filter until it is needed.
+- Don't call the same exact hook more than once. For example, if you need `useRefinementList({ attribute: 'price' })` in two different places, call it once at the root of your app.
+- Sometimes you want to calculate the UI by taking a look at the data returned by all filters _at the same time_[^8]. However, merging data from a bunch of hooks is [_painful and brittle_](https://github.com/algolia/instantsearch/discussions/5353#discussioncomment-4330951).
+- When navigating between pages that have different hooks/filters, you can either use NexJS's router (`<Link>` and `router.push`) or force a full refresh (`window.location.href = url`). If navigating with NextJS results in a janky experience, always force a full page refresh.
+
+[^8]: For example, if you have a filter group called Size which contains Width and Length filters. You might want to hide the filter group if there are no values for any of the filters. A possible workaround is doing something like `.filter-group::has(.filters:empty) { display: none }`.
 
 {/* ## Usage
 
 - debounce autocomplete
-- verify network tab that clicking onf filteers doesn't dupe request
+- verify network tab that clicking on filteers doesn't dupe request
 
 :bulb: You may be tempted to save on usage costs by calling the API's directly server side and cache responses. However, you will miss out on analytics, which is an important component of the product.
 

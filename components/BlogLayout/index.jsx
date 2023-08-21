@@ -10,23 +10,26 @@ const BlogLayout = ({ meta, children }) => {
         <title>{meta.title}</title>
       </Head>
 
-      <nav className="mb-6">
-        <a href="/">
-          <VisuallyHidden>Home</VisuallyHidden>
-          <HomeIcon width="30" height="30" />
-        </a>
-      </nav>
-
       <article
         className="
           prose prose-code:before:hidden prose-code:after:hidden prose-code:bg-slate-100 prose-pre:bg-slate-100
           prose-quoteless prose-blockquote:bg-slate-100 prose-blockquote:not-italic prose-blockquote:font-normal prose-blockquote:leading-normal
           prose-a:underline prose-a:underline-offset-4 prose-a:decoration-slate-400
           prose-headings:font-semibold
+          sup:ml-3
         "
       >
-        <div className="mb-2 border border-solid border-slate-600 text-slate-600 p-1 rounded h-fit w-fit px-3 text-center text-sm">
-          {meta.date}
+        <div className="flex items-center justify-between mb-4">
+          <nav className="">
+            <a href="/">
+              <VisuallyHidden>Home</VisuallyHidden>
+              <HomeIcon width="30" height="30" />
+            </a>
+          </nav>
+
+          <div className="border border-solid border-slate-600 text-slate-600 p-1 rounded h-fit w-fit px-3 text-center text-sm">
+            {meta.date}
+          </div>
         </div>
 
         <h1>{meta.title}</h1>
