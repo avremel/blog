@@ -13,7 +13,15 @@ const BlogLayout = ({ meta, children }) => {
 
         <meta property="og:title" content={meta.title} />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content={`${base}/posts/${meta.slug}`} />
+
+        {meta.description && (
+          <meta property="og:description" content={meta.description} />
+        )}
+
+        {meta.slug && (
+          <meta property="og:url" content={`${base}/posts/${meta.slug}`} />
+        )}
+
         {meta.ogImage && (
           <meta property="og:image" content={`${base}/${meta.ogImage}`} />
         )}
