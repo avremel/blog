@@ -4,10 +4,19 @@ import { HomeIcon } from '@radix-ui/react-icons'
 import { VisuallyHidden } from '../index'
 
 const BlogLayout = ({ meta, children }) => {
+  const base = `https://www.avikaminetzky.dev`
+
   return (
     <div className="p-6 lg:max-w-screen-md lg:mx-auto text-slate-700">
       <Head>
         <title>{meta.title}</title>
+
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={`${base}/posts/${meta.slug}`} />
+        {meta.ogImage && (
+          <meta property="og:image" content={`${base}/${meta.ogImage}`} />
+        )}
       </Head>
 
       <article

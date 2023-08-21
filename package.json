@@ -19,6 +19,7 @@
     "rehype-pretty-code": "^0.10.0",
     "remark-emoji": "^4.0.0",
     "remark-gfm": "^3.0.1",
+    "satori": "^0.10.3",
     "shiki": "^0.14.3"
   },
   "prettier": {
