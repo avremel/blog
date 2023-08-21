@@ -219,7 +219,7 @@ const serverState = await getServerState(<App />, {
 :point_right: Since you are running your app server side solely to get the Algolia state, you only care about rendering Algolia hooks and can avoid any other expensive side effects[^7].
 
 **In my experience**:
-- Afer a page refresh, don't add or remove hooks (the same goes for `getServerState`). For example, if you want to display a series filter only if a brand selection was made, render both filters, but hide the series filter until it is needed.
+- Afer a page refresh, don't add or remove hooks (the same goes for `getServerState`). For example, if you want to display a series filter only if a brand selection was made, render both filters and hide the series filter until it is needed.
 - Don't call the same exact hook more than once. For example, if you need `useRefinementList({ attribute: 'price' })` in two different places, call it once at the root of your app.
 - Sometimes you want to calculate the UI by taking a look at the data returned by all filters _at the same time_[^8]. However, merging data from a bunch of hooks is [_painful and brittle_](https://github.com/algolia/instantsearch/discussions/5353#discussioncomment-4330951).
 - When navigating between pages that have different hooks/filters, you can either use NexJS's router (`<Link>` and `router.push`) or force a full refresh (`window.location.href = url`). If navigating with NextJS results in a janky experience, always force a full page refresh.
