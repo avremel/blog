@@ -61,7 +61,7 @@ const Home = () => {
       </Head>
 
       <div className="text-slate-700 flex flex-col h-screen p-10 lg:max-w-screen-md lg:mx-auto">
-        <header className="mb-6 flex justify-between items-center md:flex-col md:items-start md:gap-6">
+        <header className="mb-6 lg:mb-10 flex justify-between items-center md:flex-col md:items-start md:gap-6">
           <div>
             <h1 className="text-2xl leading-3 lg:text-3xl">avi kaminetzky</h1>
 
