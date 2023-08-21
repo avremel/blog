@@ -16,8 +16,6 @@ const Link = ({ href, children }) => {
   )
 }
 
-const H1 = (props) => <h1 {...props} className="text-2xl mb-4 font-semibold" />
-
 const H2 = ({ children }) => {
   const id = `${slugify(children)}`
   return (
@@ -29,50 +27,10 @@ const H2 = ({ children }) => {
   )
 }
 
-const H3 = (props) => <h3 {...props} className="text-lg mb-3 font-semibold" />
-
-const H4 = (props) => <h4 {...props} className="text-md mb-2 font-semibold" />
-
-const P = (props) => <p {...props} className="my-3" />
-
-const Strong = (props) => <strong {...props} className="font-semibold" />
-
-const UL = (props) => <ul {...props} className="my-3 list-disc" />
-
-const OL = (props) => <ol {...props} className="my-3 list-decimal" />
-
-const LI = (props) => {
-  return <li {...props} className="mx-6 my-1" />
-}
-
-const Table = ({ children }) => {
-  return (
-    <div className="">
-      <table>{children}</table>
-    </div>
-  )
-}
-
-const Blockquote = (props) => (
-  <blockquote {...props} className="my-3 p-2 text-sm rounded-md bg-slate-100" />
-)
-
-const Pre = (props) => <pre {...props} className="my-3" />
+const Pre = ({ children }) => <pre className="bg-slate-100">{children}</pre>
 
 const components = {
   pre: Pre,
-  a: Link,
-  h1: H1,
-  h2: H2,
-  h3: H3,
-  h4: H4,
-  p: P,
-  ul: UL,
-  ol: OL,
-  li: LI,
-  strong: Strong,
-  table: Table,
-  blockquote: Blockquote,
 }
 
 function MyApp({ Component, pageProps }) {

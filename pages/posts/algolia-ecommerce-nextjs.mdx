@@ -2,6 +2,7 @@ import { BlogMarkdown, Image } from '../../components'
 
 export const meta = {
   title: 'Algolia + Ecommerce + NextJS',
+  date: 'Aug 2023',
 }
 
 # Algolia + Ecommerce + NextJS
@@ -119,7 +120,7 @@ Keep in mind that:
 1. Rules have no notion of hierarchy. A sub-category will not inherit from a rule from its parent category.
 2. Only one rule will match at a time. You can't have one rule control pinnning and another control boosting. [Rule precedence logic](https://www.algolia.com/doc/guides/managing-results/rules/rules-overview/in-depth/rule-matching-algorithm/#precedence-logic) arbitrates which rule gets actived.
 
-Because of these contraints, if you have a general rule (for example, `in_stock = true`) with a bunch of consequences and a more specific rule (for example, `in_stock = true AND color = 'green`) with an additional consequence, you will need to copy over the consequences from the general rule to the more specific rule.
+Because of these contraints, if you have a general rule (for example, `in_stock = true`) with a bunch of consequences and a more specific rule (for example, `in_stock = true AND color = 'green'`) with an additional consequence, you will need to copy over the consequences from the general rule to the more specific rule.
 
 I prefer to not use rules for configuring filter display logic. Filter display is rarely modified and is no big deal to roll-your-own.
 
@@ -171,7 +172,7 @@ The offical clients come with per-session in-memory [caching](https://www.algoli
 ## Frontend Libraries
 
 > JS libraries: [Autocomplete](https://www.npmjs.com/package/@algolia/autocomplete-js), [InstantSearch](https://www.npmjs.com/package/instantsearch.js), [Search Insights](https://www.npmjs.com/package/search-insights)
->
+
 > NextJS/React libraries: [react-instantsearch](https://www.npmjs.com/package/react-instantsearch), [react-instantsearch-router-nextjs](https://www.npmjs.com/package/react-instantsearch-router-nextjs)
 
 Autocomplete is for search and autocomplete functionality, while InstantSearch responsible for displaying a list page with filters and products. Autocomple can be used together with InstantSearch for list pages or as a standalone component. Both libraries come in styled and non-styled (headless) modes and can be fully customized.
@@ -198,7 +199,7 @@ const serverState = await getServerState(<App />, {
 **Lessons learned from wrestling with React InstantSearch**:
 - Afer a page refresh, don't add or remove hooks (the same goes for `getServerState`). For example, if you want to display a filter for series only if a brand selection was made, render both filters, but hide the series filter until it is needed.
 - Don't call the same exact hook more than once. For example, if you need `useRefinementList({ attribute: 'price' })` in two different places, call it once at the root of your app.
-- Sometimes you want to calculate the UI by taking a look at the data returned by all filters _at the same time_[^1]. The problem is that merging data from a bunch of hooks is [_painful_](https://github.com/algolia/instantsearch/discussions/5353#discussioncomment-4330951) and brittle.
+- Sometimes you want to calculate the UI by taking a look at the data returned by all filters _at the same time_[^1]. The problem is that merging data from a bunch of hooks is [_painful and brittle_](https://github.com/algolia/instantsearch/discussions/5353#discussioncomment-4330951).
 
 [^1]: For example, if you have a filter group called Dimensions which contains height, width and depth filters. If there are no values for any of the filters, you would probably want to hide the entire filter group. A possible workaround is doing something like `.filter-group::has(.facets:empty) { display: none }`.
 
