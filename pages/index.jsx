@@ -45,7 +45,7 @@ const NavItem = ({ date, link, text, external = false }) => {
       <a
         href={link}
         target={external ? '_blank' : ''}
-        className="underline underline-offset-4 decoration-slate-300 lg:transition lg:ease-in-out lg:hover:scale-105"
+        className="underline underline-offset-4 decoration-slate-300"
       >
         {text}
       </a>

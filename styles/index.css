@@ -7,6 +7,29 @@ sup a {
   text-decoration: none !important;
 }
 
+h2 a {
+  text-decoration: none !important;
+}
+
+.toc {
+  border: 1px solid #e2e8f0;
+  background-color: #f8fafc;
+  width: fit-content;
+  padding: 10px 20px;
+  border-radius: 6px;;
+}
+
+.toc a {
+  /* slate-500 */
+  color: #64748b;
+  /* --tw-prose-bullets */
+  text-decoration-color: #d1d5db;
+}
+
+.toc li {
+  margin: 0;
+}
+
 .algolia-facet {
   max-width: 230px !important;
 }
