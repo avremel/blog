@@ -12,10 +12,15 @@ const BlogLayout = ({ meta, children }) => {
         <title>{meta.title}</title>
 
         <meta property="og:title" content={meta.title} />
+        <meta name="twitter:title" content={meta.title} />
+
         <meta property="og:type" content="website" />
 
         {meta.description && (
-          <meta property="og:description" content={meta.description} />
+          <>
+            <meta property="og:description" content={meta.description} />
+            <meta name="twitter:description" content={meta.description} />
+          </>
         )}
 
         {meta.slug && (
@@ -23,8 +28,17 @@ const BlogLayout = ({ meta, children }) => {
         )}
 
         {meta.ogImage && (
-          <meta property="og:image" content={`${base}/${meta.ogImage}`} />
+          <>
+            <meta property="og:image" content={`${base}/${meta.ogImage}`} />
+            <meta
+              name="twitter:image:alt"
+              content="Ecommerce + Algolia + NextJS"
+            />
+            <meta name="twitter:image" content={`${base}/${meta.ogImage}`} />
+          </>
         )}
+
+        <meta name="twitter:card" content="summary_large_image" />
       </Head>
 
       <article
