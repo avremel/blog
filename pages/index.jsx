@@ -39,13 +39,13 @@ const LinkedIn = ({ width, height }) => {
 const NavItem = ({ date, link, text, external = false }) => {
   return (
     <li className="flex gap-4 lg:gap-6 leading-6">
-      <span className="border-solid border border-slate-300 text-slate-600 p-1 rounded h-fit text-center text-xs flex-shrink-0 basis-24">
+      <span className="border-solid border border-slate-300 text-slate-600 p-1 rounded h-fit text-center text-xs flex-shrink-0 basis-24 lg:text-lg lg:basis-32">
         {date}
       </span>
       <a
         href={link}
         target={external ? '_blank' : ''}
-        className="underline underline-offset-4 decoration-slate-300"
+        className="underline underline-offset-4 decoration-slate-300 lg:text-xl lg:underline-offset-8"
       >
         {text}
       </a>
@@ -63,9 +63,11 @@ const Home = () => {
       <div className="text-slate-700 flex flex-col h-screen p-10 lg:max-w-screen-md lg:mx-auto">
         <header className="mb-6 flex justify-between items-center md:flex-col md:items-start md:gap-6">
           <div>
-            <h1 className="text-2xl leading-3">avi kaminetzky</h1>
+            <h1 className="text-2xl leading-3 lg:text-3xl">avi kaminetzky</h1>
 
-            <h3 className="text-md text-slate-500 leading-6">on software</h3>
+            <h3 className="text-md text-slate-500 leading-6 lg:text-2xl">
+              on software
+            </h3>
           </div>
 
           <div className="flex items-center gap-2">
