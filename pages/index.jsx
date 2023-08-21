@@ -3,13 +3,12 @@ import Head from 'next/head'
 import { GitHubLogoIcon } from '@radix-ui/react-icons'
 import { VisuallyHidden } from '../components'
 
-const StackOverflow = ({ width, height }) => {
+const StackOverflow = () => {
   return (
     <svg
+      className="w-[26px] h-[26px]"
       xmlns="http://www.w3.org/2000/svg"
-      fill="#000000"
-      width={width}
-      height={height}
+      fill="currentColor"
       viewBox="0 0 32 32"
       version="1.1"
     >
@@ -22,6 +21,7 @@ const StackOverflow = ({ width, height }) => {
 const LinkedIn = ({ width, height }) => {
   return (
     <svg
+      className="w-[30px] h-[30px]"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       data-supported-dps="24x24"
@@ -63,14 +63,14 @@ const Home = () => {
       <div className="text-slate-700 flex flex-col h-screen p-10 lg:max-w-screen-md lg:mx-auto">
         <header className="mb-6 flex justify-between items-center md:flex-col md:items-start md:gap-6">
           <div>
-            <h1 className="text-2xl">Avi Kaminetzky</h1>
+            <h1 className="text-2xl leading-3">avi kaminetzky</h1>
 
-            <h3 className="text-md text-slate-500">on software</h3>
+            <h3 className="text-md text-slate-500 leading-6">on software</h3>
           </div>
 
           <div className="flex items-center gap-2">
             <a href="https://www.linkedin.com/in/avi-dev/" target="_blank">
-              <LinkedIn width={30} height={30} />
+              <LinkedIn />
 
               <VisuallyHidden>LinkedIn Link</VisuallyHidden>
             </a>
@@ -79,13 +79,13 @@ const Home = () => {
               href="https://stackoverflow.com/users/4822174/avi-kaminetzky"
               target="_blank"
             >
-              <StackOverflow width={26} height={26} />
+              <StackOverflow />
 
               <VisuallyHidden>StackOverflow Link</VisuallyHidden>
             </a>
 
             <a href="https://github.com/avremel" target="_blank">
-              <GitHubLogoIcon width="26" height="26" />
+              <GitHubLogoIcon className="w-[26px] h-[26px]" />
 
               <VisuallyHidden>Github Link</VisuallyHidden>
             </a>
