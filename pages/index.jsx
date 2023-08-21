@@ -96,7 +96,7 @@ const Home = () => {
           <NavItem
             date="Aug 2023"
             link="/posts/algolia-ecommerce-nextjs"
-            text="Algolia + Ecommerce + NextJS"
+            text="Algolia  + NextJS for Ecommerce"
           />
           <NavItem
             date="Feb 2022"
