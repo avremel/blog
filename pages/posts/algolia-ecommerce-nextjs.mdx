@@ -206,7 +206,7 @@ const serverState = await getServerState(<App />, {
 
 :point_right: Since you are running your app server side solely to get the Algolia state, you only care about rendering Algolia hooks and can avoid any other expensive side effects[^7].
 
-**Architecture guidlines**:
+**In my experience**:
 - Afer a page refresh, don't add or remove hooks (the same goes for `getServerState`). For example, if you want to display a series filter only if a brand selection was made, render both filters, but hide the series filter until it is needed.
 - Don't call the same exact hook more than once. For example, if you need `useRefinementList({ attribute: 'price' })` in two different places, call it once at the root of your app.
 - Sometimes you want to calculate the UI by taking a look at the data returned by all filters _at the same time_[^8]. However, merging data from a bunch of hooks is [_painful and brittle_](https://github.com/algolia/instantsearch/discussions/5353#discussioncomment-4330951).
@@ -214,20 +214,23 @@ const serverState = await getServerState(<App />, {
 
 [^8]: For example, if you have a filter group called Size which contains Width and Length filters. You might want to hide the filter group if there are no values for any of the filters. A possible workaround is doing something like `.filter-group::has(.filters:empty) { display: none }`.
 
-{/* ## Usage
+## Optimizing Usage
 
-- debounce autocomplete
-- verify network tab that clicking on filteers doesn't dupe request
+Algolia has usage-based-billing, see [the docs](https://www.algolia.com/doc/guides/building-search-ui/going-further/optimize-search-request-usage/js/) for optimizations tips.
 
 :bulb: You may be tempted to save on usage costs by calling the API's directly server side and cache responses. However, you will miss out on analytics, which is an important component of the product.
 
+Verify in the network tab that each user action (click on filter, search, etc) results in a *single* [multi-query]((https://www.algolia.com/doc/guides/building-search-ui/going-further/optimize-search-request-usage/js/#check-if-you-are-using-single-or-multi-query-endpoint)) API call.
 
-- only include instantsearch + hooks with autocomplete on the list page!! otherwise will make network calls on every single page load!!!
-  - conditional hooks by wrapping... but can get _very_ messy
-- single hook per filter
-- never duplicate hooks
-- dont remove or add widgets (like filters) after the initial load, hide with css  if needed
-getServerState widgets/facets should match the app to avoid dupe calls
-*/}
+Autocomplete will trigger an API call for each key stroke unless you [debounce the input](https://www.algolia.com/doc/ui-libraries/autocomplete/guides/debouncing-sources/). See [this article](https://www.algolia.com/doc/ui-libraries/autocomplete/guides/debouncing-sources/). If you are using [plugins](https://www.algolia.com/doc/ui-libraries/autocomplete/core-concepts/plugins/#building-your-own-plugin), this is how you would debounce:
+
+```js
+autocomplete({
+  container: '#autocomplete',
+  getSources({ query }) {
+    return debounced([])
+  },
+})
+```
 
 export default ({ children }) => <BlogMarkdown meta={meta}>{children}</BlogMarkdown>
