@@ -57,7 +57,7 @@ const Home = () => {
   return (
     <>
       <Head>
-        <title>Avi Kaminetzky on Softare</title>
+        <title>avi kaminetzky on software</title>
       </Head>
 
       <div className="text-slate-700 flex flex-col h-screen p-10 lg:max-w-screen-md lg:mx-auto">

@@ -34,6 +34,12 @@ h2 a {
   margin: 0;
 }
 
+@media (max-width: 700px) {
+  .toc li {
+    margin: 6px 0;
+  }
+}
+
 .algolia-facet {
   max-width: 230px !important;
 }
