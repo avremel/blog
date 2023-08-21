@@ -25,7 +25,7 @@ const BlogLayout = ({ meta, children }) => {
           prose-headings:font-semibold
         "
       >
-        <div className="mb-2 border border-solid border-slate-600 bg-slate-100 text-slate-600 p-1 rounded h-fit w-fit px-3 text-center text-sm flex-shrink-0 basis-24">
+        <div className="mb-2 border border-solid border-slate-600 text-slate-600 p-1 rounded h-fit w-fit px-3 text-center text-sm">
           {meta.date}
         </div>
 

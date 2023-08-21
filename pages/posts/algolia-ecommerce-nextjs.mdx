@@ -1,4 +1,5 @@
-import { BlogMarkdown, Image } from '../../components'
+import { BlogMarkdown } from '../../components'
+import Image from 'next/image'
 
 export const meta = {
   title: 'Algolia + Ecommerce + NextJS',
@@ -68,7 +69,7 @@ You can layer on custom signals to further influence the order of results ("Rank
 
 Debugging search relevance is intuitive and painless, thanks the ranking popup in the dashboard which explains why a specific record ranks the way it does relative to other records.
 
-<Image src="/debug_relevance.png" alt="Debugging relevance in Algolia's dashboard" />
+<img src="/debug_relevance.png" alt="Debugging relevance in Algolia's dashboard" />
 
 Algolia's approach to configuring and tweaking search relevance feels like it's at the right layer of abstraction. Simple to understand, sensible defaults, yet customizable. Contrast with Solr/Elastic Search, which requires the user to fiddle with low level primitives like tokenizers, ngrams and pesky math.
 
