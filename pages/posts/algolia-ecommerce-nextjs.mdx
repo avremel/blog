@@ -234,11 +234,12 @@ Algolia has usage-based-billing, see [the docs](https://www.algolia.com/doc/guid
 
 Verify in the network tab that each user action (click on filter, search, etc) results in a *single* [multi-query]((https://www.algolia.com/doc/guides/building-search-ui/going-further/optimize-search-request-usage/js/#check-if-you-are-using-single-or-multi-query-endpoint)) API call.
 
-Autocomplete will trigger an API call for each key stroke unless you [debounce the input](https://www.algolia.com/doc/ui-libraries/autocomplete/guides/debouncing-sources/). See [this article](https://www.algolia.com/doc/ui-libraries/autocomplete/guides/debouncing-sources/). If you are using [plugins](https://www.algolia.com/doc/ui-libraries/autocomplete/core-concepts/plugins/#building-your-own-plugin), this is how you would debounce:
+Autocomplete will trigger an API call for each key stroke unless you [debounce the input](https://www.algolia.com/doc/ui-libraries/autocomplete/guides/debouncing-sources/). See [this article](https://www.algolia.com/doc/ui-libraries/autocomplete/guides/debouncing-sources/). Debouncing works with [plugins](https://www.algolia.com/doc/ui-libraries/autocomplete/core-concepts/plugins/#building-your-own-plugin) as well:
 
 ```js
 autocomplete({
   container: '#autocomplete',
+  plugins: myPlugins,
   getSources({ query }) {
     return debounced([])
   },
