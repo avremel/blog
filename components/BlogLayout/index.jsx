@@ -23,7 +23,7 @@ const BlogLayout = ({ meta, children }) => {
           <nav className="">
             <a href="/">
               <VisuallyHidden>Home</VisuallyHidden>
-              <HomeIcon width="30" height="30" />
+              <HomeIcon width="30" height="30" color="#64748b" />
             </a>
           </nav>
 
