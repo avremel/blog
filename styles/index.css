@@ -11,7 +11,7 @@ h2 a {
   text-decoration: none !important;
 }
 
-.footnotes li p {
+.footnotes a {
   word-break: break-all;
 }
 
