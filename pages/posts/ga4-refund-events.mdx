@@ -74,7 +74,7 @@ The schema is roughly:
 
 `client_id` is a unique identifier stored by GA4 in the `_ga` cookie and looks something like `GA1.2.908899769.1600020018`[^6]. If you have BigQuery linked to GA4, it shows up as `user_pseudo_id`.
 
-You can retreive the `client_id` by storing the `_ga` cookie in your database at checkout time, or by querying BigQuery:
+You can retreive the `client_id` from the cookie and store it in your database at checkout time, or by querying BigQuery:
 ```sql
 SELECT
   user_pseudo_id AS client_id,
