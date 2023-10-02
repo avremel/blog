@@ -11,6 +11,7 @@ module.exports = {
           css: {
             'blockquote p:first-of-type::before': { content: 'none' },
             'blockquote p:first-of-type::after': { content: 'none' },
+            'blockquote p': { padding: '1.25rem 0' },
           },
         },
       },

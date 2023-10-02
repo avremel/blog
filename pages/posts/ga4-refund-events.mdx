@@ -1,0 +1,170 @@
+import { BlogMarkdown } from '../../components'
+import Image from 'next/image'
+
+export const meta = {
+  title: 'GA4 Offline Refund Events',
+  description: 'How to send offline refund events with Google Analytics 4 and debugging with BigQuery',
+  date: 'Oct 2023',
+  slug: 'ga4-refund-events',
+  ogImage: 'ga4-refund-events.png',
+}
+
+<ul className="toc">
+  <li><a href="#the-problem">The problem</a></li>
+  <li><a href="#solution-1-csv-upload">Solution 1: CSV Upload</a></li>
+  <li><a href="#solution-2-measurement-protocol">Solution 2: Measurement Protocol</a></li>
+  <li><a href="#how-to-debug-refund-events">How to debug refund events</a></li>
+</ul>
+
+## The problem
+With GA4, triggering a `purchase` event on checkout completion is straightforward[^1]:
+
+```json
+  {
+    transaction_id: "T_12345_1",
+    value: 25.42,
+    tax: 4.90,
+    shipping: 5.99,
+    currency: "USD",
+    items: ...
+  }
+```
+
+If a user cancels their order or removes an item, you can simply send a `refund` event[^2].
+
+The sum of these events - purchases minus refunds - are reflected in `Reports > Total Revenue`.
+
+How can you report on `refund` events which don't happen in the browser? It is fairly common for a user to cancel their order over the phone or for an order to get flagged as fraud.
+
+## Solution 1: CSV Upload
+
+You can upload a CSV of `transaction_id`'s[^3]. The obvious drawback is that you need to manage refunds manually. Another caveat:
+
+> **You should wait 24 - 48 hours** before importing the refund data to make sure the original transaction is present in the account.
+
+## Solution 2: Measurement Protocol
+
+> The Google Analytics Measurement Protocol for Google Analytics 4 enhances measurement for web and app streams by sending events directly to Google Analytics servers in HTTP requests. You can record server-to-server and offline interactions, and send them as Measurement Protocol events to Google Analytics, where they can be viewed in reports.[^4]
+
+This seems like the ideal solution for programatically sending "offline" `refund` events.
+
+#### How to validate the request
+
+> The Google Analytics Measurement Protocol for Google Analytics 4 does not return HTTP error codes
+
+You will need to validate your API request using the Event Builder UI[^5] or by calling the validation endpoint: `/debug/mp/collect`.
+
+#### What data do you need to send?
+
+The schema is roughly:
+
+```json
+  {
+    "client_id": "client_id",
+    "events": [{
+      "name": "refund",
+      "params": {
+        "currency": "USD",
+        "transaction_id": "T_12345_1",
+        "value": 12.21,
+      }
+    }]
+  }
+```
+
+`client_id` is a unique identifier stored by GA4 in the `_ga` cookie and looks something like `GA1.2.908899769.1600020018`[^6]. If you have BigQuery linked to GA4, it shows up as `user_pseudo_id`.
+
+You can retreive the `client_id` by storing the `_ga` cookie in your database at checkout time, or by querying BigQuery:
+```sql
+SELECT
+  user_pseudo_id AS client_id,
+  params.value.string_value AS transaction_id
+FROM
+  `MY_ANALYTICS_TABLE.events_*`,
+  UNNEST(event_params) params
+WHERE
+  params.key = 'transaction_id'
+  AND params.value.string_value IN ("T_12345_1")
+```
+
+#### Open Questions
+- Why does the `refund` event require a `client_id`, isn't the `transaction_id` enough? The CSV upload doesn't require a `client_id`.
+- Why is there no way to batch `refund` events for multiple users?
+- Do I need to wait 48 hours after a `purchase` before sending a `refund` event? The CSV upload has this requirement, but it's unclear if it applies to the Measurement Protocol as well.
+- If I send a `refund` event before a `purchase` event gets ingested, does it get discarded?
+
+## How to debug refund events
+
+I haven't figured out how to inspect individual refund events in the GA4 UI using `Explore` as the UI is shockingly bad. Instead, I'm using the BigQuery integration to verify that events are coming in correctly. These are queries I've been using:
+
+#### Refund events for a specific day
+
+```sql
+  SELECT
+    user_pseudo_id,
+    event_timestamp AS refund_timestamp,
+    event_name AS refund_event_name,
+    (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'transaction_id') AS refund_transaction_id,
+    (SELECT COALESCE(value.int_value, value.double_value) FROM UNNEST(event_params) WHERE key = 'value') AS refund_amount
+  FROM
+    `MY_ANALYTICS_TABLE.events_*`
+  WHERE
+    event_name = 'refund'
+    AND event_date = '20230926'
+```
+
+#### Refund events with matching purchase events for a specific day
+
+```sql
+  WITH purchases AS (
+    SELECT
+      user_pseudo_id,
+      event_timestamp AS purchase_timestamp,
+      event_name AS purchase_event_name,
+      (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'transaction_id') AS purchase_transaction_id,
+      (SELECT COALESCE(value.int_value, value.double_value) FROM UNNEST(event_params) WHERE key = 'value') AS purchase_amount
+    FROM
+      `MY_ANALYTICS_TABLE.events_*`
+    WHERE
+      event_name = 'purchase'
+  ),
+  refunds AS (
+    SELECT
+      user_pseudo_id,
+      event_timestamp AS refund_timestamp,
+      event_name AS refund_event_name,
+      (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'transaction_id') AS refund_transaction_id,
+      (SELECT COALESCE(value.int_value, value.double_value) FROM UNNEST(event_params) WHERE key = 'value') AS refund_amount
+    FROM
+      `MY_ANALYTICS_TABLE.events_*`
+    WHERE
+      event_name = 'refund'
+      AND event_date = '20230926'
+  )
+
+  SELECT
+    r.user_pseudo_id,
+    r.refund_timestamp,
+    r.refund_event_name,
+    r.refund_transaction_id,
+    r.refund_amount,
+    p.purchase_timestamp,
+    p.purchase_event_name,
+    p.purchase_transaction_id,
+    p.purchase_amount
+  FROM
+    refunds r
+  LEFT JOIN
+    purchases p
+  ON
+    p.purchase_transaction_id = r.refund_transaction_id
+```
+[^1]: https://developers.google.com/analytics/devguides/collection/ga4/set-up-ecommerce
+[^2]: https://developers.google.com/analytics/devguides/collection/ga4/ecommerce?client_type=gtag#make_a_purchase_or_issue_a_refund
+[^3]: https://support.google.com/analytics/answer/6066862
+[^4]: https://developers.google.com/analytics/devguides/collection/protocol/ga4
+[^5]: https://ga-dev-tools.google/ga4/event-builder/
+[^6]: The `client_id` is everything after `GA1.1.` or `GA1.2.`
+
+
+export default ({ children }) => <BlogMarkdown meta={meta}>{children}</BlogMarkdown>
