@@ -93,6 +93,8 @@ WHERE
 - Do I need to wait 48 hours after a `purchase` before sending a `refund` event? The CSV upload has this requirement, but it's unclear if it applies to the Measurement Protocol as well.
 - If I send a `refund` event before a `purchase` event gets ingested, does it get discarded?
 
+> :point_right: A timestamp can be done using the `timestamp_micros`. However, the protocol only supports timestamps less than 72 hours ago. _If_ you have to wait 48 hours to send a refund event, the refund timestamp might be stale by the time it reaches the API, causing the event to get rejected.
+
 ## How to debug refund events
 
 I haven't figured out how to inspect individual refund events in the GA4 UI using `Explore` since the UI is shockingly bad. Instead, I'm using the BigQuery integration to verify that events are coming in correctly. The queries I've been using:
