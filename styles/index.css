@@ -68,3 +68,11 @@ h2 a {
 .algolia-range-facet {
   max-width: 100px !important;
 }
+.prose-quoteless blockquote p:first-of-type::before,
+.prose-quoteless blockquote p:first-of-type::after {
+  content: none;
+}
+
+.prose-quoteless blockquote p {
+  padding: 1.25rem 0;
+}

@@ -5,6 +5,26 @@ import { VisuallyHidden } from '../index'
 
 const BlogLayout = ({ meta, children }) => {
   const base = `https://www.avikaminetzky.dev`
+  const postUrl = meta.slug ? `${base}/posts/${meta.slug}` : null
+  const imageUrl = meta.ogImage ? `${base}/${meta.ogImage}` : null
+  const articleSchema =
+    postUrl && meta.publishedAt
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'BlogPosting',
+          headline: meta.title,
+          description: meta.description,
+          url: postUrl,
+          mainEntityOfPage: postUrl,
+          datePublished: meta.publishedAt,
+          dateModified: meta.updatedAt || meta.publishedAt,
+          author: {
+            '@type': 'Person',
+            name: 'Avi Kaminetzky',
+          },
+          image: imageUrl || undefined,
+        }
+      : null
 
   return (
     <div className="p-6 lg:max-w-screen-md lg:mx-auto text-slate-700">
@@ -23,22 +43,25 @@ const BlogLayout = ({ meta, children }) => {
           </>
         )}
 
-        {meta.slug && (
-          <meta property="og:url" content={`${base}/posts/${meta.slug}`} />
-        )}
+        {postUrl && <meta property="og:url" content={postUrl} />}
 
-        {meta.ogImage && (
+        {imageUrl && (
           <>
-            <meta property="og:image" content={`${base}/${meta.ogImage}`} />
-            <meta
-              name="twitter:image:alt"
-              content="Ecommerce + Algolia + NextJS"
-            />
-            <meta name="twitter:image" content={`${base}/${meta.ogImage}`} />
+            <meta property="og:image" content={imageUrl} />
+            <meta name="twitter:image:alt" content={meta.title} />
+            <meta name="twitter:image" content={imageUrl} />
           </>
         )}
 
         <meta name="twitter:card" content="summary_large_image" />
+        {articleSchema && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(articleSchema),
+            }}
+          />
+        )}
       </Head>
 
       <article

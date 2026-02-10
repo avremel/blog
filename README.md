@@ -1,27 +1,46 @@
-# Example app with MDX
+# avikaminetzky.dev
 
-This example shows using [MDX](https://github.com/mdx-js/mdx) as top level pages for your next.js app.
+Personal blog built with Next.js + MDX.
 
-## Preview
+## Scripts
 
-Preview the example live on [StackBlitz](http://stackblitz.com/):
+- `npm run dev`: Start local development server.
+- `npm run build`: Validate post metadata and build production assets.
+- `npm run start`: Serve the production build.
+- `npm run validate:posts`: Validate MDX frontmatter against the post schema.
+- `npm run new:post -- "Your Post Title"`: Scaffold a new MDX post with valid frontmatter.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/vercel/next.js/tree/canary/examples/with-mdx)
+## Post Workflow
 
-## Deploy your own
-
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example):
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/vercel/next.js/tree/canary/examples/with-mdx&project-name=with-mdx&repository-name=with-mdx)
-
-## How to use
-
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init) or [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) to bootstrap the example:
+### 1) Create a new post
 
 ```bash
-npx create-next-app --example with-mdx with-mdx-app
-# or
-yarn create next-app --example with-mdx with-mdx-app
+npm run new:post -- "Your Post Title"
 ```
 
-Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
+This creates `pages/posts/<slug>.mdx` with frontmatter + a default MDX layout wrapper.
+
+### 2) Fill in frontmatter
+
+Each post must include:
+
+- `title`
+- `description`
+- `date` (display label, for example `Feb 2026`)
+- `publishedAt` (ISO date: `YYYY-MM-DD`)
+- `slug` (must match the filename)
+- `ogImage` (optional)
+
+### 3) Build safely
+
+`npm run build` runs schema validation first. Validation enforces:
+
+- strict frontmatter schema (via `zod`)
+- slug filename sync
+- unique slugs across posts
+
+## Why this is manageable
+
+- The homepage post list is generated from frontmatter (`utils/posts.mjs`) instead of hardcoded links.
+- Blog JSON-LD schema is generated from the same metadata used to render posts.
+- New posts can be added with one command and validated automatically in builds.

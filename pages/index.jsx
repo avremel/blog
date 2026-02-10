@@ -2,6 +2,7 @@ import React from 'react'
 import Head from 'next/head'
 import { GitHubLogoIcon } from '@radix-ui/react-icons'
 import { VisuallyHidden } from '../components'
+import { getAllPostsMeta } from '../utils/posts.mjs'
 
 const StackOverflow = () => {
   return (
@@ -21,12 +22,11 @@ const StackOverflow = () => {
 const LinkedIn = ({ width, height }) => {
   return (
     <svg
-      className="w-[30px] h-[30px]"
+      className="w-[30px] h-[30px] mercado-match"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       data-supported-dps="24x24"
       fill="currentColor"
-      class="mercado-match"
       width={width}
       height={height}
       focusable="false"
@@ -36,6 +36,27 @@ const LinkedIn = ({ width, height }) => {
   )
 }
 
+const externalPosts = [
+  {
+    date: 'May 2019',
+    link: 'https://github.com/avremel/lucene',
+    text: 'Simple Search Engine',
+    external: true,
+  },
+  {
+    date: 'Apr 2018',
+    link: 'https://medium.com/@avremelk/solr-gottchas-a-tutorial-a953c8b3e775',
+    text: 'Solr + Python — A Tutorial',
+    external: true,
+  },
+  {
+    date: 'Jan 2018',
+    link: 'https://medium.com/@avremelk/practical-redux-course-1aeb74bd01aa',
+    text: 'Practical Redux Course',
+    external: true,
+  },
+]
+
 const NavItem = ({ date, link, text, external = false }) => {
   return (
     <li className="flex gap-4 lg:gap-6 leading-6">
@@ -44,7 +65,8 @@ const NavItem = ({ date, link, text, external = false }) => {
       </span>
       <a
         href={link}
-        target={external ? '_blank' : ''}
+        target={external ? '_blank' : undefined}
+        rel={external ? 'noopener noreferrer' : undefined}
         className="underline underline-offset-4 decoration-slate-300 lg:text-xl lg:underline-offset-8"
       >
         {text}
@@ -53,11 +75,50 @@ const NavItem = ({ date, link, text, external = false }) => {
   )
 }
 
-const Home = () => {
+const Home = ({ posts }) => {
+  const baseUrl = 'https://www.avikaminetzky.dev'
+  const homeSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Blog',
+    name: 'avi kaminetzky on software',
+    description: 'Notes on software engineering, search, and frontend architecture.',
+    url: baseUrl,
+    inLanguage: 'en-US',
+    author: {
+      '@type': 'Person',
+      name: 'Avi Kaminetzky',
+      url: baseUrl,
+      sameAs: [
+        'https://www.linkedin.com/in/avi-dev/',
+        'https://stackoverflow.com/users/4822174/avi-kaminetzky',
+        'https://github.com/avremel',
+      ],
+    },
+    blogPost: posts.map((post) => ({
+      '@type': 'BlogPosting',
+      headline: post.title,
+      description: post.description,
+      url: `${baseUrl}/posts/${post.slug}`,
+      datePublished: post.publishedAt,
+      dateModified: post.publishedAt,
+      author: {
+        '@type': 'Person',
+        name: 'Avi Kaminetzky',
+      },
+      image: post.ogImage ? `${baseUrl}/${post.ogImage}` : undefined,
+    })),
+  }
+
   return (
     <>
       <Head>
         <title>avi kaminetzky on software</title>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(homeSchema),
+          }}
+        />
       </Head>
 
       <div className="text-slate-700 flex flex-col h-screen p-10 lg:max-w-screen-md lg:mx-auto">
@@ -71,7 +132,11 @@ const Home = () => {
           </div>
 
           <div className="flex items-center gap-2">
-            <a href="https://www.linkedin.com/in/avi-dev/" target="_blank">
+            <a
+              href="https://www.linkedin.com/in/avi-dev/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <LinkedIn />
 
               <VisuallyHidden>LinkedIn Link</VisuallyHidden>
@@ -80,13 +145,18 @@ const Home = () => {
             <a
               href="https://stackoverflow.com/users/4822174/avi-kaminetzky"
               target="_blank"
+              rel="noopener noreferrer"
             >
               <StackOverflow />
 
               <VisuallyHidden>StackOverflow Link</VisuallyHidden>
             </a>
 
-            <a href="https://github.com/avremel" target="_blank">
+            <a
+              href="https://github.com/avremel"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <GitHubLogoIcon className="w-[26px] h-[26px]" />
 
               <VisuallyHidden>Github Link</VisuallyHidden>
@@ -95,43 +165,36 @@ const Home = () => {
         </header>
 
         <ul className="flex flex-col gap-4 overflow-y-auto pb-2">
-          <NavItem
-            date="Aug 2024"
-            link="/posts/algolia-ecommerce-nextjs"
-            text="Algolia + NextJS for Ecommerce"
-          />
-          <NavItem
-            date="Oct 2023"
-            link="/posts/ga4-refund-events"
-            text="GA4 Offline Refund Events"
-          />
-          <NavItem
-            date="Feb 2022"
-            link="/posts/react-flavored-js"
-            text="React Flavored Javascript"
-          />
-          <NavItem
-            date="May 2019"
-            link="https://github.com/avremel/lucene"
-            text="Simple Search Engine"
-            external
-          />
-          <NavItem
-            date="Apr 2018"
-            link="https://medium.com/@avremelk/solr-gottchas-a-tutorial-a953c8b3e775"
-            text="Solr + Python — A Tutorial"
-            external
-          />
-          <NavItem
-            date="Jan 2018"
-            link="https://medium.com/@avremelk/practical-redux-course-1aeb74bd01aa"
-            text="Practical Redux Course"
-            external
-          />
+          {posts.map((post) => (
+            <NavItem
+              key={post.slug}
+              date={post.date}
+              link={`/posts/${post.slug}`}
+              text={post.title}
+            />
+          ))}
+
+          {externalPosts.map((post) => (
+            <NavItem
+              key={post.link}
+              date={post.date}
+              link={post.link}
+              text={post.text}
+              external={post.external}
+            />
+          ))}
         </ul>
       </div>
     </>
   )
+}
+
+export function getStaticProps() {
+  return {
+    props: {
+      posts: getAllPostsMeta(),
+    },
+  }
 }
 
 export default Home

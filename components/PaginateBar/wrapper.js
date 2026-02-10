@@ -1,4 +1,3 @@
-import $ from 'jquery'
 import React, { useEffect } from 'react'
 import PaginateBarComponent from './index'
 
