@@ -4,7 +4,7 @@ import Image from 'next/image'
 export const meta = {
   title: 'Algolia + NextJS for Ecommerce',
   description: 'Notes on implementing Algolia with NextJS',
-  date: 'Aug 2023',
+  date: 'Sep 2024',
   slug: 'algolia-ecommerce-nextjs',
   ogImage: 'algolia-ecommerce.png',
 }
@@ -63,7 +63,7 @@ Your data will look like something like:
 
 :point_right: Filtering won't remove irrelevant variants from a record. For example, if you filter by blue, yellow will still show up. You'll need to remove yellow with application code.
 
-:bulb: To control which variant shows up as the primary record, add a strict sort to Ranking and Sorting (SORT BY `is_default_varaint`).
+:bulb: To control which variant shows up as the primary record, add a strict sort to Ranking and Sorting (SORT BY `is_default_variant`).
 
 ## Search
 
@@ -81,7 +81,7 @@ The default ranking mechanism is roughly:
 
 You can layer on custom signals to further influence the order of results ("Ranking and Sorting"), in two flavors:
 1. Custom rankings (relative boosts like Solr's [`bq` parameter](https://solr.apache.org/guide/7_6/the-dismax-query-parser.html)). Useful for boosting in-stock, popular, new products, etc.
-2. Strict sort. Generally you want to avoid strict sort, as it overrides sort-by-relevance. One exception is if you are rolling up variants and would like to control which variant is the primary one. 
+2. Strict sort. Generally you want to avoid strict sort, as it overrides sort-by-relevance. One exception is if you are rolling up variants and would like to control which variant is the default one. 
 
 Debugging search relevance is intuitive and painless. The ranking popup in the dashboard which explains why a specific record ranks the way it does relative to other records.
 
@@ -114,7 +114,9 @@ If you have chosen to [roll up variants](https://www.algolia.com/doc/guides/mana
 ## Sorting
 Each sort requires a new [virtual](https://www.algolia.com/doc/guides/managing-results/refine-results/sorting/in-depth/replicas/#what-are-virtual-replicas) index. For example, you will need separate indices for price ascending and price descending.
 
-:vertical_traffic_light: Merchandising rules (and other settings) get copied over to new sort indices and can potentially interfere with sorting. Make sure to remove them as needed.
+:point_right: If your users are complaining that sorting isn't precise, consider using a standard replica instead.
+
+:vertical_traffic_light: Merchandising rules (and other settings) get copied over to new indices by default and can potentially interfere with sorting. Make sure to remove them as needed.
 
 ## Merchandising
 
@@ -142,6 +144,8 @@ I prefer to avoid rules for configuring filter display logic. Filter display is 
 
 :point_right: In some scenarios, you will need to actively monitor pinned items: If you have a filter trigger (for example, `in_stock = true`) which pins 10 items to the top of a list and some items go out of stock, their positions will become "orphaned" and be filled by random items. There is no automatic way to keep all the pinned items clustered at the top of the list. 
 
+:vertical_traffic_light: If you pin items but want them to be ignored if they don't match the current filters, check out [this setting](https://support.algolia.com/hc/en-us/articles/15712888056337-Why-am-I-getting-this-pinned-item-will-not-be-displayed-with-the-current-filter-error-message-in-the-Visual-Editor).
+
 ### Manual Rules
 
 The previous section described "visual" rules.
@@ -168,8 +172,6 @@ Algolia provides a ton of data about how a user interacts with search:
 - Searches without results
 - Click through rate
 - Conversion rate
-
-:round_pushpin: Conversions don't diffrentiate between add-to-cart and a purchase. Ideally, they would be separate events. 
 
 You can further enrich the data by providing custom `analyticsTags`[^6]. For example:
   - Tag which queries are coming from autocomplete or from the list page.

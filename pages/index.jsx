@@ -96,14 +96,14 @@ const Home = () => {
 
         <ul className="flex flex-col gap-4 overflow-y-auto pb-2">
           <NavItem
+            date="Aug 2024"
+            link="/posts/algolia-ecommerce-nextjs"
+            text="Algolia + NextJS for Ecommerce"
+          />
+          <NavItem
             date="Oct 2023"
             link="/posts/ga4-refund-events"
             text="GA4 Offline Refund Events"
-          />
-          <NavItem
-            date="Aug 2023"
-            link="/posts/algolia-ecommerce-nextjs"
-            text="Algolia + NextJS for Ecommerce"
           />
           <NavItem
             date="Feb 2022"
