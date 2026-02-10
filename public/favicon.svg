@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="AK favicon">
+  <rect width="64" height="64" rx="10" fill="#000"/>
+  <g fill="none" stroke="#fff" stroke-width="6" stroke-linecap="butt" stroke-linejoin="miter">
+    <path d="M10 52 L18 12 L26 52 M13 35 H23"/>
+    <path d="M36 12 V52 M36 32 L53 12 M36 32 L53 52"/>
+  </g>
+</svg>
