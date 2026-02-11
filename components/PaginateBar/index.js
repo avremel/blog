@@ -1,111 +1,92 @@
+import $ from 'jquery'
 import cn from 'classnames'
 import css from './index.module.css'
 
 class PaginateBarComponent {
-  #selector
-  #onChange
-  #children
-  #pageNum
-  #perPage
-  #totalRecords
-  #totalPages
+  #selector;
+  #onChange;
+  #children;
+  #pageNum;
+  #perPage;
+  #totalRecords;
+  #totalPages;
 
   constructor({ selector, onChange, children }) {
-    this.#selector = selector
-    this.#onChange = onChange
-    this.#children = children
+    this.#selector = selector;
+    this.#onChange = onChange;
+    this.#children = children;
 
-    this.#pageNum = null
-    this.#perPage = null
-    this.#totalRecords = null
-    this.#totalPages = null
+    this.#pageNum = null;
+    this.#perPage = null;
+    this.#totalRecords = null;
+    this.#totalPages = null;
 
-    Object.preventExtensions(this)
+    // prevent new attributes (private or public) from being set
+    Object.preventExtensions(this);
 
-    this.#setInitialDOM()
+    this.#setInitialDOM();
   }
 
   setValues({ pageNum, perPage, totalRecords, totalPages }) {
-    this.#pageNum = parseInt(pageNum, 10)
-    this.#perPage = parseInt(perPage, 10)
-    this.#totalRecords = parseInt(totalRecords, 10)
-    this.#totalPages = parseInt(totalPages, 10)
+    this.#pageNum = parseInt(pageNum, 10);
+    this.#perPage = parseInt(perPage, 10);
+    this.#totalRecords = parseInt(totalRecords, 10);
+    this.#totalPages = parseInt(totalPages, 10);
 
-    this.#updateDOM()
+    this.#updateDOM();
   }
 
   isLoading(value) {
-    const prevButton = document.querySelector('#prev-page')
-    const nextButton = document.querySelector('#next-page')
-
-    if (prevButton) {
-      prevButton.disabled = value
-    }
-
-    if (nextButton) {
-      nextButton.disabled = value
-    }
+    const isDisabled = value;
+    $('#prev-page').attr('disabled', isDisabled);
+    $('#next-page').attr('disabled', isDisabled);
   }
 
   #setInitialDOM() {
     const html = `
       <div class=${css['paginate-bar']}>
         <div id='num-results' class=${css['num-results']}></div>
-        <div id='children' class=${css.children}>${this.#children}</div>
-        <div id='paginator' class=${css.paginator}>
-          <button class=${cn(css.button, css['paginate-button'])} id='prev-page'>PREV PAGE</button>
-          <button class=${cn(css.button, css['paginate-button'])} id='next-page'>NEXT PAGE</button>
+        <div id='children' class=${css['children']}>${this.#children}</div>
+        <div id='paginator' class=${css['paginator']}>
+          <button class=${cn(css['button'], css['paginate-button'])} id='prev-page'>PREV PAGE</button>
+          <button class=${cn(css['button'], css['paginate-button'])} id='next-page'>NEXT PAGE</button>
         </div>
       </div>
-    `
+    `;
 
-    const root = document.querySelector(this.#selector)
-    if (!root) {
-      return
-    }
+    $(this.#selector).append(html);
 
-    root.insertAdjacentHTML('beforeend', html)
-
-    const nextButton = root.querySelector('#next-page')
-    if (nextButton) {
-      nextButton.addEventListener('click', () => {
-        this.#onChange(this.#pageNum + 1)
-      })
-    }
-
-    const prevButton = root.querySelector('#prev-page')
-    if (prevButton) {
-      prevButton.addEventListener('click', () => {
-        this.#onChange(this.#pageNum - 1)
-      })
-    }
+    $('#next-page').on('click', () => {
+      this.#onChange(this.#pageNum + 1);
+    });
+    $('#prev-page').on('click', () => {
+      this.#onChange(this.#pageNum - 1);
+    });
   }
 
   #updateDOM() {
-    const numResults = document.querySelector('#num-results')
-    const prevButton = document.querySelector('#prev-page')
-    const nextButton = document.querySelector('#next-page')
-
-    if (!numResults || !prevButton || !nextButton) {
-      return
-    }
-
-    let text = ''
-    const readableTotalRecords = this.#totalRecords.toLocaleString()
-    const pluralizedRecordName = 'DOCUMENTS'
-
+    let text = '';
+    const readableTotalRecords = this.#totalRecords.toLocaleString();
+    const plularlizedRecordName = `DOCUMENTS`;
     if (this.#totalPages > 1) {
-      const start = this.#pageNum * this.#perPage - this.#perPage + 1
-      const end = Math.min(this.#pageNum * this.#perPage, this.#totalRecords)
-      text += `${start}...${end} OF `
+      let start = this.#pageNum * this.#perPage - this.#perPage + 1;
+      let end = Math.min(this.#pageNum * this.#perPage, this.#totalRecords);
+      text += `${start}...${end} OF `;
     }
+    text += ` ${readableTotalRecords} ${plularlizedRecordName}`;
 
-    text += ` ${readableTotalRecords} ${pluralizedRecordName}`
-
-    numResults.innerHTML = text
-    prevButton.style.display = this.#pageNum > 1 ? 'block' : 'none'
-    nextButton.style.display = this.#pageNum < this.#totalPages ? 'block' : 'none'
+    $('#num-results').html(text);
+    if (this.#pageNum > 1) {
+      $('#prev-page').css('display', 'block');
+    } else {
+      $('#prev-page').css('display', 'none');
+    }
+    if (this.#pageNum < this.#totalPages) {
+      $('#next-page').css('display', 'block');
+    } else {
+      $('#next-page').css('display', 'none');
+    }
   }
 }
 
-export default PaginateBarComponent
+export default PaginateBarComponent;
