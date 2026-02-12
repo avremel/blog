@@ -16,7 +16,12 @@ const H2 = ({ children }) => {
   )
 }
 
-const Pre = ({ children }) => <pre className="bg-slate-100">{children}</pre>
+const Pre = ({ className = '', ...props }) => (
+  <pre
+    {...props}
+    className={`bg-slate-100 text-slate-900 ${className}`.trim()}
+  />
+)
 
 const components = {
   h2: H2,

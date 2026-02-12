@@ -76,3 +76,25 @@ h2 a {
 .prose-quoteless blockquote p {
   padding: 1.25rem 0;
 }
+
+/* Wrap long code lines instead of horizontal overflow */
+.prose pre {
+  white-space: pre-wrap !important;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.prose pre code {
+  white-space: inherit !important;
+}
+
+.prose pre code [data-line] {
+  white-space: inherit;
+}
+
+/* Keep inline code readable without bold weight */
+.prose :not(pre) > code {
+  font-weight: 400;
+  padding: 0.14rem 0.35rem;
+  border-radius: 0.25rem;
+}
