@@ -76,7 +76,7 @@ How does an LLM do that?
 
 ```
 97% context left
-> That's cool, I won't have to set up a new ETL or a vector database, nor will I need embedding or rerank model at runtime. A single fast LLM will get the job done and the context window won't have to include product data. But what UX does this unlock?
+> That's cool, I won't have to set up a new ETL or a vector database, nor will I need embedding or rerank model at runtime. A single fast LLM call will get the job done and the context window won't have to include product data. But what UX does this unlock?
 ```
 
 <AIProductSearchDemo />
@@ -91,7 +91,7 @@ For follow-up messages, send the client's filter state and have the LLM adjust t
 ```
 > /compact
 ```
-Look carefully at the shape of your data; it is a good indicator of how you can architect conversational search. If your product specs aren't standardized, vector search on unstructured text makes sense. If you already have faceted search, you can probably get by with generating search syntax. A nice byproduct: users get interactive filters they can refine without waiting for another LLM roundtrip. Use the right tool for the job and understand the tradeoffs.
+Look carefully at the shape of your data; it is a good indicator of how you can architect conversational search. If your product specs aren't standardized, vector search on unstructured text makes sense. If you already have faceted search, you can probably get by with generating search syntax. A nice byproduct: users get interactive filters they can refine without waiting for another LLM roundtrip. Use the right tool for the job.
 
 
 ```

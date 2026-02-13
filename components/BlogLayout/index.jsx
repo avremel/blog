@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 
 const BlogLayout = ({ meta, children }) => {
+  const router = useRouter()
   const base = `https://www.avikaminetzky.dev`
   const postUrl = meta.slug ? `${base}/posts/${meta.slug}` : null
   const imageUrl = meta.ogImage ? `${base}/${meta.ogImage}` : null
@@ -23,6 +25,29 @@ const BlogLayout = ({ meta, children }) => {
           image: imageUrl || undefined,
         }
       : null
+
+  useEffect(() => {
+    const onKeyDown = (event) => {
+      if (!event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return
+      if (event.key.toLowerCase() !== 'c') return
+      if (!window.matchMedia('(min-width: 1025px)').matches) return
+
+      const target = event.target
+      const tagName = target?.tagName?.toLowerCase?.() || ''
+      const isEditable =
+        tagName === 'input' ||
+        tagName === 'textarea' ||
+        tagName === 'select' ||
+        target?.isContentEditable
+      if (isEditable) return
+
+      event.preventDefault()
+      router.push('/')
+    }
+
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [router])
 
   return (
     <div className="p-6 lg:max-w-screen-md lg:mx-auto text-slate-700">
