@@ -7,7 +7,6 @@ import {
 } from '@radix-ui/react-icons'
 import css from './index.module.css'
 
-const QUERY = 'gaming laptops under $1500 with a dark finish'
 const CATEGORY = 'Laptops > Gaming Laptops'
 const MAX_PRICE = 1500
 const DETECTED_FINISH_COLORS = ['Black', 'Midnight']
@@ -22,8 +21,7 @@ const PRODUCTS = [
     storage: '1TB SSD',
     color: 'Black',
     sale_price: 1399,
-    swatches: ['Black', 'Midnight', 'Silver'],
-    swatchMore: 0,
+    sales_rank: 4,
   },
   {
     sku: 'GL-1002',
@@ -34,8 +32,7 @@ const PRODUCTS = [
     storage: '512GB SSD',
     color: 'Midnight',
     sale_price: 1499,
-    swatches: ['Midnight', 'Black'],
-    swatchMore: 0,
+    sales_rank: 1,
   },
   {
     sku: 'GL-1003',
@@ -46,8 +43,7 @@ const PRODUCTS = [
     storage: '1TB SSD',
     color: 'Black',
     sale_price: 1449,
-    swatches: ['Black', 'Silver', 'Midnight'],
-    swatchMore: 0,
+    sales_rank: 3,
   },
   {
     sku: 'GL-1004',
@@ -58,8 +54,7 @@ const PRODUCTS = [
     storage: '1TB SSD',
     color: 'Black',
     sale_price: 1299,
-    swatches: ['Black', 'Silver'],
-    swatchMore: 0,
+    sales_rank: 7,
   },
   {
     sku: 'GL-1005',
@@ -70,8 +65,7 @@ const PRODUCTS = [
     storage: '1TB SSD',
     color: 'Midnight',
     sale_price: 1479,
-    swatches: ['Midnight', 'Black', 'White'],
-    swatchMore: 2,
+    sales_rank: 2,
   },
   {
     sku: 'GL-1006',
@@ -82,8 +76,7 @@ const PRODUCTS = [
     storage: '512GB SSD',
     color: 'Black',
     sale_price: 1099,
-    swatches: ['Black', 'Silver'],
-    swatchMore: 0,
+    sales_rank: 10,
   },
   {
     sku: 'GL-1007',
@@ -94,8 +87,7 @@ const PRODUCTS = [
     storage: '1TB SSD',
     color: 'Midnight',
     sale_price: 1349,
-    swatches: ['Midnight', 'Black', 'Silver'],
-    swatchMore: 0,
+    sales_rank: 6,
   },
   {
     sku: 'GL-1008',
@@ -106,8 +98,7 @@ const PRODUCTS = [
     storage: '1TB SSD',
     color: 'Black',
     sale_price: 1499,
-    swatches: ['Black', 'White', 'Silver'],
-    swatchMore: 0,
+    sales_rank: 5,
   },
   {
     sku: 'GL-1009',
@@ -118,8 +109,7 @@ const PRODUCTS = [
     storage: '1TB SSD',
     color: 'Space Gray',
     sale_price: 1699,
-    swatches: ['Space Gray', 'Silver'],
-    swatchMore: 0,
+    sales_rank: 11,
   },
   {
     sku: 'GL-1010',
@@ -130,8 +120,7 @@ const PRODUCTS = [
     storage: '512GB SSD',
     color: 'Silver',
     sale_price: 1199,
-    swatches: ['Silver', 'Black'],
-    swatchMore: 0,
+    sales_rank: 9,
   },
   {
     sku: 'GL-1011',
@@ -142,8 +131,7 @@ const PRODUCTS = [
     storage: '2TB SSD',
     color: 'Black',
     sale_price: 1799,
-    swatches: ['Black', 'White'],
-    swatchMore: 0,
+    sales_rank: 12,
   },
   {
     sku: 'GL-1012',
@@ -154,8 +142,7 @@ const PRODUCTS = [
     storage: '1TB SSD',
     color: 'Midnight',
     sale_price: 1429,
-    swatches: ['Midnight', 'Black', 'Silver'],
-    swatchMore: 0,
+    sales_rank: 8,
   },
 ].map((item) => ({ ...item, category: CATEGORY }))
 
@@ -212,7 +199,41 @@ const DEFAULT_SELECTIONS = {
   storage: [],
 }
 
+const DEFAULT_DETECTED_STATE = {
+  category: true,
+  budget: true,
+}
+
+const DEMO_SCENARIOS = {
+  default: {
+    query: 'gaming laptops under $1500 with a dark finish',
+    showSystemMessage: true,
+    selected: DEFAULT_SELECTIONS,
+    detectedState: DEFAULT_DETECTED_STATE,
+    detectedProcessor: null,
+  },
+  'followup-core-i7': {
+    query: 'with core i7',
+    showSystemMessage: false,
+    selected: {
+      ...DEFAULT_SELECTIONS,
+      processor: ['Intel Core i7'],
+    },
+    detectedState: DEFAULT_DETECTED_STATE,
+    detectedProcessor: 'Intel Core i7',
+  },
+}
+
+const FACET_TO_PAYLOAD_KEY = {
+  brand: 'brands',
+  processor: 'attributes.processor',
+  color: 'attributes.color',
+  ram: 'attributes.ram',
+  storage: 'attributes.storage',
+}
+
 const SORT_OPTIONS = [
+  { value: 'best-selling', label: 'Sort by Best Selling' },
   { value: 'relevance', label: 'Sort by Relevance' },
   { value: 'price-asc', label: 'Sort by Price: Low to High' },
   { value: 'price-desc', label: 'Sort by Price: High to Low' },
@@ -265,6 +286,9 @@ function filterProducts(products, selected, detectedState) {
 
 function sortProducts(products, sortBy) {
   const copy = [...products]
+  if (sortBy === 'best-selling') {
+    return copy.sort((a, b) => a.sales_rank - b.sales_rank)
+  }
   if (sortBy === 'price-asc') return copy.sort((a, b) => a.sale_price - b.sale_price)
   if (sortBy === 'price-desc') return copy.sort((a, b) => b.sale_price - a.sale_price)
   return copy
@@ -280,62 +304,154 @@ function countForOption(products, selected, detectedState, facetId, optionValue)
   return filterProducts(products, next, detectedState).length
 }
 
-function compactChipLabel(label, values, facetId) {
-  if (!values.length) return label
-  const rendered = values.map((value) => toOptionLabel(facetId, value))
-  if (rendered.length === 1) return `${label}: ${rendered[0]}`
-  return `${label}: ${rendered[0]} +${rendered.length - 1}`
+function getIndexFromSort(sortBy) {
+  if (sortBy === 'best-selling') return 'products_best_selling'
+  if (sortBy === 'price-asc') return 'products_price_asc'
+  if (sortBy === 'price-desc') return 'products_price_desc'
+  return 'products_relevance'
 }
 
-const AIProductSearchDemo = () => {
-  const [selected, setSelected] = useState(DEFAULT_SELECTIONS)
-  const [detectedState, setDetectedState] = useState({
-    category: true,
-    budget: true,
-  })
-  const [sortBy, setSortBy] = useState('relevance')
+function buildPayload(selected, detectedState, sortBy) {
+  const facetFilters = []
+  const numericFilters = []
+
+  if (detectedState.category) {
+    facetFilters.push([`categories.lvl1:${CATEGORY}`])
+  }
+
+  for (const [facetId, payloadKey] of Object.entries(FACET_TO_PAYLOAD_KEY)) {
+    if (!selected[facetId]?.length) continue
+    facetFilters.push(selected[facetId].map((value) => `${payloadKey}:${value}`))
+  }
+
+  if (detectedState.budget) {
+    numericFilters.push(`prices.sale_price <= ${MAX_PRICE}`)
+  }
+
+  if (selected.price.length === 1) {
+    if (selected.price[0] === 'under-1000') numericFilters.push('prices.sale_price <= 999')
+    if (selected.price[0] === '1000-1500') {
+      numericFilters.push('prices.sale_price >= 1000')
+      numericFilters.push('prices.sale_price <= 1500')
+    }
+  }
+
+  return {
+    index: getIndexFromSort(sortBy),
+    query: '',
+    facetFilters,
+    numericFilters,
+    facets: [
+      'brands',
+      'attributes.processor',
+      'attributes.ram',
+      'attributes.storage',
+      'attributes.color',
+      'prices.sale_price',
+      'attributes.screen_size',
+    ],
+  }
+}
+
+function cloneSelections(selected) {
+  return {
+    brand: [...selected.brand],
+    processor: [...selected.processor],
+    price: [...selected.price],
+    color: [...selected.color],
+    ram: [...selected.ram],
+    storage: [...selected.storage],
+  }
+}
+
+const AIProductSearchDemo = ({ scenario = 'default' }) => {
+  const scenarioConfig = DEMO_SCENARIOS[scenario] || DEMO_SCENARIOS.default
+  const [selected, setSelected] = useState(() => cloneSelections(scenarioConfig.selected))
+  const [detectedState, setDetectedState] = useState(() => ({
+    ...scenarioConfig.detectedState,
+  }))
+  const [sortBy, setSortBy] = useState('best-selling')
   const [openFacetId, setOpenFacetId] = useState(null)
   const containerRef = useRef(null)
   const railRef = useRef(null)
+  const didInitLoadingRef = useRef(false)
   const [canScrollPrev, setCanScrollPrev] = useState(false)
   const [canScrollNext, setCanScrollNext] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const filteredProducts = useMemo(() => {
     const results = filterProducts(PRODUCTS, selected, detectedState)
     return sortProducts(results, sortBy)
   }, [detectedState, selected, sortBy])
+  const [visibleProducts, setVisibleProducts] = useState(filteredProducts)
+
+  const generatedPayload = useMemo(
+    () => buildPayload(selected, detectedState, sortBy),
+    [detectedState, selected, sortBy]
+  )
 
   const detectedFilters = useMemo(
-    () => [
-      {
-        key: 'category',
-        label: 'Category: Gaming laptops',
-        active: true,
-        disabled: true,
-        showCheckbox: false,
-      },
-      {
-        key: 'budget',
-        label: `Budget: Up to ${PRICE_FORMATTER.format(MAX_PRICE)}`,
-        active: detectedState.budget,
-        showCheckbox: true,
-        onClick: () =>
-          setDetectedState((prev) => ({ ...prev, budget: !prev.budget })),
-      },
-      {
-        key: 'finish',
-        label: `Finish: ${formatHumanList(selected.color) || 'None'}`,
-        active: selected.color.length > 0,
-        showCheckbox: true,
-        onClick: () =>
-          setSelected((prev) => ({
-            ...prev,
-            color: prev.color.length ? [] : [...DETECTED_FINISH_COLORS],
-          })),
-      },
-    ],
-    [detectedState.budget, detectedState.category, selected.color]
+    () => {
+      const filters = [
+        {
+          key: 'category',
+          label: 'Category: Gaming Laptops',
+          active: true,
+          disabled: true,
+          showCheckbox: false,
+        },
+        {
+          key: 'budget',
+          label: `Budget: Up to ${PRICE_FORMATTER.format(MAX_PRICE)}`,
+          active: detectedState.budget,
+          showCheckbox: true,
+          onClick: () =>
+            setDetectedState((prev) => ({ ...prev, budget: !prev.budget })),
+        },
+        {
+          key: 'finish',
+          label: `Finish: ${formatHumanList(DETECTED_FINISH_COLORS)}`,
+          active: selected.color.length > 0,
+          showCheckbox: true,
+          onClick: () =>
+            setSelected((prev) => ({
+              ...prev,
+              color: prev.color.length ? [] : [...DETECTED_FINISH_COLORS],
+            })),
+        },
+      ]
+
+      if (scenarioConfig.detectedProcessor) {
+        filters.push({
+          key: 'processor-detected',
+          label: `Processor: ${scenarioConfig.detectedProcessor}`,
+          active: selected.processor.includes(scenarioConfig.detectedProcessor),
+          showCheckbox: true,
+          onClick: () =>
+            toggleSelection('processor', scenarioConfig.detectedProcessor),
+        })
+      }
+
+      return filters
+    },
+    [detectedState.budget, scenarioConfig.detectedProcessor, selected.color, selected.processor]
   )
+
+  useEffect(() => {
+    if (!didInitLoadingRef.current) {
+      didInitLoadingRef.current = true
+      setVisibleProducts(filteredProducts)
+      return
+    }
+
+    setIsLoading(true)
+    const timeoutId = window.setTimeout(() => {
+      setVisibleProducts(filteredProducts)
+      setIsLoading(false)
+    }, 500)
+
+    return () => window.clearTimeout(timeoutId)
+  }, [filteredProducts])
 
   useEffect(() => {
     const handleOutside = (event) => {
@@ -365,7 +481,7 @@ const AIProductSearchDemo = () => {
       rail.removeEventListener('scroll', update)
       window.removeEventListener('resize', update)
     }
-  }, [filteredProducts.length])
+  }, [visibleProducts.length])
 
   const toggleSelection = (facetId, optionValue) => {
     setSelected((prev) => {
@@ -383,53 +499,61 @@ const AIProductSearchDemo = () => {
   const scrollRail = (direction) => {
     const rail = railRef.current
     if (!rail) return
-    rail.scrollBy({ left: direction * 300, behavior: 'smooth' })
+    rail.scrollBy({ left: direction * 320, behavior: 'smooth' })
   }
 
   return (
     <section className={`not-prose ${css.wrap}`}>
-      <div className={css.chatWindow} ref={containerRef}>
-        <div className={css.messages}>
-          <div className={css.userRow}>
-            <div className={css.userBubble}>{QUERY}</div>
-          </div>
+      <div className={css.demoShell}>
+        <div className={css.chatWindow} ref={containerRef}>
+          <div className={css.messages}>
+            {scenarioConfig.showSystemMessage && (
+              <div className={css.systemRow}>
+                <div className={css.systemBubble}>How can I help you</div>
+              </div>
+            )}
 
-          <div className={css.assistantRow}>
-            <div className={css.detectedRow}>
-              <span className={css.detectedLabel}>Detected filters</span>
-              {detectedFilters.map((chip) => (
-                <button
-                  type="button"
-                  className={
-                    chip.disabled
-                      ? css.detectedChipDisabled
-                      : chip.active
-                        ? css.detectedChip
-                        : css.detectedChipOff
-                  }
-                  key={chip.key}
-                  disabled={chip.disabled}
-                  onClick={chip.onClick}
-                >
-                  {chip.showCheckbox && (
-                    <span
-                      className={chip.active ? css.detectedCheck : css.detectedCheckOff}
-                    >
-                      <CheckIcon width={11} height={11} />
-                    </span>
-                  )}
-                  <span>{chip.label}</span>
-                </button>
-              ))}
+            <div className={css.userRow}>
+              <div className={css.userBubble}>{scenarioConfig.query}</div>
             </div>
 
-            <div className={css.resultsPanel}>
-              <div className={css.toolbar}>
-                <div className={css.toolbarLeft}>
-                  <span className={css.countText}>{filteredProducts.length} products</span>
+            <div className={css.assistantRow}>
+              <div className={css.leftPanel}>
+                <div className={css.detectedRow}>
+                  <span className={css.detectedLabel}>Detected filters</span>
+                  {detectedFilters.map((chip) => (
+                    <button
+                      type="button"
+                      className={
+                        chip.disabled
+                          ? css.detectedChipDisabled
+                          : chip.active
+                            ? css.detectedChip
+                            : css.detectedChipOff
+                      }
+                      key={chip.key}
+                      disabled={chip.disabled}
+                      onClick={chip.onClick}
+                    >
+                      {chip.showCheckbox && (
+                        <span
+                          className={chip.active ? css.detectedCheck : css.detectedCheckOff}
+                        >
+                          <CheckIcon width={11} height={11} />
+                        </span>
+                      )}
+                      <span>{chip.label}</span>
+                    </button>
+                  ))}
+                </div>
+
+                <div className={css.followupRow}>
+                  <span className={css.countText}>{visibleProducts.length} products</span>
+                  <span className={css.toolbarDivider} />
 
                   {FACETS.slice(0, 5).map((facet) => {
-                    const hasSelection = selected[facet.id].length > 0
+                    const selectedCount = selected[facet.id].length
+                    const hasSelection = selectedCount > 0
                     const isOpen = openFacetId === facet.id
                     return (
                       <div className={css.filterChipWrap} key={facet.id}>
@@ -442,14 +566,12 @@ const AIProductSearchDemo = () => {
                             )
                           }
                         >
-                          {hasSelection && (
-                            <span className={css.chipCheck}>
-                              <CheckIcon width={12} height={12} />
-                            </span>
-                          )}
                           <span>
-                            {compactChipLabel(facet.label, selected[facet.id], facet.id)}
+                            {facet.label}
                           </span>
+                          {hasSelection && (
+                            <span className={css.selectedCountBadge}>{selectedCount}</span>
+                          )}
                           <ChevronDownIcon
                             width={16}
                             height={16}
@@ -459,116 +581,141 @@ const AIProductSearchDemo = () => {
 
                         {isOpen && (
                           <div className={css.menu}>
-                            {facet.options.map((optionValue) => {
-                              const selectedNow = selected[facet.id].includes(optionValue)
-                              const count = countForOption(
-                                PRODUCTS,
-                                selected,
-                                detectedState,
-                                facet.id,
-                                optionValue
-                              )
-                              return (
+                            {facet.options
+                              .map((optionValue) => {
+                                const selectedNow = selected[facet.id].includes(optionValue)
+                                const count = countForOption(
+                                  PRODUCTS,
+                                  selected,
+                                  detectedState,
+                                  facet.id,
+                                  optionValue
+                                )
+                                return {
+                                  optionValue,
+                                  selectedNow,
+                                  count,
+                                }
+                              })
+                              .filter(({ selectedNow, count }) => selectedNow || count > 0)
+                              .sort((a, b) => {
+                                if (b.count !== a.count) return b.count - a.count
+                                return a.optionValue.localeCompare(b.optionValue)
+                              })
+                              .map(({ optionValue, selectedNow, count }) => (
                                 <button
                                   type="button"
                                   key={`${facet.id}-${optionValue}`}
                                   className={css.menuOption}
-                                  onClick={() =>
-                                    toggleSelection(facet.id, optionValue)
-                                  }
+                                  onClick={() => toggleSelection(facet.id, optionValue)}
                                 >
-                                  <span
-                                    className={
-                                      selectedNow ? css.checkOn : css.checkOff
-                                    }
-                                  >
+                                  <span className={selectedNow ? css.checkOn : css.checkOff}>
                                     {selectedNow && <CheckIcon width={11} height={11} />}
                                   </span>
                                   <span className={css.menuLabel}>
                                     {toOptionLabel(facet.id, optionValue)}
                                   </span>
-                                  <span className={css.menuCount}>{count}</span>
+                                  <span className={css.menuCount}>{count > 0 ? count : ''}</span>
                                 </button>
-                              )
-                            })}
+                              ))}
                           </div>
                         )}
                       </div>
                     )
                   })}
 
+                  <div className={css.sortWrap}>
+                    <select
+                      value={sortBy}
+                      onChange={(event) => setSortBy(event.target.value)}
+                      className={css.sortSelect}
+                      aria-label="Sort products"
+                    >
+                      {SORT_OPTIONS.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
 
-                <div className={css.sortWrap}>
-                  <select
-                    value={sortBy}
-                    onChange={(event) => setSortBy(event.target.value)}
-                    className={css.sortSelect}
-                    aria-label="Sort products"
-                  >
-                    {SORT_OPTIONS.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
+                <div
+                  className={
+                    isLoading
+                      ? `${css.carouselStage} ${css.carouselStageLoading}`
+                      : css.carouselStage
+                  }
+                >
+                  <div className={css.rail} ref={railRef}>
+                    {visibleProducts.map((product) => (
+                      <article key={product.sku} className={css.card}>
+                        <div className={css.imageWrap}>
+                          <img
+                            className={css.productImage}
+                            src={`/gaming-laptops/${product.sku.toLowerCase()}.svg`}
+                            alt={`${product.brand} ${product.name}`}
+                            loading="lazy"
+                          />
+                        </div>
+
+                        <div className={css.cardBody}>
+                          <p className={css.brandLine}>
+                            {product.brand.toUpperCase()}
+                            <span className={css.stockDot} />
+                            <span className={css.stockText}>IN STOCK</span>
+                          </p>
+
+                          <h4 className={css.name}>{product.name}</h4>
+                          <p className={css.sku}>{product.sku}</p>
+
+                          <p className={css.price}>
+                            {PRICE_FORMATTER.format(product.sale_price)}
+                          </p>
+
+                          <button type="button" className={css.addToCartButton}>
+                            Add to Cart
+                          </button>
+                        </div>
+                      </article>
                     ))}
-                  </select>
+                  </div>
+
+                  <button
+                    type="button"
+                    className={css.carouselArrowLeft}
+                    onClick={() => scrollRail(-1)}
+                    disabled={!canScrollPrev || isLoading}
+                    aria-label="Scroll products left"
+                  >
+                    <ChevronLeftIcon width={18} height={18} />
+                  </button>
+
+                  <button
+                    type="button"
+                    className={css.carouselArrowRight}
+                    onClick={() => scrollRail(1)}
+                    disabled={!canScrollNext || isLoading}
+                    aria-label="Scroll products right"
+                  >
+                    <ChevronRightIcon width={18} height={18} />
+                  </button>
+
+                  {isLoading && (
+                    <div className={css.loadingOverlay} aria-live="polite">
+                      <span className={css.loadingSpinner} />
+                    </div>
+                  )}
                 </div>
-              </div>
-
-              <div className={css.carouselStage}>
-                <div className={css.rail} ref={railRef}>
-                  {filteredProducts.map((product) => (
-                    <article key={product.sku} className={css.card}>
-                      <div className={css.imageWrap}>
-                        <img
-                          className={css.productImage}
-                          src={`/gaming-laptops/${product.sku.toLowerCase()}.svg`}
-                          alt={`${product.brand} ${product.name}`}
-                          loading="lazy"
-                        />
-                      </div>
-
-                      <div className={css.cardBody}>
-                        <p className={css.brandLine}>
-                          {product.brand.toUpperCase()}
-                          <span className={css.stockDot} />
-                          <span className={css.stockText}>IN STOCK</span>
-                        </p>
-
-                        <h4 className={css.name}>{product.name}</h4>
-                        <p className={css.sku}>{product.sku}</p>
-
-                        <p className={css.price}>
-                          {PRICE_FORMATTER.format(product.sale_price)}
-                        </p>
-                      </div>
-                    </article>
-                  ))}
-                </div>
-
-                <button
-                  type="button"
-                  className={css.carouselArrowLeft}
-                  onClick={() => scrollRail(-1)}
-                  disabled={!canScrollPrev}
-                  aria-label="Scroll products left"
-                >
-                  <ChevronLeftIcon width={22} height={22} />
-                </button>
-
-                <button
-                  type="button"
-                  className={css.carouselArrowRight}
-                  onClick={() => scrollRail(1)}
-                  disabled={!canScrollNext}
-                  aria-label="Scroll products right"
-                >
-                  <ChevronRightIcon width={22} height={22} />
-                </button>
               </div>
             </div>
           </div>
         </div>
+
+        <aside className={css.payloadPanel}>
+          <p className={css.payloadTitle}>Generated Algolia Payload</p>
+          <pre>{JSON.stringify(generatedPayload, null, 2)}</pre>
+        </aside>
       </div>
     </section>
   )

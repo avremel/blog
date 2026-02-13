@@ -1,7 +1,5 @@
 import React from 'react'
 import Head from 'next/head'
-import { HomeIcon } from '@radix-ui/react-icons'
-import { VisuallyHidden } from '../index'
 
 const BlogLayout = ({ meta, children }) => {
   const base = `https://www.avikaminetzky.dev`
@@ -73,20 +71,19 @@ const BlogLayout = ({ meta, children }) => {
           sup:ml-3
         "
       >
-        <div className="flex items-center justify-between mb-4">
-          <nav className="">
-            <a href="/">
-              <VisuallyHidden>Home</VisuallyHidden>
-              <HomeIcon width="30" height="30" color="#64748b" />
-            </a>
-          </nav>
+        <header className="not-prose mb-4">
+          <a href="/" className="inline-block text-center no-underline">
+            <div className="text-2xl leading-none tracking-tight text-slate-800">
+              avi kaminetzky
+            </div>
+            <div className="-mt-1 text-base leading-none tracking-tight text-slate-500">
+              on software
+            </div>
+          </a>
+        </header>
 
-          <div className="border border-solid border-slate-600 text-slate-600 p-1 rounded h-fit w-fit px-3 text-center text-sm">
-            {meta.date}
-          </div>
-        </div>
-
-        <h1>{meta.title}</h1>
+        <h1 className="!text-4xl !leading-tight !mb-2">{meta.title}</h1>
+        <div className="text-slate-600 text-sm mb-5">{meta.date}</div>
 
         {children}
       </article>

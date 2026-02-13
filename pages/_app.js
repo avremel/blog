@@ -3,6 +3,7 @@ import '../styles/globals.css'
 import Head from 'next/head'
 import { MDXProvider } from '@mdx-js/react'
 import { Analytics } from '@vercel/analytics/react'
+import { isValidElement } from 'react'
 import slugify from '../utils/slugify'
 
 const H2 = ({ children }) => {
@@ -16,12 +17,55 @@ const H2 = ({ children }) => {
   )
 }
 
-const Pre = ({ className = '', ...props }) => (
-  <pre
-    {...props}
-    className={`bg-slate-100 text-slate-900 ${className}`.trim()}
-  />
-)
+const Pre = ({ className = '', children, ...props }) => {
+  const promptLinePattern = /^>\s*/
+
+  if (
+    isValidElement(children) &&
+    typeof children.props?.children === 'string'
+  ) {
+    const rawCode = children.props.children.replace(/\r\n/g, '\n')
+    const lines = rawCode.split('\n')
+    const hasPromptLines = lines.some((line) => {
+      const trimmed = line.trimStart()
+      return promptLinePattern.test(trimmed)
+    })
+
+    if (hasPromptLines) {
+      return (
+        <pre
+          {...props}
+          className={`bg-slate-100 text-slate-900 ${className}`.trim()}
+        >
+          <code className={children.props.className}>
+            {lines.map((line, index) => {
+              const trimmed = line.trimStart()
+              const isPromptLine = promptLinePattern.test(trimmed)
+
+              return (
+                <span
+                  key={`line-${index}`}
+                  className={isPromptLine ? 'terminal-line terminal-prompt-line' : 'terminal-line'}
+                >
+                  {line}
+                </span>
+              )
+            })}
+          </code>
+        </pre>
+      )
+    }
+  }
+
+  return (
+    <pre
+      {...props}
+      className={`bg-slate-100 text-slate-900 ${className}`.trim()}
+    >
+      {children}
+    </pre>
+  )
+}
 
 const components = {
   h2: H2,

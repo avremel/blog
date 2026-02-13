@@ -9,21 +9,23 @@ slug: "no-frills-ai-product-search-for-a-well-curated-catalog"
 import { AIProductSearchDemo, BlogMarkdown } from '../../components'
 
 ```
-> How do I implement conversational product search?
-Searching 23 devtool sites...
+> How can I implement conversational product search?
+Searching 7 SaaS vendors...
 ```
 
-You want conversational product search? Have you considered an ETL pipeline which embeds and stores your data in a vector database? When a user asks a question, have an LLM extract or reconstruct the query. Then use an embedding model to embed it, run a vector search, and pipe the results back to your LLM. If the results are still meh, just throw in a specialized [rerank model](https://docs.cohere.com/docs/rerank). Just one more tool call, bro. I promise, just one more model and it'll fix everything. I mean, [what could go wrong](https://arxiv.org/html/2401.05856v1)? The results are still atrocious? Have you considered going [hybrid](https://techcommunity.microsoft.com/blog/azuredevcommunityblog/doing-rag-vector-search-is-not-enough/4161073) and using [RRF](https://cormack.uwaterloo.ca/cormacksigir09-rrf.pdf) for final-pass-ranking? Are you even clued in on the [theoretical limits of single vector RAG at Google scale](https://arxiv.org/html/2508.21038v1)?
+Have you considered creating a new ETL pipeline which embeds and stores your data in a vector database? When a user asks a question, have an LLM extract or reconstruct the query. Then use an embedding model to embed it, run a vector search, and pipe the results back to your LLM. If the results are still meh, just throw in a specialized [rerank model](https://docs.cohere.com/docs/rerank). Just one more tool call, bro. I promise, just one more model and it'll fix everything. I mean, [what could go wrong](https://arxiv.org/html/2401.05856v1)? The results are still atrocious? Have you considered going [hybrid](https://techcommunity.microsoft.com/blog/azuredevcommunityblog/doing-rag-vector-search-is-not-enough/4161073) and using [RRF](https://cormack.uwaterloo.ca/cormacksigir09-rrf.pdf) for final-pass-ranking? Are you even clued in on the [theoretical limits of single vector RAG at Google scale](https://arxiv.org/html/2508.21038v1)?
 
 ```
-0% context left
+3% context left
 > /clear
 ```
 
 ```
-> My product data is structured and standardized to enable faceted search (https://en.wikipedia.org/wiki/Faceted_search). My search engine is already configured with my relevance and merchandising rules.
+> My product attributes are normalized — variant colors, dimensions, and other specs are mapped to canonical values — enabling faceted search (https://en.wikipedia.org/wiki/Faceted_search) and clean ETL into my search engine, which is already configured with relevance and merchandising rules.
 
 > How can I implement conversational product search with optimal cost, latency and UX?
+
+Thinking with ultra-extended-effort...
 ```
 
 Get filter metadata across all product categories and cache it. A gaming laptop example:
@@ -39,11 +41,12 @@ attributes.storage:512GB SSD|210,1TB SSD|175,256GB SSD|80,2TB SSD|55
 attributes.color:Silver|165,Space Gray|98,Black|88,Midnight|45,Starlight|32
 ```
 
-When the user query comes in and you have detected the category (using `regex` or an LLM), pull in its filter metadata.
+When the user’s query arrives and you’ve detected the category (via regex or an LLM), pull that category’s filter metadata.
 
-If the user asks about "Gaming laptops under $1500 with a dark finish", the LLM has enough context to generate this Algolia payload:
+If the user asks about "best gaming laptops under $1500 with a dark finish", the LLM has enough context to generate this Algolia payload:
 ```
 {
+  "index": "products_best_selling",
   "query": "",
   "facetFilters": [
     ["categories.lvl1:Laptops > Gaming Laptops"],
@@ -65,15 +68,26 @@ If the user asks about "Gaming laptops under $1500 with a dark finish", the LLM 
 ```
 
 How does an LLM do that?
-1. It is very good at constructing DSL (domain specific language) syntax, in this case an Algolia payload.
+1. It’s very good at constructing DSL syntax, in this case as an Algolia payload.
 2. It has enough context (filter metadata) to determine which parts of the query map to a filter/value pair and which parts are numeric operators.
-3. It can a semantic mapping of terms to filter values where lexical search fails: "dark finish" becomes `Black OR Midnight`.
+3. It can map semantic phrases to filter values when lexical matching fails: ‘dark finish’ becomes `Black OR Midnight`.
 
 ```
 97% context left
-> What UX does this unlock?
+> That's cool, I won't have to set up a new ETL or a vector database, nor will I need embedding or rerank model at runtime. A single fast LLM will get the job done and the context window won't have to include product data. But what UX does this unlock?
 ```
 
 <AIProductSearchDemo />
+
+The frontend receives a search payload that users can refine. When a user changes filters, the client issues a new query without another LLM roundtrip. Relevance and merchandising rules carry over from your search engine.
+
+
+For follow-up messages, send the client's filter state and have the LLM adjust the payload:
+
+<AIProductSearchDemo scenario="followup-core-i7" />
+
+```
+Press Ctrl-C again to exit
+```
 
 export default ({ children }) => <BlogMarkdown meta={meta}>{children}</BlogMarkdown>
