@@ -73,16 +73,14 @@ const BlogLayout = ({ meta, children }) => {
       >
         <header className="not-prose mb-4 flex justify-center">
           <a href="/" className="inline-block text-center no-underline">
-            <div className="text-2xl leading-none tracking-tight text-slate-800">
-              avi kaminetzky
-            </div>
-            <div className="-mt-1 text-base leading-none tracking-tight text-slate-500">
-              on software
+            <div className="text-2xl leading-none tracking-tight whitespace-nowrap text-slate-800">
+              <span>avi kaminetzky</span>{' '}
+              <span className="text-slate-500">on software</span>
             </div>
           </a>
         </header>
 
-        <h1 className="!text-4xl !leading-tight !mb-2">{meta.title}</h1>
+        <h1 className="!text-[26px] !leading-tight !mb-2">{meta.title}</h1>
         <div className="text-slate-600 text-sm mb-5">{meta.date}</div>
 
         {children}

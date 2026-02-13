@@ -124,13 +124,10 @@ const Home = ({ posts }) => {
       <div className="text-slate-700 flex flex-col h-screen p-10 lg:max-w-screen-md lg:mx-auto">
         <header className="mb-6 lg:mb-10 flex flex-col items-center gap-6">
           <div className="text-center">
-            <h1 className="text-2xl leading-none tracking-tight lg:text-3xl">
-              avi kaminetzky
+            <h1 className="text-2xl lg:text-3xl leading-none tracking-tight whitespace-nowrap">
+              <span className="text-slate-800">avi kaminetzky</span>{' '}
+              <span className="text-slate-500">on software</span>
             </h1>
-
-            <h3 className="-mt-1 text-md text-slate-500 leading-none tracking-tight lg:text-2xl">
-              on software
-            </h3>
           </div>
 
           <div className="flex items-center gap-2">

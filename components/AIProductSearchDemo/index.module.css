@@ -352,6 +352,7 @@
 .card {
   flex: 0 0 calc(((100% - 0.8rem) / 3) * 0.75);
   min-width: 158px;
+  max-width: 200px;
   scroll-snap-align: start;
 }
 

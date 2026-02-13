@@ -713,7 +713,7 @@ const AIProductSearchDemo = ({ scenario = 'default' }) => {
         </div>
 
         <aside className={css.payloadPanel}>
-          <p className={css.payloadTitle}>Generated Algolia Payload</p>
+          <p className={css.payloadTitle}>Search Payload</p>
           <pre>{JSON.stringify(generatedPayload, null, 2)}</pre>
         </aside>
       </div>
