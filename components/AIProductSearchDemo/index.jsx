@@ -294,16 +294,6 @@ function sortProducts(products, sortBy) {
   return copy
 }
 
-function countForOption(products, selected, detectedState, facetId, optionValue) {
-  const next = {
-    ...selected,
-    [facetId]: selected[facetId].includes(optionValue)
-      ? selected[facetId]
-      : [...selected[facetId], optionValue],
-  }
-  return filterProducts(products, next, detectedState).length
-}
-
 function getIndexFromSort(sortBy) {
   if (sortBy === 'best-selling') return 'products_best_selling'
   if (sortBy === 'price-asc') return 'products_price_asc'
@@ -584,13 +574,9 @@ const AIProductSearchDemo = ({ scenario = 'default' }) => {
                             {facet.options
                               .map((optionValue) => {
                                 const selectedNow = selected[facet.id].includes(optionValue)
-                                const count = countForOption(
-                                  PRODUCTS,
-                                  selected,
-                                  detectedState,
-                                  facet.id,
-                                  optionValue
-                                )
+                                const count = filteredProducts.filter(
+                                  (product) => product[facet.id] === optionValue
+                                ).length
                                 return {
                                   optionValue,
                                   selectedNow,
@@ -599,6 +585,9 @@ const AIProductSearchDemo = ({ scenario = 'default' }) => {
                               })
                               .filter(({ selectedNow, count }) => selectedNow || count > 0)
                               .sort((a, b) => {
+                                if (a.selectedNow !== b.selectedNow) {
+                                  return a.selectedNow ? -1 : 1
+                                }
                                 if (b.count !== a.count) return b.count - a.count
                                 return a.optionValue.localeCompare(b.optionValue)
                               })
