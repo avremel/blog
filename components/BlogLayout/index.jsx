@@ -71,7 +71,7 @@ const BlogLayout = ({ meta, children }) => {
           sup:ml-3
         "
       >
-        <header className="not-prose mb-4">
+        <header className="not-prose mb-4 flex justify-center">
           <a href="/" className="inline-block text-center no-underline">
             <div className="text-2xl leading-none tracking-tight text-slate-800">
               avi kaminetzky
