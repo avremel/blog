@@ -20,16 +20,10 @@ const H2 = ({ children }) => {
 const Pre = ({ className = '', children, ...props }) => {
   const promptLinePattern = /^>\s*/
 
-  if (
-    isValidElement(children) &&
-    typeof children.props?.children === 'string'
-  ) {
+  if (isValidElement(children) && typeof children.props?.children === 'string') {
     const rawCode = children.props.children.replace(/\r\n/g, '\n')
     const lines = rawCode.split('\n')
-    const hasPromptLines = lines.some((line) => {
-      const trimmed = line.trimStart()
-      return promptLinePattern.test(trimmed)
-    })
+    const hasPromptLines = lines.some((line) => promptLinePattern.test(line.trimStart()))
 
     if (hasPromptLines) {
       return (
@@ -39,9 +33,7 @@ const Pre = ({ className = '', children, ...props }) => {
         >
           <code className={children.props.className}>
             {lines.map((line, index) => {
-              const trimmed = line.trimStart()
-              const isPromptLine = promptLinePattern.test(trimmed)
-
+              const isPromptLine = promptLinePattern.test(line.trimStart())
               return (
                 <span
                   key={`line-${index}`}

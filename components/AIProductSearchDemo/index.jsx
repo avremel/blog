@@ -392,7 +392,7 @@ const AIProductSearchDemo = ({ scenario = 'default' }) => {
         },
         {
           key: 'budget',
-          label: `Budget: Up to ${PRICE_FORMATTER.format(MAX_PRICE)}`,
+          label: `Price: Up to ${PRICE_FORMATTER.format(MAX_PRICE)}`,
           active: detectedState.budget,
           showCheckbox: true,
           onClick: () =>
@@ -544,6 +544,29 @@ const AIProductSearchDemo = ({ scenario = 'default' }) => {
                   {FACETS.slice(0, 5).map((facet) => {
                     const selectedCount = selected[facet.id].length
                     const hasSelection = selectedCount > 0
+                    const optionStates = facet.options
+                      .map((optionValue) => {
+                        const selectedNow = selected[facet.id].includes(optionValue)
+                        const count = filteredProducts.filter(
+                          (product) => product[facet.id] === optionValue
+                        ).length
+                        return {
+                          optionValue,
+                          selectedNow,
+                          count,
+                        }
+                      })
+                      .filter(({ selectedNow, count }) => selectedNow || count > 0)
+                      .sort((a, b) => {
+                        if (a.selectedNow !== b.selectedNow) {
+                          return a.selectedNow ? -1 : 1
+                        }
+                        if (b.count !== a.count) return b.count - a.count
+                        return a.optionValue.localeCompare(b.optionValue)
+                      })
+
+                    if (!hasSelection && optionStates.length === 0) return null
+
                     const isOpen = openFacetId === facet.id
                     return (
                       <div className={css.filterChipWrap} key={facet.id}>
@@ -571,27 +594,7 @@ const AIProductSearchDemo = ({ scenario = 'default' }) => {
 
                         {isOpen && (
                           <div className={css.menu}>
-                            {facet.options
-                              .map((optionValue) => {
-                                const selectedNow = selected[facet.id].includes(optionValue)
-                                const count = filteredProducts.filter(
-                                  (product) => product[facet.id] === optionValue
-                                ).length
-                                return {
-                                  optionValue,
-                                  selectedNow,
-                                  count,
-                                }
-                              })
-                              .filter(({ selectedNow, count }) => selectedNow || count > 0)
-                              .sort((a, b) => {
-                                if (a.selectedNow !== b.selectedNow) {
-                                  return a.selectedNow ? -1 : 1
-                                }
-                                if (b.count !== a.count) return b.count - a.count
-                                return a.optionValue.localeCompare(b.optionValue)
-                              })
-                              .map(({ optionValue, selectedNow, count }) => (
+                            {optionStates.map(({ optionValue, selectedNow, count }) => (
                                 <button
                                   type="button"
                                   key={`${facet.id}-${optionValue}`}
@@ -606,7 +609,7 @@ const AIProductSearchDemo = ({ scenario = 'default' }) => {
                                   </span>
                                   <span className={css.menuCount}>{count > 0 ? count : ''}</span>
                                 </button>
-                              ))}
+                            ))}
                           </div>
                         )}
                       </div>
