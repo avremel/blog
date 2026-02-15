@@ -59,10 +59,7 @@ const externalPosts = [
 
 const NavItem = ({ date, link, text, external = false }) => {
   return (
-    <li className="flex gap-4 lg:gap-6 leading-6">
-      <span className="border-solid border border-slate-300 text-slate-600 p-1 rounded h-fit text-center text-xs flex-shrink-0 basis-24 lg:text-lg lg:basis-32">
-        {date}
-      </span>
+    <li className="leading-6">
       <a
         href={link}
         target={external ? '_blank' : undefined}
@@ -71,6 +68,7 @@ const NavItem = ({ date, link, text, external = false }) => {
       >
         {text}
       </a>
+      <div className="text-slate-500 text-xs mt-2 lg:text-sm">{date}</div>
     </li>
   )
 }
