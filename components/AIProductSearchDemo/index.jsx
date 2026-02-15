@@ -446,15 +446,40 @@ const AIProductSearchDemo = ({ scenario = 'default' }) => {
 
   useEffect(() => {
     const handleOutside = (event) => {
-      if (!containerRef.current) return
-      if (!containerRef.current.contains(event.target)) {
-        setOpenFacetId(null)
-        setMobileMenuStyle(null)
-      }
+      if (openFacetId === null) return
+
+      const target = event.target
+      const activeFacet = target?.closest?.(`[data-facet-id="${openFacetId}"]`)
+      if (activeFacet) return
+
+      setOpenFacetId(null)
+      setMobileMenuStyle(null)
     }
-    document.addEventListener('mousedown', handleOutside)
-    return () => document.removeEventListener('mousedown', handleOutside)
-  }, [])
+    document.addEventListener('pointerdown', handleOutside)
+    return () => document.removeEventListener('pointerdown', handleOutside)
+  }, [openFacetId])
+
+  useEffect(() => {
+    if (openFacetId === null) return
+    if (typeof window === 'undefined') return
+    if (!window.matchMedia('(max-width: 760px)').matches) return
+
+    const closeMenu = () => {
+      setOpenFacetId(null)
+      setMobileMenuStyle(null)
+    }
+
+    // Prevent detached fixed-position menus after viewport scroll/resize.
+    window.addEventListener('scroll', closeMenu, true)
+    window.addEventListener('resize', closeMenu)
+    window.addEventListener('orientationchange', closeMenu)
+
+    return () => {
+      window.removeEventListener('scroll', closeMenu, true)
+      window.removeEventListener('resize', closeMenu)
+      window.removeEventListener('orientationchange', closeMenu)
+    }
+  }, [openFacetId])
 
   useEffect(() => {
     const rail = railRef.current
@@ -619,7 +644,7 @@ const AIProductSearchDemo = ({ scenario = 'default' }) => {
 
                     const isOpen = openFacetId === facet.id
                     return (
-                      <div className={css.filterChipWrap} key={facet.id}>
+                      <div className={css.filterChipWrap} key={facet.id} data-facet-id={facet.id}>
                         <button
                           type="button"
                           className={hasSelection ? css.filterChipActive : css.filterChip}
