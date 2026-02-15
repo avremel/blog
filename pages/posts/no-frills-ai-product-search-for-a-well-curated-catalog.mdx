@@ -24,12 +24,12 @@ Have you considered creating a new ETL pipeline which embeds and stores your dat
 ```
 > My product attributes are normalized — variant colors, dimensions, and other specs are mapped to canonical values — enabling faceted search and clean ETL into my search engine, which is already configured with relevance and merchandising rules.
 
-> How can I implement conversational product search with optimal cost, latency and UX?
+> How can I implement conversational product search with optimal cost, latency, and UX?
 
 Thinking with ultra-effort...
 ```
 
-Get filter metadata across all product categories and cache it. A gaming laptop example:
+Get filter metadata across all product categories and cache it. Here's a gaming-laptop example:
 ```
 categories.lvl0:Laptops|520
 categories.lvl1:Laptops > Gaming Laptops|145
@@ -76,7 +76,17 @@ How does an LLM do that?
 
 ```
 97% context left
-> That's cool, I won't have to set up a new ETL or a vector database, nor will I need embedding or rerank model at runtime. A single fast LLM call will get the job done and the context window won't have to include product data. But what UX does this unlock?
+> Please list the benefits of this approach.
+```
+
+1. No need to set up a new ETL or vector database.
+2. No need to call embedding or rerank models at runtime; a single fast + cheap LLM call gets the job done.
+3. The context window doesn't have to include product data.
+4. You get to reuse existing relevance and merchandising rules.
+5. Your search results are explainable/debuggable.
+
+```
+> But what UX does this unlock?
 ```
 
 <AIProductSearchDemo />
@@ -93,6 +103,7 @@ For follow-up messages, send the client's filter state and have the LLM adjust t
 ```
 Look carefully at the shape of your data; it is a good indicator of how you can architect conversational search. If your product specs aren't standardized, vector search on unstructured text makes sense. If you already have faceted search, you can probably get by with generating search syntax. A nice byproduct: users get interactive filters they can refine without waiting for another LLM roundtrip. Use the right tool for the job.
 
+I would even go further: It might be worthwhile to clean up/extract/normalize your product data to avoid having to rely on a vector-search solution and take advantage of your existing search infrastructure. How hard [could it be](https://dl.acm.org/doi/epdf/10.1145/3394486.3403047)?
 
 ```
 Press Ctrl-C again to exit
