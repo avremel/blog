@@ -362,6 +362,7 @@ const AIProductSearchDemo = ({ scenario = 'default' }) => {
   }))
   const [sortBy, setSortBy] = useState('best-selling')
   const [openFacetId, setOpenFacetId] = useState(null)
+  const [mobileMenuStyle, setMobileMenuStyle] = useState(null)
   const containerRef = useRef(null)
   const railRef = useRef(null)
   const didInitLoadingRef = useRef(false)
@@ -448,6 +449,7 @@ const AIProductSearchDemo = ({ scenario = 'default' }) => {
       if (!containerRef.current) return
       if (!containerRef.current.contains(event.target)) {
         setOpenFacetId(null)
+        setMobileMenuStyle(null)
       }
     }
     document.addEventListener('mousedown', handleOutside)
@@ -490,6 +492,54 @@ const AIProductSearchDemo = ({ scenario = 'default' }) => {
     const rail = railRef.current
     if (!rail) return
     rail.scrollBy({ left: direction * 320, behavior: 'smooth' })
+  }
+
+  const handleFacetToggle = (facetId, event) => {
+    const isClosing = openFacetId === facetId
+    if (isClosing) {
+      setOpenFacetId(null)
+      setMobileMenuStyle(null)
+      return
+    }
+
+    if (typeof window !== 'undefined' && window.matchMedia('(max-width: 760px)').matches) {
+      const triggerRect = event.currentTarget.getBoundingClientRect()
+      const containerRect = containerRef.current?.getBoundingClientRect()
+      const viewportPadding = 8
+      const containerPadding = 8
+      const minLeft = Math.max(
+        viewportPadding,
+        (containerRect?.left ?? viewportPadding) + containerPadding
+      )
+      const maxRight = Math.min(
+        window.innerWidth - viewportPadding,
+        (containerRect?.right ?? window.innerWidth - viewportPadding) - containerPadding
+      )
+      const menuWidth = Math.min(220, Math.max(0, maxRight - minLeft))
+      const left = Math.min(
+        Math.max(triggerRect.left, minLeft),
+        Math.max(minLeft, maxRight - menuWidth)
+      )
+
+      const estimatedMenuHeight = 272
+      const downTop = triggerRect.bottom + 6
+      const upTop = triggerRect.top - estimatedMenuHeight - 6
+      const canOpenDown =
+        downTop + estimatedMenuHeight <= window.innerHeight - viewportPadding
+      const top = canOpenDown
+        ? downTop
+        : Math.max(viewportPadding, Math.min(upTop, window.innerHeight - estimatedMenuHeight))
+
+      setMobileMenuStyle({
+        top: `${top}px`,
+        left: `${left}px`,
+        width: `${menuWidth}px`,
+      })
+    } else {
+      setMobileMenuStyle(null)
+    }
+
+    setOpenFacetId(facetId)
   }
 
   return (
@@ -573,11 +623,7 @@ const AIProductSearchDemo = ({ scenario = 'default' }) => {
                         <button
                           type="button"
                           className={hasSelection ? css.filterChipActive : css.filterChip}
-                          onClick={() =>
-                            setOpenFacetId((current) =>
-                              current === facet.id ? null : facet.id
-                            )
-                          }
+                          onClick={(event) => handleFacetToggle(facet.id, event)}
                         >
                           <span>
                             {facet.label}
@@ -593,7 +639,7 @@ const AIProductSearchDemo = ({ scenario = 'default' }) => {
                         </button>
 
                         {isOpen && (
-                          <div className={css.menu}>
+                          <div className={css.menu} style={mobileMenuStyle || undefined}>
                             {optionStates.map(({ optionValue, selectedNow, count }) => (
                                 <button
                                   type="button"

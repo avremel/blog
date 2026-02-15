@@ -597,6 +597,16 @@
   .sortSelect {
     width: 100%;
   }
+
+  .menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    min-width: 0;
+    width: 220px;
+    max-width: calc(100vw - 1rem);
+    z-index: 40;
+  }
 }
 
 @media (max-width: 640px) {

@@ -1,6 +1,6 @@
 ---
-title: "No-Frills AI Product Search for a Well-Curated Catalog"
-description: "Use an LLM to translate natural-language shopping queries into search DSL, preserving existing relevance and merchandising with lower latency and cost than vector-search/RAG."
+title: "AI Product Search for a Well-Curated Catalog"
+description: "How to use an LLM to translate natural-language shopping queries into search DSL, preserving existing relevance and merchandising with lower latency and cost than vector-search/RAG."
 date: "Feb 2026"
 publishedAt: "2026-02-12"
 slug: "no-frills-ai-product-search-for-a-well-curated-catalog"
@@ -14,7 +14,7 @@ import { AIProductSearchDemo, BlogMarkdown } from '../../components'
 Searching 7 SaaS vendors...
 ```
 
-Have you considered creating a new ETL pipeline which embeds and stores your data in a vector database? When a user asks a question, have an LLM rewrite the query, embed it, vector-search it, and pipe results back to the LLM. If the results are still meh, just throw in a specialized [rerank model](https://docs.cohere.com/docs/rerank). Just one more tool call, bro. I promise, just one more model and it'll fix everything. I mean, [what could go wrong](https://arxiv.org/html/2401.05856v1)? The results are still lackluster? Have you considered going [hybrid](https://techcommunity.microsoft.com/blog/azuredevcommunityblog/doing-rag-vector-search-is-not-enough/4161073) and using [RRF](https://cormack.uwaterloo.ca/cormacksigir09-rrf.pdf) for final-pass-ranking?
+Have you considered creating a new ETL pipeline which embeds and stores your data in a vector database? When a user asks a question, have an LLM rewrite the query, embed it, vector-search it, and pipe results back to the LLM. If the results are still meh, just throw in a specialized [rerank model](https://docs.cohere.com/docs/rerank). Just one more tool call, bro. I promise, just one more model and it'll fix everything. I mean, [what could go wrong](https://arxiv.org/html/2401.05856v1)? The results are still lackluster? Have you considered going [hybrid](https://techcommunity.microsoft.com/blog/azuredevcommunityblog/doing-rag-vector-search-is-not-enough/4161073) and using [RRF](https://cormack.uwaterloo.ca/cormacksigir09-rrf.pdf) for final-pass-ranking? Are you even clued in on the [theoretical limits of single vector embedding](https://arxiv.org/html/2508.21038v1)?
 
 ```
 3% context left
@@ -26,7 +26,7 @@ Have you considered creating a new ETL pipeline which embeds and stores your dat
 
 > How can I implement conversational product search with optimal cost, latency and UX?
 
-Thinking with ultra-extended-effort...
+Thinking with ultra-effort...
 ```
 
 Get filter metadata across all product categories and cache it. A gaming laptop example:
