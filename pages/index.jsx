@@ -92,6 +92,7 @@ const Home = ({ posts }) => {
         'https://www.linkedin.com/in/avi-dev/',
         'https://stackoverflow.com/users/4822174/avi-kaminetzky',
         'https://github.com/avremel',
+        'https://x.com/avikaminetzky',
       ],
     },
     blogPost: posts.map((post) => ({
