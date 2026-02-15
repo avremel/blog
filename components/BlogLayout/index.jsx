@@ -53,11 +53,13 @@ const BlogLayout = ({ meta, children }) => {
     <div className="p-6 lg:max-w-screen-md lg:mx-auto text-slate-700">
       <Head>
         <title>{meta.title}</title>
+        {meta.description && <meta name="description" content={meta.description} />}
+        {postUrl && <link rel="canonical" href={postUrl} />}
 
         <meta property="og:title" content={meta.title} />
         <meta name="twitter:title" content={meta.title} />
 
-        <meta property="og:type" content="website" />
+        <meta property="og:type" content="article" />
 
         {meta.description && (
           <>
