@@ -1,7 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="AK favicon">
-  <rect width="64" height="64" rx="10" fill="#000"/>
-  <g fill="none" stroke="#fff" stroke-width="6" stroke-linecap="butt" stroke-linejoin="miter">
-    <path d="M10 52 L18 12 L26 52 M13 35 H23"/>
-    <path d="M36 12 V52 M36 32 L53 12 M36 32 L53 52"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="a favicon">
+  <rect width="64" height="64" fill="#0b1536" />
+  <text
+    x="32"
+    y="45"
+    text-anchor="middle"
+    font-size="46"
+    font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Helvetica, Arial, sans-serif"
+    fill="#eef2f7"
+  >
+    a
+  </text>
 </svg>
