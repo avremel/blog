@@ -129,14 +129,7 @@ const Home = ({ posts }) => {
 
       <div className="text-slate-700 flex flex-col h-screen p-10 lg:max-w-screen-md lg:mx-auto">
         <header className="mb-6 lg:mb-10">
-          <div className="flex items-center gap-4 lg:gap-6">
-            <img
-              src={profileImageUrl}
-              alt="Avi Kaminetzky profile"
-              className="h-[96px] w-auto shrink-0 rounded-sm lg:h-[200px]"
-              loading="eager"
-            />
-
+          <div className="flex items-center justify-between gap-4 lg:gap-6">
             <div className="flex flex-col gap-4">
               <div>
                 <h1 className="text-2xl lg:text-3xl leading-none tracking-tight">
@@ -177,6 +170,15 @@ const Home = ({ posts }) => {
                 </a>
               </div>
             </div>
+
+            <img
+              src={profileImageUrl}
+              alt="Avi Kaminetzky profile"
+              width="1024"
+              height="1536"
+              className="h-[120px] w-auto shrink-0 rounded-sm lg:h-[220px]"
+              loading="eager"
+            />
           </div>
         </header>
 
