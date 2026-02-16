@@ -10,6 +10,9 @@ import css from './index.module.css'
 const CATEGORY = 'Laptops > Gaming Laptops'
 const MAX_PRICE = 1500
 const DETECTED_FINISH_COLORS = ['Black', 'Midnight']
+const CLOUDINARY_GAMING_LAPTOP_SKUS = new Set(
+  Array.from({ length: 12 }, (_, index) => `gl-${String(index + 1001)}`)
+)
 
 const PRODUCTS = [
   {
@@ -145,6 +148,15 @@ const PRODUCTS = [
     sales_rank: 8,
   },
 ].map((item) => ({ ...item, category: CATEGORY }))
+
+const getProductImageSrc = (sku) => {
+  const normalizedSku = sku.toLowerCase()
+  if (CLOUDINARY_GAMING_LAPTOP_SKUS.has(normalizedSku)) {
+    return `/media/gaming-laptops/${normalizedSku}.svg`
+  }
+
+  return `/gaming-laptops/${normalizedSku}.svg`
+}
 
 const PRICE_OPTIONS = [
   { id: 'under-1000', label: 'Under $1,000', min: 0, max: 999 },
@@ -716,7 +728,7 @@ const AIProductSearchDemo = ({ scenario = 'default' }) => {
                         <div className={css.imageWrap}>
                           <img
                             className={css.productImage}
-                            src={`/gaming-laptops/${product.sku.toLowerCase()}.svg`}
+                            src={getProductImageSrc(product.sku)}
                             alt={`${product.brand} ${product.name}`}
                             loading="lazy"
                           />

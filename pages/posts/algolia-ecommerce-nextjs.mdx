@@ -4,7 +4,7 @@ description: Notes on implementing Algolia with NextJS
 date: Sep 2024
 publishedAt: 2024-09-01
 slug: algolia-ecommerce-nextjs
-ogImage: algolia-ecommerce.png
+ogImage: /media/algolia-nextjs/algolia-ecommerce.png
 ---
 
 import { BlogMarkdown } from '../../components'
@@ -26,7 +26,7 @@ import { BlogMarkdown } from '../../components'
 <div>
   <div>Many ecommerce sites will have a product card which displays variantions of an item like color and size.</div>
 
-  <img className="algolia-variants" src="/variants.png" alt="T-shirts with color variants" />
+  <img className="algolia-variants" src="/media/algolia-nextjs/variants.png" alt="T-shirts with color variants" />
 </div>
 
 To setup, you will [need to](https://www.algolia.com/doc/guides/managing-results/refine-results/grouping/how-to/item-variations/):
@@ -85,7 +85,7 @@ You can layer on custom signals to further influence the order of results ("Rank
 
 Debugging search relevance is intuitive and painless. The ranking popup in the dashboard which explains why a specific record ranks the way it does relative to other records.
 
-<img src="/debug_relevance.png" alt="Debugging relevance in Algolia's dashboard" />
+<img src="/media/algolia-nextjs/debug_relevance.png" alt="Debugging relevance in Algolia's dashboard" />
 
 Algolia's approach to configuring and tweaking search relevance feels like it's at the right layer of abstraction. Simple to understand, sensible defaults, yet customizable. Contrast with Solr/Elastic Search, which requires the user to fiddle with low level primitives like tokenizers, ngrams and pesky math.
 
@@ -96,7 +96,7 @@ Algolia's approach to configuring and tweaking search relevance feels like it's 
 <div>
   <div>Any attribute that will be used as a filter needs to be added to the Facets list. Filters come with counts and are searchable.</div>
 
-  <img className="algolia-facet" src="/facet.png" alt="Brand filter example" style={{ marginLeft: '10px', float: 'right' }} />
+  <img className="algolia-facet" src="/media/algolia-nextjs/facet.png" alt="Brand filter example" style={{ marginLeft: '10px', float: 'right' }} />
 </div>
 
 If you have chosen to [roll up variants](https://www.algolia.com/doc/guides/managing-results/refine-results/grouping/how-to/item-variations/), your options are:

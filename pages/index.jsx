@@ -75,6 +75,13 @@ const NavItem = ({ date, link, text, external = false }) => {
 
 const Home = ({ posts }) => {
   const baseUrl = 'https://www.avikaminetzky.dev'
+  const profileImageUrl = '/media/profile.png'
+  const getAbsoluteAssetUrl = (assetPath) => {
+    if (!assetPath) return undefined
+    if (/^https?:\/\//i.test(assetPath)) return assetPath
+    if (assetPath.startsWith('/')) return `${baseUrl}${assetPath}`
+    return `${baseUrl}/${assetPath}`
+  }
   const homeSchema = {
     '@context': 'https://schema.org',
     '@type': 'Blog',
@@ -104,7 +111,7 @@ const Home = ({ posts }) => {
         '@type': 'Person',
         name: 'Avi Kaminetzky',
       },
-      image: post.ogImage ? `${baseUrl}/${post.ogImage}` : undefined,
+      image: getAbsoluteAssetUrl(post.ogImage),
     })),
   }
 
@@ -121,44 +128,55 @@ const Home = ({ posts }) => {
       </Head>
 
       <div className="text-slate-700 flex flex-col h-screen p-10 lg:max-w-screen-md lg:mx-auto">
-        <header className="mb-6 lg:mb-10 flex flex-col items-center gap-6">
-          <div className="text-center">
-            <h1 className="text-2xl lg:text-3xl leading-none tracking-tight whitespace-nowrap">
-              <span className="text-slate-800">avi kaminetzky</span>{' '}
-              <span className="text-slate-500">on software</span>
-            </h1>
-          </div>
+        <header className="mb-6 lg:mb-10">
+          <div className="flex items-center gap-4 lg:gap-6">
+            <img
+              src={profileImageUrl}
+              alt="Avi Kaminetzky profile"
+              className="h-[96px] w-auto shrink-0 rounded-sm lg:h-[200px]"
+              loading="eager"
+            />
 
-          <div className="flex items-center gap-2">
-            <a
-              href="https://www.linkedin.com/in/avi-dev/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <LinkedIn />
+            <div className="flex flex-col gap-4">
+              <div>
+                <h1 className="text-2xl lg:text-3xl leading-none tracking-tight">
+                  <span className="text-slate-800 block lg:inline">avi kaminetzky</span>
+                  <span className="text-slate-500 block lg:inline lg:ml-1">on software</span>
+                </h1>
+              </div>
 
-              <VisuallyHidden>LinkedIn Link</VisuallyHidden>
-            </a>
+              <div className="flex items-center gap-2">
+                <a
+                  href="https://www.linkedin.com/in/avi-dev/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <LinkedIn />
 
-            <a
-              href="https://stackoverflow.com/users/4822174/avi-kaminetzky"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <StackOverflow />
+                  <VisuallyHidden>LinkedIn Link</VisuallyHidden>
+                </a>
 
-              <VisuallyHidden>StackOverflow Link</VisuallyHidden>
-            </a>
+                <a
+                  href="https://stackoverflow.com/users/4822174/avi-kaminetzky"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <StackOverflow />
 
-            <a
-              href="https://github.com/avremel"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <GitHubLogoIcon className="w-[26px] h-[26px]" />
+                  <VisuallyHidden>StackOverflow Link</VisuallyHidden>
+                </a>
 
-              <VisuallyHidden>Github Link</VisuallyHidden>
-            </a>
+                <a
+                  href="https://github.com/avremel"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <GitHubLogoIcon className="w-[26px] h-[26px]" />
+
+                  <VisuallyHidden>Github Link</VisuallyHidden>
+                </a>
+              </div>
+            </div>
           </div>
         </header>
 

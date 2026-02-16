@@ -5,8 +5,14 @@ import { useRouter } from 'next/router'
 const BlogLayout = ({ meta, children }) => {
   const router = useRouter()
   const base = `https://www.avikaminetzky.dev`
+  const getAbsoluteAssetUrl = (assetPath) => {
+    if (!assetPath) return null
+    if (/^https?:\/\//i.test(assetPath)) return assetPath
+    if (assetPath.startsWith('/')) return `${base}${assetPath}`
+    return `${base}/${assetPath}`
+  }
   const postUrl = meta.slug ? `${base}/posts/${meta.slug}` : null
-  const imageUrl = meta.ogImage ? `${base}/${meta.ogImage}` : null
+  const imageUrl = getAbsoluteAssetUrl(meta.ogImage)
   const articleSchema =
     postUrl && meta.publishedAt
       ? {
