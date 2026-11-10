@@ -71,11 +71,6 @@ const CLOUDINARY_BLOG_ASSET_REWRITES = [
     destination:
       'https://res.cloudinary.com/dulc6aa6i/image/upload/f_auto,q_auto,dpr_auto,c_limit,w_1600/v1771278427/no-frills-ai-product-search.jpg',
   },
-  {
-    source: '/media/profile.png',
-    destination:
-      'https://res.cloudinary.com/dulc6aa6i/image/upload/f_auto,q_auto,dpr_auto,c_limit,w_400,h_400/profile.png',
-  },
 ]
 const CLOUDINARY_ROOT_ASSET_REWRITES = [
   {

@@ -75,7 +75,8 @@ const NavItem = ({ date, link, text, external = false }) => {
 
 const Home = ({ posts }) => {
   const baseUrl = 'https://www.avikaminetzky.dev'
-  const profileImageUrl = '/media/profile.png'
+  const profileImageUrl =
+    'https://res.cloudinary.com/dulc6aa6i/image/upload/v1794341358/T024FUXLU-U01KBQNEFAB-2c78958db313-512_1.png'
   const getAbsoluteAssetUrl = (assetPath) => {
     if (!assetPath) return undefined
     if (/^https?:\/\//i.test(assetPath)) return assetPath
@@ -97,7 +98,6 @@ const Home = ({ posts }) => {
         'https://www.linkedin.com/in/avi-dev/',
         'https://stackoverflow.com/users/4822174/avi-kaminetzky',
         'https://github.com/avremel',
-        'https://x.com/avikaminetzky',
       ],
     },
     blogPost: posts.map((post) => ({
@@ -174,8 +174,8 @@ const Home = ({ posts }) => {
             <img
               src={profileImageUrl}
               alt="Avi Kaminetzky profile"
-              width="1024"
-              height="1536"
+              width="512"
+              height="512"
               className="h-[120px] w-auto shrink-0 rounded-sm lg:h-[220px]"
               loading="eager"
             />
